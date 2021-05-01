@@ -21,7 +21,7 @@
 
 
 # for security
-# /repository/loginConstants.php
+/repository/loginConstants.php
 
 # for composer
 /vendor/
