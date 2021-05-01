@@ -1,0 +1,22 @@
+{
+  "name": "aarif12345/imagerepository",
+  "keywords": [
+    "pdo",
+    "mysql",
+    "database",
+    "iterator"
+  ],
+  "description": "A API for the Image repository created for the Shopify challenge",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Abdullah Arif",
+      "email": "abdullahmeo11@gmail.com"
+    }
+  ],
+  "require": {
+    "phpauth/phpauth": "1.2.0",
+    "ext-pdo": "*",
+    "ext-json": "*"
+  }
+}
