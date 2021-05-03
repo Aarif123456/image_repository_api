@@ -1,1 +1,1 @@
-Holds code that controls how the information is sent back from the endpoint
+Holds code that controls the structure of the returned info from our endpoints.

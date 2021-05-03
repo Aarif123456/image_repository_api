@@ -22,6 +22,7 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 </details>
 
 ## TODO ##
+<!-- First we get the deletion and upload working without any encryption then we add in the encryption after  -->
 <details>
 <summary>Upload file </summary>
 
@@ -32,7 +33,8 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
     4. httpie command:
 </details>
 
-<summary>Delete File </summary>
+<details>
+<summary>Delete file </summary>
 
     1. Description:  A logged in user should be able to delete any files they uploaded.
     2. fileManagement/delete.php --> /api/fileManagement/delete
@@ -41,14 +43,24 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
     4. httpie command:
 </details>
 
-<summary>Search File </summary>
+<details>
 
-    1. Description:  Probably won't get to it, buy this endpoint will allow the user to search for files by different attributes such as image tags, file name or uploader
-    2. fileManagement/search.php --> /api/fileManagement/search
-    3. Parameter list: searchType, keyword
+<summary>Get file access </summary>
+
+    1. Description:  The system return back the description and name of the types of access the system support. This includes public access which means anyone can see the file and private access which means only the uploader can see the file.
+    2. fileManagement/getFileAccess.php --> /api/fileManagement/getFileAccess
+    3. Parameter list: 
     4. httpie command:
 </details>
 
+<!-- <summary>Search File </summary>
+
+    1. Description: Allow the user to search for files by different attributes such as image tags, file name or uploader. Can be used to show the user their own files as well
+    2. fileManagement/search.php -> /api/fileManagement/search
+    3. Parameter list: searchType, keyword
+    4. httpie command:
+</details>
+ -->
 <details>
 <summary> Registering user </summary>
 
