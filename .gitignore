@@ -19,9 +19,5 @@
 .idea/**/dbnavigator.xml
 .idea/
 
-
-# for security
-/repository/loginConstants.php
-
 # for composer
 /vendor/
