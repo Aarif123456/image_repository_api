@@ -11,17 +11,21 @@ error_reporting(E_ALL);
 /* Define the strings the api will return  */
 
 /* constants */
-define('COMMAND_FAILED', 'Query failed to execute, ensure you use the correct values');
-define('INTERNAL_SERVER_ERROR', 'something went wrong:(');
-define('INVALID_PARAMETERS', 'Parameter do no have expected type');
+define('COMMAND_FAILED', '{"error:"Query failed to execute, ensure you use the correct values"}');
+define('EMAIL_EXISTS', '{"emailTaken":true}');
+define('EMAIL_NOT_IN_TABLE', '{"emailTaken":false}');
+define('FILE_SIZE_LIMIT_EXCEEDED', '{"error:"Exceeded file size limit."}');
+define('INTERNAL_SERVER_ERROR', '{"error:"something went wrong:("}');
+define('INVALID_PARAMETERS', '{"error:"Parameter do no have expected type"}');
 define('INVALID_PASSWORD', '{"success":false}');
-define('MISSING_PARAMETERS', 'Missing value');
-define('NO_ROWS_RETURNED', 'No rows');
-define('UNAUTHORIZED_NO_LOGIN', 'not logged in!');
-define('USER_BLACKLISTED', 'user is blacklisted');
-define('USER_LOGGED_OUT', 'User has successfully logged out');
-define('EMAIL_EXISTS', 'Email is taken');
-define('EMAIL_NOT_IN_TABLE', 'Email not taken');
+define('MISSING_PARAMETERS', '{"error:"Missing value"}');
+define('NO_FILE_SENT', '{"error:"No file sent."}');
+define('NO_ROWS_RETURNED', '{"error:"No rows were found in database"}');
+define('UNAUTHORIZED_NO_LOGIN', '{"error:"user is not logged in!"}');
+define('USER_LOGGED_OUT', '{"message":"User has successfully logged out"}');
+define('INVALID_ACCESS_TYPE', '{"error:"Invalid file access policy."}');
+define('INVALID_FILE_FORMAT', '{"error:"Invalid file format."}');
+define('INVALID_SEARCH_METHOD', '{"error:"Invalid search method."}');
 
 /* error as functions*/
 /* We HTML entities any data coming back from the user before printing */
@@ -47,14 +51,13 @@ function passwordReset($uID): string
 {
     $printableUserID = htmlentities($uID);
 
-    return "Password has been reset for user with id $printableUserID";
+    return "{\"message\":\"Password has been reset for user with id $printableUserID\"}";
 }
 
 function userCreated($userID): string
 {
-    return "Created user with id: $userID";
+    return "{\"message\":\"Created user with id: $userID\"}";
 }
-
 
 function verifyUserType($userType): bool
 {
@@ -85,7 +88,7 @@ function getHeader()
     header('Access-Control-Allow-Credentials: true');
     header('Access-Control-Allow-Headers: X-Requested-With,content-type');
     header('Access-Control-Max-Age: 86400');    // cache for 1 day
-
+    header('Content-Type: application/json'); // entire application will always return JSON back
 }
 
 function startSession()
@@ -114,8 +117,12 @@ function isValidPostVar($varName): bool
     return isset($_POST[$varName]) && $_POST[$varName];
 }
 
-function isValidRequestVar($varName)
+function isValidRequestVar($varName): bool
 {
     return isset($_REQUEST[$varName]) && $_REQUEST[$varName];
+}
+
+function isValidFileVar($fileName): bool {
+    return isset($_FILES[$fileName]['error']);
 }
 
