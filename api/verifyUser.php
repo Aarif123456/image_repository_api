@@ -1,10 +1,10 @@
 <?php
 /* program to authenticate user */
 
-require_once __DIR__ . '/common/apiReturn.php';
-require_once __DIR__ . '/common/authenticate.php';
-require_once __DIR__ . '/repository/database.php';
-require_once __DIR__ . '/repository/verifyUserRepo.php';
+require_once __DIR__ . '/../views/apiReturn.php';
+require_once __DIR__ . '/../common/authenticate.php';
+require_once __DIR__ . '/../repository/database.php';
+require_once __DIR__ . '/../repository/verifyUserRepo.php';
 
 /* Set required header and session start */
 requiredHeaderAndSessionStart();

@@ -17,6 +17,7 @@
   "require": {
     "phpauth/phpauth": "1.2.0",
     "ext-pdo": "*",
-    "ext-json": "*"
+    "ext-json": "*",
+    "ext-fileinfo": "*"
   }
 }
