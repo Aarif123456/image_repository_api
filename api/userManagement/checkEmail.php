@@ -12,7 +12,9 @@ requiredHeaderAndSessionStart();
 /* Connect to database */
 $conn = getConnection();
 
-if (!isValidPostVar('email')) exit(MISSING_PARAMETERS);
+if (!isValidPostVar('email')) {
+    exit(MISSING_PARAMETERS);
+}
 
 $auth = getAuth($conn);
 $email = $_POST['email'];

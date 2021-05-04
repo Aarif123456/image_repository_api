@@ -29,15 +29,13 @@ define('INVALID_SEARCH_METHOD', '{"error":"Invalid search method."}');
 
 /* error as functions*/
 /* We HTML entities any data coming back from the user before printing */
-function invalidUserType($userType): string
-{
+function invalidUserType($userType): string {
     $userType = htmlentities($userType);
 
     return "'$userType' is not a recognized userType";
 }
 
-function authenticatedSuccessfully($userType): string
-{
+function authenticatedSuccessfully($userType): string {
     $userType = htmlentities($userType);
     $return = (object)[
         'success' => true,
@@ -47,20 +45,17 @@ function authenticatedSuccessfully($userType): string
     return json_encode($return);
 }
 
-function passwordReset($uID): string
-{
+function passwordReset($uID): string {
     $printableUserID = htmlentities($uID);
 
     return "{\"message\":\"Password has been reset for user with id $printableUserID\"}";
 }
 
-function userCreated($userID): string
-{
+function userCreated($userID): string {
     return "{\"message\":\"Created user with id: $userID\"}";
 }
 
-function verifyUserType($userType): bool
-{
+function verifyUserType($userType): bool {
     switch ($userType) {
         case 'user':       // INTENTIONAL FALLTHROUGH
         case 'admin':    // INTENTIONAL FALLTHROUGH
@@ -70,8 +65,7 @@ function verifyUserType($userType): bool
     }
 }
 
-function createQueryJSON($arr, $noRowReturn = NO_ROWS_RETURNED)
-{
+function createQueryJSON($arr, $noRowReturn = NO_ROWS_RETURNED) {
     if (!$arr) {
         exit($noRowReturn);
     }
@@ -80,8 +74,7 @@ function createQueryJSON($arr, $noRowReturn = NO_ROWS_RETURNED)
 }
 
 /* Required header */
-function getHeader()
-{
+function getHeader() {
     // header('Access-Control-Allow-Origin: https://abdullaharif.tech');
     // header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Origin: https://localhost:3000');
@@ -91,8 +84,7 @@ function getHeader()
     header('Content-Type: application/json'); // entire application will always return JSON back
 }
 
-function startSession()
-{
+function startSession() {
     $status = session_status();
     if (PHP_SESSION_DISABLED === $status) {
         // That's why you cannot rely on sessions!
@@ -105,20 +97,17 @@ function startSession()
     }
 }
 
-function requiredHeaderAndSessionStart()
-{
+function requiredHeaderAndSessionStart() {
     getHeader();
     startSession();
 }
 
 /* utility function for post, get and session if enough function this will go to it's own file*/
-function isValidPostVar($varName): bool
-{
+function isValidPostVar($varName): bool {
     return isset($_POST[$varName]) && $_POST[$varName];
 }
 
-function isValidRequestVar($varName): bool
-{
+function isValidRequestVar($varName): bool {
     return isset($_REQUEST[$varName]) && $_REQUEST[$varName];
 }
 

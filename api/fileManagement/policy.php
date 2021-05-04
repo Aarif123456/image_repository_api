@@ -1,7 +1,8 @@
 <?php
+
 require_once __DIR__ . '/../../common/constants.php';
 
-function getPolicy($fileAccess, $user){
+function getPolicy($fileAccess, $user) {
     switch ($fileAccess) {
         case PRIVATE_ACCESS:
             return "userID:$user->ID AND public";
@@ -10,5 +11,4 @@ function getPolicy($fileAccess, $user){
         default:
             exit(INVALID_ACCESS_TYPE);
     }
-    
 }

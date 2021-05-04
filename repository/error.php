@@ -11,8 +11,7 @@ define('SQL_ERROR', 'The following SQL error was detected:');
 define('WRITE_QUERY_FAILED', 'Failed to update the database');
 
 /* getting back the result of query as a JSON file */
-function getExecutedResult($stmt)
-{
+function getExecutedResult($stmt) {
     $stmt->execute();
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
@@ -21,8 +20,7 @@ function getExecutedResult($stmt)
 }
 
 /* Catch exception that are set by MYSQLI_REPORT_ALL  */
-function safeWriteQueries($stmt, $conn, $debug): bool
-{
+function safeWriteQueries($stmt, $conn, $debug): bool {
     try {
         return $stmt->execute() && $stmt->closeCursor();
     } catch (Exception $e) {
@@ -37,8 +35,7 @@ function safeWriteQueries($stmt, $conn, $debug): bool
     exit(WRITE_QUERY_FAILED);
 }
 
-function safeUpdateQueries($stmt, $conn, $debug): int
-{
+function safeUpdateQueries($stmt, $conn, $debug): int {
     try {
         if ($stmt->execute()) {
             $num = $stmt->rowCount();
@@ -61,8 +58,7 @@ function safeUpdateQueries($stmt, $conn, $debug): int
     exit(WRITE_QUERY_FAILED);
 }
 
-function safeInsertQueries($stmt, $conn, $debug): int
-{
+function safeInsertQueries($stmt, $conn, $debug): int {
     try {
         if ($stmt->execute()) {
             $num = $conn->lastInsertId();
@@ -82,8 +78,7 @@ function safeInsertQueries($stmt, $conn, $debug): int
     exit(WRITE_QUERY_FAILED);
 }
 
-function debugPrint($e, $conn)
-{
+function debugPrint($e, $conn) {
     if (!empty($conn->errorCode())) {
         echo SQL_ERROR;
         echo json_encode($conn->errorInfo());
@@ -92,8 +87,7 @@ function debugPrint($e, $conn)
     echo $e;
 }
 
-function debugQuery($affectedRow, $success, $functionName): string
-{
+function debugQuery($affectedRow, $success, $functionName): string {
     return nl2br(
         "FUNCTION $functionName: row affected = $affectedRow \n FUNCTION $functionName: successful = $success"
     );

@@ -16,9 +16,9 @@ if (validateUser($conn)) {
     logout($conn);
 }
 
-if (isValidPostVar('email') && isValidPostVar('userType') && isValidPostVar('password')) {
+if (isValidPostVar('email') && isValidPostVar('password')) {
     /* Store user type in session */
-    $userType = trim($_POST['userType']);
+    $userType = trim($_POST['userType'] ?? 'user');
     $_SESSION['userType'] = $userType;
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
@@ -58,8 +58,7 @@ if (isValidPostVar('email') && isValidPostVar('userType') && isValidPostVar('pas
 
 $conn = null;
 
-function getArrayFromResult($rows)
-{
+function getArrayFromResult($rows) {
     if (count($rows) == 0) {
         exit (EMAIL_NOT_IN_TABLE);
     }

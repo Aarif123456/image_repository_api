@@ -1,4 +1,5 @@
 <?php
+
 /* Imports */
 require_once __DIR__ . '/../../views/apiReturn.php';
 require_once __DIR__ . '/../../common/constants.php';
@@ -16,7 +17,9 @@ $debug = DEBUG;
 $conn = getConnection();
 
 /* Make sure user is logged in */
-if (!(checkSessionInfo() && validateUser($conn))) redirectToLogin();
+if (!(checkSessionInfo() && validateUser($conn))) {
+    redirectToLogin();
+}
 $user = (object)[
     'ID' => getUserID($conn)
 ];
@@ -28,12 +31,16 @@ $filePath = $_REQUEST['filePath'] ?? '';
 $fileNames = $_REQUEST['fileNames'] ?? 'images';
 $policy = getPolicy($fileAccess, $user);
 /* Make sure user uploaded a file*/
-if (isValidFileVar($fileNames))  exit(MISSING_PARAMETERS);
+if (isValidFileVar($fileNames)) {
+    exit(MISSING_PARAMETERS);
+}
 
 /* Create folder where user files will be stored */
-if (!file_exists($filePath)) mkdir("userFiles/$user->ID/$filePath", 0777, true);
+if (!file_exists($filePath)) {
+    mkdir("userFiles/$user->ID/$filePath", 0777, true);
+}
 /*Create array to track if upload was successful */
-$uploadSuccess = array();
+$uploadSuccess = [];
 
 foreach ($_FILES[$fileNames]['error'] as $key) {
     $file = (object)[
@@ -42,19 +49,21 @@ foreach ($_FILES[$fileNames]['error'] as $key) {
         'location' => $_FILES[$fileNames]['tmp_name'][$key],
         /*File names cannot have slashes because it would mess up paths - 
         * and we want to clean the input cause we might want to display the filename later */
-        'name' => htmlentities(str_replace(['/','\\'],'', basename($_FILES[$fileNames]['name']))),
+        'name' => htmlentities(str_replace(['/', '\\'], '', basename($_FILES[$fileNames]['name']))),
         'access' => $fileAccess,
         'path' => $filePath
     ];
-   
+
     checkFile($file);
     /* Store uploaded file*/
     $uploadSuccess[$file->name] = encryptFile($file, $policy);
-    if($uploadSuccess[$file->name]){
+    if ($uploadSuccess[$file->name]) {
         /*Insert info into database */
         $fileID = insertFile($file, $user, $conn, $debug);
         /*If one query fails we exit */
-        if (empty($fileID)) exit(COMMAND_FAILED);
+        if (empty($fileID)) {
+            exit(COMMAND_FAILED);
+        }
     }
 }
 
