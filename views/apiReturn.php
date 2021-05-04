@@ -11,21 +11,21 @@ error_reporting(E_ALL);
 /* Define the strings the api will return  */
 
 /* constants */
-define('COMMAND_FAILED', '{"error:"Query failed to execute, ensure you use the correct values"}');
+define('COMMAND_FAILED', '{"error":"Query failed to execute, ensure you use the correct values"}');
 define('EMAIL_EXISTS', '{"emailTaken":true}');
 define('EMAIL_NOT_IN_TABLE', '{"emailTaken":false}');
-define('FILE_SIZE_LIMIT_EXCEEDED', '{"error:"Exceeded file size limit."}');
-define('INTERNAL_SERVER_ERROR', '{"error:"something went wrong:("}');
-define('INVALID_PARAMETERS', '{"error:"Parameter do no have expected type"}');
+define('FILE_SIZE_LIMIT_EXCEEDED', '{"error":"Exceeded file size limit."}');
+define('INTERNAL_SERVER_ERROR', '{"error":"something went wrong:("}');
+define('INVALID_PARAMETERS', '{"error":"Parameter do no have expected type"}');
 define('INVALID_PASSWORD', '{"success":false}');
-define('MISSING_PARAMETERS', '{"error:"Missing value"}');
-define('NO_FILE_SENT', '{"error:"No file sent."}');
-define('NO_ROWS_RETURNED', '{"error:"No rows were found in database"}');
-define('UNAUTHORIZED_NO_LOGIN', '{"error:"user is not logged in!"}');
+define('MISSING_PARAMETERS', '{"error":"Missing value"}');
+define('NO_FILE_SENT', '{"error":"No file sent."}');
+define('NO_ROWS_RETURNED', '{"error":"No rows were found in database"}');
+define('UNAUTHORIZED_NO_LOGIN', '{"error":"user is not logged in!"}');
 define('USER_LOGGED_OUT', '{"message":"User has successfully logged out"}');
-define('INVALID_ACCESS_TYPE', '{"error:"Invalid file access policy."}');
-define('INVALID_FILE_FORMAT', '{"error:"Invalid file format."}');
-define('INVALID_SEARCH_METHOD', '{"error:"Invalid search method."}');
+define('INVALID_ACCESS_TYPE', '{"error":"Invalid file access policy."}');
+define('INVALID_FILE_FORMAT', '{"error":"Invalid file format."}');
+define('INVALID_SEARCH_METHOD', '{"error":"Invalid search method."}');
 
 /* error as functions*/
 /* We HTML entities any data coming back from the user before printing */
