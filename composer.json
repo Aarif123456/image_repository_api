@@ -18,6 +18,7 @@
     "phpauth/phpauth": "1.2.0",
     "ext-pdo": "*",
     "ext-json": "*",
-    "ext-fileinfo": "*"
+    "ext-fileinfo": "*",
+    "phpunit/phpunit": "^9"
   }
 }
