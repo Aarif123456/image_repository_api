@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /* Stores the return of the API, created to make localization easier
 Some API return that come from SQL related error are located in repository/error.php
 */
@@ -6,26 +8,26 @@ Some API return that come from SQL related error are located in repository/error
 /* Manually turn on error reporting */
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
-ini_set('session.cookie_secure', 1);
+ini_set('session.cookie_secure', '1');
 error_reporting(E_ALL);
 /* Define the strings the api will return  */
 
 /* constants */
-define('COMMAND_FAILED', '{"error":"Query failed to execute, ensure you use the correct values"}');
-define('EMAIL_EXISTS', '{"emailTaken":true}');
-define('EMAIL_NOT_IN_TABLE', '{"emailTaken":false}');
-define('FILE_SIZE_LIMIT_EXCEEDED', '{"error":"Exceeded file size limit."}');
-define('INTERNAL_SERVER_ERROR', '{"error":"something went wrong:("}');
-define('INVALID_PARAMETERS', '{"error":"Parameter do no have expected type"}');
-define('INVALID_PASSWORD', '{"success":false}');
-define('MISSING_PARAMETERS', '{"error":"Missing value"}');
-define('NO_FILE_SENT', '{"error":"No file sent."}');
-define('NO_ROWS_RETURNED', '{"error":"No rows were found in database"}');
-define('UNAUTHORIZED_NO_LOGIN', '{"error":"user is not logged in!"}');
-define('USER_LOGGED_OUT', '{"message":"User has successfully logged out"}');
-define('INVALID_ACCESS_TYPE', '{"error":"Invalid file access policy."}');
-define('INVALID_FILE_FORMAT', '{"error":"Invalid file format."}');
-define('INVALID_SEARCH_METHOD', '{"error":"Invalid search method."}');
+const COMMAND_FAILED = '{"error":"Query failed to execute, ensure you use the correct values"}';
+const EMAIL_EXISTS = '{"emailTaken":true}';
+const EMAIL_NOT_IN_TABLE = '{"emailTaken":false}';
+const FILE_SIZE_LIMIT_EXCEEDED = '{"error":"Exceeded file size limit."}';
+const INTERNAL_SERVER_ERROR = '{"error":"something went wrong:("}';
+const INVALID_PARAMETERS = '{"error":"Parameter do no have expected type"}';
+const INVALID_PASSWORD = '{"success":false}';
+const MISSING_PARAMETERS = '{"error":"Missing value"}';
+const NO_FILE_SENT = '{"error":"No file sent."}';
+const NO_ROWS_RETURNED = '{"error":"No rows were found in database"}';
+const UNAUTHORIZED_NO_LOGIN = '{"error":"user is not logged in!"}';
+const USER_LOGGED_OUT = '{"message":"User has successfully logged out"}';
+const INVALID_ACCESS_TYPE = '{"error":"Invalid file access policy."}';
+const INVALID_FILE_FORMAT = '{"error":"Invalid file format."}';
+const INVALID_SEARCH_METHOD = '{"error":"Invalid search method."}';
 
 /* error as functions*/
 /* We HTML entities any data coming back from the user before printing */

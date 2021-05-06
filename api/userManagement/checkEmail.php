@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /* Imports */
 require_once __DIR__ . '/../../views/apiReturn.php';
 require_once __DIR__ . '/../../common/constants.php';

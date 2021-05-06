@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 require_once __DIR__ . '/constants.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use PHPAuth\Auth as PHPAuth;
 use PHPAuth\Config as PHPAuthConfig;
 
-function getAuth($conn) {
+function getAuth($conn): PHPAuth {
     $config = new PHPAuthConfig($conn);
 
     return new PHPAuth($conn, $config);
@@ -28,7 +30,7 @@ function getUserID($conn): int {
     return $auth->getCurrentUID();
 }
 
-function login($loginInfo, $conn) {
+function login($loginInfo, $conn): bool {
     $auth = getAuth($conn);
     $result = $auth->login($loginInfo->email, $loginInfo->password, $loginInfo->remember);
 

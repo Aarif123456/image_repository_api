@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /* Imports */
 require_once __DIR__ . '/error.php';
 
@@ -12,14 +14,14 @@ function queryUserVerify($email, $userType, $conn) {
     }
     /* Prepare statement */
     $stmt = $conn->prepare($query);
-    $stmt->bindValue(":email", $email, PDO::PARAM_STR);
+    $stmt->bindValue(':email', $email, PDO::PARAM_STR);
 
     // otherwise return back result from query
     return getExecutedResult($stmt);
 }
 
 
-function getQueryForUserType($userType) {
+function getQueryForUserType($userType): string {
     $userVerifyQuery = '
                             SELECT 
                                 id,
@@ -46,9 +48,9 @@ function getQueryForUserType($userType) {
                             WHERE 
                                 email = :email";
     switch ($userType) {
-        case "user":
+        case 'user':
             return $userVerifyQuery;
-        case "admin":
+        case 'admin':
             return $adminVerifyQuery;
         default:
             return '';

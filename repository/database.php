@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /* Used to get mysql database connection */
 require_once __DIR__ . '/loginConstants.php';
 
-function getConnection() {
+function getConnection(): PDO {
     $host = DATABASE_HOST;
     $db = DATABASE_NAME;
     $user = DATABASE_USERNAME;

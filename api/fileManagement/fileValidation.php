@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 require_once __DIR__ . '/../../views/apiReturn.php';
 
 function checkFileForError($fileErrorStatus) {
@@ -28,20 +30,21 @@ function checkFileSize($fileSize) {
 function checkFileType($fileTmpName) {
     /*We cannot trust MIME values in the php array so we check it ourselves */
     $fileInfo = new finfo(FILEINFO_MIME_TYPE);
-    if (false === $ext = array_search(
+    $ext = [
+            'bmp' => 'image/bmp',
+            'gif' => 'image/gif',
+            'ico' => 'image/vnd.microsoft.icon',
+            'jpeg' => 'image/jpeg',
+            'jpg' => 'image/jpeg',
+            'png' => 'image/png',
+            'svg' => 'image/svg+xml',
+            'tif' => 'image/tiff',
+            'tiff' => 'image/tiff',
+            'webp' => 'image/webp'
+        ];
+    if (false ===  array_search(
             $fileInfo->file($fileTmpName),
-            [
-                'bmp' => 'image/bmp',
-                'gif' => 'image/gif',
-                'ico' => 'image/vnd.microsoft.icon',
-                'jpeg' => 'image/jpeg',
-                'jpg' => 'image/jpeg',
-                'png' => 'image/png',
-                'svg' => 'image/svg+xml',
-                'tif' => 'image/tiff',
-                'tiff' => 'image/tiff',
-                'webp' => 'image/webp'
-            ],
+            $ext,
             true
         )) {
         exit(INVALID_FILE_FORMAT);

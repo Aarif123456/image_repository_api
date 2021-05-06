@@ -1,8 +1,10 @@
 <?php
 
-define('DEBUG', true);
+declare(strict_types=1);
 
-define('PRIVATE_ACCESS', 1);
-define('PUBLIC_ACCESS', 2);
+const DEBUG = true;
 
-define('ENCRYPTION_ENDPOINT', 'https://us-central1-mcpabe.cloudfunctions.net/mcpabe');
+const PRIVATE_ACCESS = 1;
+const PUBLIC_ACCESS = 2;
+
+const ENCRYPTION_ENDPOINT = 'https://us-central1-mcpabe.cloudfunctions.net/mcpabe';

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /* Imports */
 require_once __DIR__ . '/../../views/apiReturn.php';
 require_once __DIR__ . '/../../common/constants.php';
@@ -59,7 +61,11 @@ foreach ($_FILES[$fileNames]['error'] as $key) {
     $uploadSuccess[$file->name] = encryptFile($file, $policy);
     if ($uploadSuccess[$file->name]) {
         /*Insert info into database */
-        $fileID = insertFile($file, $user, $conn, $debug);
+        try {
+            $fileID = insertFile($file, $user, $conn, $debug);
+        } catch (Exception $e) {
+            if($debug) $output = ['error' => $e];
+        }
         /*If one query fails we exit */
         if (empty($fileID)) {
             exit(COMMAND_FAILED);
