@@ -18,7 +18,7 @@ function encryptFile($file, $policy): bool {
 /* TODO: add the logic to get the encrypted file*/
 function getFileEncrypted($uploadFile, $policy, $debug = DEBUG) {
     if ($debug) {
-        echo 'Unimplemented, we need to call mCpAbe API to encrypt ';
+        echo 'Unimplemented, we need to call CpAbe API to encrypt ';
     }
 
     return $uploadFile;

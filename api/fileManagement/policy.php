@@ -3,14 +3,16 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../../common/constants.php';
+require_once __DIR__ . '/../../views/apiReturn.php';
 
 function getPolicy($fileAccess, $user): string {
     switch ($fileAccess) {
         case PRIVATE_ACCESS:
-            return "userID:$user->ID AND public";
+            return "public:true 1of1";
         case PUBLIC_ACCESS:
-            return "userID:$user->ID OR public";
+            $userID = $user->id;
+            return "userID:$userID 1of1";
         default:
-            exit(INVALID_ACCESS_TYPE);
+            exitWithError(INVALID_ACCESS_TYPE);
     }
 }
