@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/encryptionConstants.php';
 
 /* Modified: https://stackoverflow.com/questions/5647461/how-do-i-send-a-post-request-with-php */
-function callApi($args, $debug = false, $options = []) {
+function callApi($args, $debug = false, $options = []): array {
     //transform the data for the POST request
     $fields = http_build_query($args);
     //open connection
@@ -22,7 +22,7 @@ function callApi($args, $debug = false, $options = []) {
     curl_setopt_array($ch, ($options + $defaults));
 
     // Make the the post request
-    return json_decode((string)curl_exec($ch), true);
+    return (array)json_decode((string)curl_exec($ch), true);
 }
 
 /* Return properties used for encryption*/
@@ -32,7 +32,7 @@ function generateProperties($type = 'a', $debug = false) {
         'type' => $type
     ];
 
-    return (array)callApi($args, $debug);
+    return callApi($args, $debug);
 }
 
 /* Returns: $publicKey:string, $masterKey: string */
@@ -42,7 +42,7 @@ function setup($debug = false) {
         'properties' => ENCRYPTION_PROPERTIES,
     ];
 
-    return (array)callApi($args, $debug);
+    return callApi($args, $debug);
 }
 
 /*Return: privateKey: string */
@@ -55,7 +55,7 @@ function keygen($publicKey, $masterKey, $userAttributes, $debug = false) {
         'userAttributes' => $userAttributes,
     ];
 
-    return (array)callApi($args, $debug);
+    return callApi($args, $debug);
 }
 
 /*Return: encryptedFile: string */
