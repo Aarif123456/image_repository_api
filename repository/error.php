@@ -1,14 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 /* Error handling for calls to the database */
 
-define(
-    'MISSING_PARAMETER_FOR_USER_TYPE',
-    'Missing required parameter for selected user type'
-);
-define('PHP_EXCEPTION', 'The following exception was thrown:');
-define('SQL_ERROR', 'The following SQL error was detected:');
-define('WRITE_QUERY_FAILED', 'Failed to update the database');
+const MISSING_PARAMETER_FOR_USER_TYPE = 'Missing required parameter for selected user type';
+const PHP_EXCEPTION = 'The following exception was thrown:';
+const SQL_ERROR = 'The following SQL error was detected:';
+const WRITE_QUERY_FAILED = 'Failed to update the database';
 
 /* getting back the result of query as a JSON file */
 function getExecutedResult($stmt) {
@@ -20,6 +19,9 @@ function getExecutedResult($stmt) {
 }
 
 /* Catch exception that are set by MYSQLI_REPORT_ALL  */
+/**
+ * @throws Exception
+ */
 function safeWriteQueries($stmt, $conn, $debug): bool {
     try {
         return $stmt->execute() && $stmt->closeCursor();
@@ -29,20 +31,20 @@ function safeWriteQueries($stmt, $conn, $debug): bool {
             $conn->rollback();
         }
         if ($debug) {
-            debugPrint($e, $conn);
+            throw new Exception(debugException($e, $conn), 1);
         }
     }
-    exit(WRITE_QUERY_FAILED);
+    throw new Exception(WRITE_QUERY_FAILED, 1);
 }
 
+/**
+ * @throws Exception
+ */
 function safeUpdateQueries($stmt, $conn, $debug): int {
     try {
         if ($stmt->execute()) {
             $num = $stmt->rowCount();
             $stmt->closeCursor();
-            if ($debug) {
-                echo json_encode($conn->errorInfo()) . '<br />';
-            }
 
             return $num;
         }
@@ -52,12 +54,15 @@ function safeUpdateQueries($stmt, $conn, $debug): int {
             $conn->rollback();
         }
         if ($debug) {
-            debugPrint($e, $conn);
+            throw new Exception(debugException($e, $conn), 1);
         }
     }
-    exit(WRITE_QUERY_FAILED);
+    throw new Exception(WRITE_QUERY_FAILED, 1);
 }
 
+/**
+ * @throws Exception
+ */
 function safeInsertQueries($stmt, $conn, $debug): int {
     try {
         if ($stmt->execute()) {
@@ -72,19 +77,17 @@ function safeInsertQueries($stmt, $conn, $debug): int {
             $conn->rollback();
         }
         if ($debug) {
-            debugPrint($e, $conn);
+            throw new Exception(debugException($e, $conn), 1);
         }
     }
-    exit(WRITE_QUERY_FAILED);
+    throw new Exception(WRITE_QUERY_FAILED, 1);
 }
 
-function debugPrint($e, $conn) {
-    if (!empty($conn->errorCode())) {
-        echo SQL_ERROR;
-        echo json_encode($conn->errorInfo());
-    }
-    echo PHP_EXCEPTION;
-    echo $e;
+function debugException($e, $conn): string {
+    $output = PHP_EXCEPTION . $e;
+    if (!empty($conn->errorCode())) $output = sprintf('%s%s%s', SQL_ERROR, json_encode($conn->errorInfo()), $output);
+
+    return $output;
 }
 
 function debugQuery($affectedRow, $success, $functionName): string {

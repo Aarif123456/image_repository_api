@@ -9,20 +9,20 @@ function checkFileForError($fileErrorStatus) {
         case UPLOAD_ERR_OK:
             break;
         case UPLOAD_ERR_NO_FILE:
-            exit(NO_FILE_SENT);
+            exitWithError(NO_FILE_SENT);
         case UPLOAD_ERR_INI_SIZE: // INTENTIONAL FALL THROUGH
         case UPLOAD_ERR_FORM_SIZE:
-            exit(FILE_SIZE_LIMIT_EXCEEDED);
+            exitWithError(FILE_SIZE_LIMIT_EXCEEDED);
         default:
             header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
-            exit(INTERNAL_SERVER_ERROR);
+            exitWithError(INTERNAL_SERVER_ERROR);
     }
 }
 
 /*NOTE: pass in $_FILES[$fileName]['size'] or $_FILES[$fileName]['size'][key]*/
 function checkFileSize($fileSize) {
     if ($fileSize > 1000000) {
-        exit(FILE_SIZE_LIMIT_EXCEEDED);
+        exitWithError(FILE_SIZE_LIMIT_EXCEEDED);
     }
 }
 
@@ -47,7 +47,7 @@ function checkFileType($fileTmpName) {
             $ext,
             true
         )) {
-        exit(INVALID_FILE_FORMAT);
+        exitWithError(INVALID_FILE_FORMAT);
     }
 }
 

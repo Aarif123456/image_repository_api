@@ -50,16 +50,7 @@ function checkSessionInfo(): bool {
 /* logout function */
 function redirectToLogin() {
     header('HTTP/1.0 403 Forbidden');
-    exit(UNAUTHORIZED_NO_LOGIN);
-}
-
-/* Utility functions to check user's type */
-function isAdmin(): bool {
-    return strcmp(trim($_SESSION['userType'] ?? ''), 'admin') == 0;
+    exit(UNAUTHORIZED_NO_LOGIN_JSON);
 }
 
 
-/* utility function to make sure user has the correct permission*/
-function validateAdmin($conn): bool {
-    return isAdmin() && validateUser($conn);
-}

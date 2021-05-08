@@ -15,11 +15,11 @@ requiredHeaderAndSessionStart();
 $conn = getConnection();
 
 if (!isValidPostVar('email')) {
-    exit(MISSING_PARAMETERS);
+    exitWithError(MISSING_PARAMETERS);
 }
 
 $auth = getAuth($conn);
 $email = $_POST['email'];
-echo $auth->isEmailTaken($email) ? EMAIL_EXISTS : EMAIL_NOT_IN_TABLE;
+echo createQueryJSON(['emailTaken' => $auth->isEmailTaken($email)]);
 
 $conn = null;

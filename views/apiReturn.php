@@ -13,30 +13,24 @@ error_reporting(E_ALL);
 /* Define the strings the api will return  */
 
 /* constants */
-const COMMAND_FAILED = '{"error":"Query failed to execute, ensure you use the correct values"}';
-const EMAIL_EXISTS = '{"emailTaken":true}';
-const EMAIL_NOT_IN_TABLE = '{"emailTaken":false}';
-const FILE_SIZE_LIMIT_EXCEEDED = '{"error":"Exceeded file size limit."}';
-const INTERNAL_SERVER_ERROR = '{"error":"something went wrong:("}';
-const INVALID_PARAMETERS = '{"error":"Parameter do no have expected type"}';
-const INVALID_PASSWORD = '{"success":false}';
-const MISSING_PARAMETERS = '{"error":"Missing value"}';
-const NO_FILE_SENT = '{"error":"No file sent."}';
-const NO_ROWS_RETURNED = '{"error":"No rows were found in database"}';
-const UNAUTHORIZED_NO_LOGIN = '{"error":"user is not logged in!"}';
-const USER_LOGGED_OUT = '{"message":"User has successfully logged out"}';
-const INVALID_ACCESS_TYPE = '{"error":"Invalid file access policy."}';
-const INVALID_FILE_FORMAT = '{"error":"Invalid file format."}';
-const INVALID_SEARCH_METHOD = '{"error":"Invalid search method."}';
+const COMMAND_FAILED = 'Query failed to execute, ensure you use the correct values';
+const FILE_SIZE_LIMIT_EXCEEDED = 'Exceeded file size limit';
+const INTERNAL_SERVER_ERROR = 'Something went wrong:(';
+const INTERNAL_SERVER_ERROR_JSON = '{"error":"Something went wrong:("}';
+const INVALID_ACCESS_TYPE = 'Invalid file access policy.';
+const INVALID_FILE_FORMAT = 'Invalid file format.';
+const INVALID_PASSWORD_JSON = '{"loggedIn":false}';
+const MISSING_PARAMETERS = 'Missing value';
+const NO_FILE_SENT = 'No file sent.';
+const NO_FILE_SENT_JSON = '{"error":"No file sent."}';
+const NO_ROWS_RETURNED_JSON = '{"error":"No rows were found in database"}';
+/*TODO: move to another file so you can import it into authenticate.php*/
+const UNAUTHORIZED_NO_LOGIN_JSON = '{"error":"user is not logged in!"}';
+const USER_LOGGED_OUT_JSON = '{"message":"User has successfully logged out"}';
+const USER_NOT_ADMIN = 'User is not an admin.';
 
 /* error as functions*/
 /* We HTML entities any data coming back from the user before printing */
-function invalidUserType($userType): string {
-    $userType = htmlentities($userType);
-
-    return "'$userType' is not a recognized userType";
-}
-
 function authenticatedSuccessfully($userType): string {
     $userType = htmlentities($userType);
     $return = (object)[
@@ -47,32 +41,18 @@ function authenticatedSuccessfully($userType): string {
     return json_encode($return);
 }
 
-function passwordReset($uID): string {
-    $printableUserID = htmlentities($uID);
-
-    return "{\"message\":\"Password has been reset for user with id $printableUserID\"}";
-}
-
-function userCreated($userID): string {
-    return "{\"message\":\"Created user with id: $userID\"}";
-}
-
-function verifyUserType($userType): bool {
-    switch ($userType) {
-        case 'user':       // INTENTIONAL FALLTHROUGH
-        case 'admin':    // INTENTIONAL FALLTHROUGH
-            return true;
-        default:
-            return false;
-    }
-}
-
-function createQueryJSON($arr, $noRowReturn = NO_ROWS_RETURNED) {
+function createQueryJSON($arr, $noRowReturn = NO_ROWS_RETURNED_JSON) {
     if (!$arr) {
         exit($noRowReturn);
     }
 
     return json_encode($arr);
+}
+
+function exitWithError($error, $fallbackMessage = INTERNAL_SERVER_ERROR_JSON) {
+    $errorMessage = createQueryJSON(['error' => $error]);
+    exit($errorMessage);
+
 }
 
 /* Required header */
@@ -83,7 +63,7 @@ function getHeader() {
     header('Access-Control-Allow-Credentials: true');
     header('Access-Control-Allow-Headers: X-Requested-With,content-type');
     header('Access-Control-Max-Age: 86400');    // cache for 1 day
-    header('Content-Type: application/json'); // entire application will always return JSON back
+    header('Content-Type: application/json'); // most endpoints application will always return JSON
 }
 
 function startSession() {

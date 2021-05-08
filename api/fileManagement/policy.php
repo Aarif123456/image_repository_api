@@ -11,6 +11,7 @@ function getPolicy($fileAccess, $user): string {
             return "public:true 1of1";
         case PUBLIC_ACCESS:
             $userID = $user->id;
+
             return "userID:$userID 1of1";
         default:
             exitWithError(INVALID_ACCESS_TYPE);

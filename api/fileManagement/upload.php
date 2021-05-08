@@ -23,7 +23,7 @@ if (!(checkSessionInfo() && validateUser($conn))) {
     redirectToLogin();
 }
 $user = (object)[
-    'ID' => getUserID($conn)
+    'id' => getUserID($conn)
 ];
 
 
@@ -34,12 +34,12 @@ $fileNames = $_REQUEST['fileNames'] ?? 'images';
 $policy = getPolicy($fileAccess, $user);
 /* Make sure user uploaded a file*/
 if (isValidFileVar($fileNames)) {
-    exit(MISSING_PARAMETERS);
+    exitWithError(MISSING_PARAMETERS);
 }
 
 /* Create folder where user files will be stored */
 if (!file_exists($filePath)) {
-    mkdir("userFiles/$user->ID/$filePath", 0777, true);
+    mkdir("userFiles/$user->id/$filePath", 0777, true);
 }
 /*Create array to track if upload was successful */
 $uploadSuccess = [];
@@ -49,7 +49,7 @@ foreach ($_FILES[$fileNames]['error'] as $key) {
         'size' => $_FILES[$fileNames]['size'][$key],
         'errorStatus' => $_FILES[$fileNames]['error'][$key],
         'location' => $_FILES[$fileNames]['tmp_name'][$key],
-        /*File names cannot have slashes because it would mess up paths - 
+        /*File names cannot have slashes because it would mess up paths -
         * and we want to clean the input cause we might want to display the filename later */
         'name' => htmlentities(str_replace(['/', '\\'], '', basename($_FILES[$fileNames]['name']))),
         'access' => $fileAccess,
@@ -58,21 +58,20 @@ foreach ($_FILES[$fileNames]['error'] as $key) {
 
     checkFile($file);
     /* Store uploaded file*/
-    $uploadSuccess[$file->name] = encryptFile($file, $policy);
-    if ($uploadSuccess[$file->name]) {
+    $uploadSuccess[$file->name] = ['success' => encryptFile($file, $policy)];
+    if ($uploadSuccess[$file->name]['success']) {
         /*Insert info into database */
         try {
             $fileID = insertFile($file, $user, $conn, $debug);
+            if (empty($fileID)) {
+                $uploadSuccess[$file->name]['error'] = COMMAND_FAILED;
+            }
         } catch (Exception $e) {
-            if ($debug) $output = ['error' => $e];
-        }
-        /*If one query fails we exit */
-        if (empty($fileID)) {
-            exit(COMMAND_FAILED);
+            if ($debug) $uploadSuccess[$file->name]['error'] = $e;
         }
     }
 }
 
-echo createQueryJSON($uploadSuccess, NO_FILE_SENT);
+echo createQueryJSON($uploadSuccess, NO_FILE_SENT_JSON);
 
 $conn = null;

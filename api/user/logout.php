@@ -14,7 +14,9 @@ requiredHeaderAndSessionStart();
 $conn = getConnection();
 
 if (logout($conn)) {
-    echo USER_LOGGED_OUT;
+    echo USER_LOGGED_OUT_JSON;
 } else {
-    exit(INTERNAL_SERVER_ERROR);
+    exitWithError(INTERNAL_SERVER_ERROR);
 }
+
+$conn = null;
