@@ -1,10 +1,13 @@
 # What is this? 🤔
+
 An API built to be used by the for the [Image Repository](https://abdullaharif.tech/imagerepository/)
 
 # API for the Image Repository#
+
 API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 
 ### Information in API description ###
+
 * Endpoint name
 * Description
 * File name - Since, code will always be updated even if the read me isn't
@@ -12,6 +15,7 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 * httpie command with expected result format to validate the listed information about the endpoint
 
 ## Format ##
+
 <details>
 <summary> </summary>
 
@@ -19,9 +23,11 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
     2. fileName.php --> /api/fileName
     3. Parameter list:
     4. httpie command:
+
 </details>
 
 ## TODO ##
+
 <!-- First we get the deletion and upload working without any encryption then we add in the encryption after  -->
 <details>
 <summary>Upload file </summary>
@@ -31,6 +37,7 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
     3. Parameter list: filePath(Optional), fileName, file, policy
         If no filePath is passed in, we will assume the fill will be in the users roots directory 
     4. httpie command:
+
 </details>
 
 <details>
@@ -41,6 +48,7 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
     3. Parameter list: filePath(Optional), fileName
         If no filePath is passed in, we will assume the fill will be in the users roots directory 
     4. httpie command:
+
 </details>
 
 <details>
@@ -51,6 +59,7 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
     2. fileManagement/getFileAccess.php --> /api/fileManagement/getFileAccess
     3. Parameter list: 
     4. httpie command:
+
 </details>
 
 <!-- <summary>Search File </summary>
@@ -70,9 +79,11 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
         Accepts POST variable: fname, lname, userType, username, password   
     4. httpie command:
         http --session=/tmp/session.json --form POST https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/userManagement/addUser username='shopifyAccount' password='ruby in rails'  fname='Tobias' lname='Lutke'
+
 </details>
 
 # Endpoints #
+
 <details>
 <summary> Verify users: </summary>
 
@@ -84,6 +95,7 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
     4. httpie command:
         http --session=/tmp/session.json --form POST https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/verifyUser username='abdullah' password='imageRepo' userType='user'
     5. The point of having an admin to have a special user that to things like generate keys for the system
+
 </details>
 
 <details>

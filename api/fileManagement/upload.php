@@ -64,7 +64,7 @@ foreach ($_FILES[$fileNames]['error'] as $key) {
         try {
             $fileID = insertFile($file, $user, $conn, $debug);
         } catch (Exception $e) {
-            if($debug) $output = ['error' => $e];
+            if ($debug) $output = ['error' => $e];
         }
         /*If one query fails we exit */
         if (empty($fileID)) {

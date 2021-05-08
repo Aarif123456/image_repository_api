@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
+/* VALUES THAT YOU MIGHT WANT TO CHANGE */
 const DEBUG = true;
 
+/* DO NOT CHANGE UNLESS YOU CHANGE FROM DATABASE */
 const PRIVATE_ACCESS = 1;
 const PUBLIC_ACCESS = 2;
-
-const ENCRYPTION_ENDPOINT = 'https://us-central1-mcpabe.cloudfunctions.net/mcpabe';

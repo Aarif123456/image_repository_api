@@ -31,18 +31,18 @@ function checkFileType($fileTmpName) {
     /*We cannot trust MIME values in the php array so we check it ourselves */
     $fileInfo = new finfo(FILEINFO_MIME_TYPE);
     $ext = [
-            'bmp' => 'image/bmp',
-            'gif' => 'image/gif',
-            'ico' => 'image/vnd.microsoft.icon',
-            'jpeg' => 'image/jpeg',
-            'jpg' => 'image/jpeg',
-            'png' => 'image/png',
-            'svg' => 'image/svg+xml',
-            'tif' => 'image/tiff',
-            'tiff' => 'image/tiff',
-            'webp' => 'image/webp'
-        ];
-    if (false ===  array_search(
+        'bmp' => 'image/bmp',
+        'gif' => 'image/gif',
+        'ico' => 'image/vnd.microsoft.icon',
+        'jpeg' => 'image/jpeg',
+        'jpg' => 'image/jpeg',
+        'png' => 'image/png',
+        'svg' => 'image/svg+xml',
+        'tif' => 'image/tiff',
+        'tiff' => 'image/tiff',
+        'webp' => 'image/webp'
+    ];
+    if (false === array_search(
             $fileInfo->file($fileTmpName),
             $ext,
             true
