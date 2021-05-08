@@ -34,19 +34,19 @@ function getQueryForUserType($userType): string {
                                 INNER JOIN members ON id=memberID 
                             WHERE 
                                 email = :email';
-    $adminVerifyQuery = "
+    $adminVerifyQuery = '
                             SELECT 
                                 id,
                                 firstName,
                                 lastName,
                                 password,
-                                'admin' as userType 
+                                \'admin\' as userType 
                             FROM 
                                 users
                                 INNER JOIN members ON id=memberID 
-                                INNER JOIN professor ON memberID=adminID 
+                                INNER JOIN admin ON memberID=adminID 
                             WHERE 
-                                email = :email";
+                                email = :email';
     switch ($userType) {
         case 'user':
             return $userVerifyQuery;
