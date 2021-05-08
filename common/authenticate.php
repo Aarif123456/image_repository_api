@@ -30,6 +30,16 @@ function getUserID($conn): int {
     return $auth->getCurrentUID();
 }
 
+function getUserInfo($userID, $conn): array {
+    $auth = getAuth($conn);
+
+    return $auth->getUser($userID);
+}
+
+function verifyUserAdmin($userID, $conn): bool {
+    return getUserInfo($userID, $conn)['isAdmin'];
+}
+
 function login($loginInfo, $conn): bool {
     $auth = getAuth($conn);
     $result = $auth->login($loginInfo->email, $loginInfo->password, $loginInfo->remember);

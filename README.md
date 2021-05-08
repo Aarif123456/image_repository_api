@@ -28,7 +28,17 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 
 ## TODO ##
 
-<!-- First we get the deletion and upload working without any encryption then we add in the encryption after  -->
+<summary> Registering user </summary>
+
+    1. Description: Users can register for their own account
+    2. userManagement/addUser.php --> /api/userManagement/addUsers
+    3. Parameter list:
+        Accepts POST variable: firstName, lastName, username, password, admin(optional)  
+    4. httpie command:
+        http --session=/tmp/session.json --form POST https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/userManagement/addUser username='shopifyAccount' password='ruby in rails'  firstName='Tobias' lastName='Lutke'
+
+</details>
+
 <details>
 <summary>Upload file </summary>
 
@@ -71,16 +81,9 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 </details>
  -->
 <details>
-<summary> Registering user </summary>
 
-    1. Description: Users can register for their own account
-    2. userManagement/addUser.php --> /api/userManagement/addUsers
-    3. Parameter list:
-        Accepts POST variable: fname, lname, userType, username, password   
-    4. httpie command:
-        http --session=/tmp/session.json --form POST https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/userManagement/addUser username='shopifyAccount' password='ruby in rails'  fname='Tobias' lname='Lutke'
 
-</details>
+<!-- ______________________________________________________ -->
 
 # Endpoints #
 
@@ -88,13 +91,11 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 <summary> Verify users: </summary>
 
     1. Description: Log the user in and then store the cookie
-    2. verifyUser.php  --> /api/verifyUser
+    2. userManagement/loginUser.php  --> /api/userManagement/loginUser
     3. Parameter list:
-        Accepts POST variable:  username, password, userType(optional)
-        userType (valid values): admin, user(default)
+        Accepts POST variable:  username, password, remember
     4. httpie command:
-        http --session=/tmp/session.json --form POST https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/verifyUser username='abdullah' password='imageRepo' userType='user'
-    5. The point of having an admin to have a special user that to things like generate keys for the system
+        http --session=/tmp/session.json --form POST https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/userManagement/loginUser username='abdullah' password='imageRepo' remember=false
 
 </details>
 
