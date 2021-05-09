@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 /* Error handling for calls to the database */
 
+const INVALID_ACCESS_TYPE = 'Invalid file access policy.';
 const MISSING_PARAMETER_FOR_USER_TYPE = 'Missing required parameter for selected user type';
 const PHP_EXCEPTION = 'The following exception was thrown:';
 const SQL_ERROR = 'The following SQL error was detected:';

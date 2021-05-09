@@ -3,6 +3,9 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/error.php';
+require_once __DIR__ . '/systemKey.php';
+require_once __DIR__ . '/encryption/policy.php';
+require_once __DIR__ . '/encryption/encryptFile.php';
 
 /**
  * @throws Exception
@@ -16,6 +19,9 @@ function insertFile($file, $user, $conn, $debug): bool {
     $stmt->bindValue(':fileName', $file->name, PDO::PARAM_STR);
     $stmt->bindValue(':fileSize', $file->size, PDO::PARAM_INT);
     $stmt->bindValue(':accessID', $file->access, PDO::PARAM_INT);
+
+    $policy = getPolicy($file->access, $user);
+    encryptFile($file, $policy, $conn);
 
     return safeWriteQueries($stmt, $conn, $debug);
 }

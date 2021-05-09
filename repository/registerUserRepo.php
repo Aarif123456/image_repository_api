@@ -55,15 +55,14 @@ function createUserAttributes($id, $user): string {
     return "userId:$id public:true";
 }
 
-function getUserPrivatKey($id, $user, $conn, $debug = false) {
+function getUserPrivatKey($id, $user, $conn, $debug = false): string {
     $userAttributes = createUserAttributes($id, $user);
     /* Get public and private key */
     $systemKeys = getSystemKeys($conn);
     $publicKey = $systemKeys['publicKey'];
     $masterKey = $systemKeys['masterKey'];
-    $keygenReturn = keygen($publicKey, $masterKey, $userAttributes, $debug);
 
-    return $keygenReturn['privateKey'];
+    return keygen($publicKey, $masterKey, $userAttributes, $debug);
 }
 
 /**

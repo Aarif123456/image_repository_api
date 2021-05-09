@@ -1,5 +1,5 @@
 <?php
-
+/*TODO: manual test function from front-end */
 declare(strict_types=1);
 
 /* Imports */
@@ -8,7 +8,6 @@ require_once __DIR__ . '/../../common/constants.php';
 require_once __DIR__ . '/../../common/authenticate.php';
 require_once __DIR__ . '/../../repository/database.php';
 require_once __DIR__ . '/../../repository/uploadFileRepo.php';
-require_once __DIR__ . '/encryptFile.php';
 require_once __DIR__ . '/fileValidation.php';
 
 /* Set required header and session start */
@@ -22,16 +21,16 @@ $conn = getConnection();
 if (!(checkSessionInfo() && validateUser($conn))) {
     redirectToLogin();
 }
+
+
+/* Set variables */
+$fileAccess = $_REQUEST['fileAccess'];
+$filePath = $_REQUEST['filePath'] ?? '';
+$fileNames = $_REQUEST['fileNames'] ?? 'images';
 $user = (object)[
     'id' => getUserID($conn)
 ];
 
-
-/* Set variables */
-$fileAccess = $_REQUEST['fileAccess'] ?? PRIVATE_ACCESS;
-$filePath = $_REQUEST['filePath'] ?? '';
-$fileNames = $_REQUEST['fileNames'] ?? 'images';
-$policy = getPolicy($fileAccess, $user);
 /* Make sure user uploaded a file*/
 if (isValidFileVar($fileNames)) {
     exitWithError(MISSING_PARAMETERS);
@@ -55,20 +54,16 @@ foreach ($_FILES[$fileNames]['error'] as $key) {
         'access' => $fileAccess,
         'path' => $filePath
     ];
-
-    checkFile($file);
-    /* Store uploaded file*/
-    $uploadSuccess[$file->name] = ['success' => encryptFile($file, $policy)];
-    if ($uploadSuccess[$file->name]['success']) {
-        /*Insert info into database */
-        try {
-            $fileID = insertFile($file, $user, $conn, $debug);
-            if (empty($fileID)) {
-                $uploadSuccess[$file->name]['error'] = COMMAND_FAILED;
-            }
-        } catch (Exception $e) {
-            if ($debug) $uploadSuccess[$file->name]['error'] = $e;
+    
+    try {
+        checkFile($file);
+        $uploadSuccess[$file->name] = ['success' => !empty(insertFile($file, $user, $conn, $debug))];
+        if (!$uploadSuccess[$file->name]['success']) {
+            throw new Exception(COMMAND_FAILED);
         }
+    } catch (Exception $e) {
+        $uploadSuccess[$file->name] = ['success' => false];
+        if ($debug) $uploadSuccess[$file->name]['error'] = $e;
     }
 }
 

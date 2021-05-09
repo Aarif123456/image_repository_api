@@ -46,7 +46,7 @@ function setup($debug = false): array {
 }
 
 /*Return: privateKey: string */
-function keygen($publicKey, $masterKey, $userAttributes, $debug = false): array {
+function keygen($publicKey, $masterKey, $userAttributes, $debug = false): string {
     $args = (object)[
         'method' => 'keygen',
         'properties' => ENCRYPTION_PROPERTIES,
@@ -55,11 +55,11 @@ function keygen($publicKey, $masterKey, $userAttributes, $debug = false): array 
         'userAttributes' => $userAttributes,
     ];
 
-    return callApi($args, $debug);
+    return callApi($args, $debug)['privateKey'];
 }
 
 /*Return: encryptedFile: string */
-function encrypt($publicKey, $policy, $inputFile, $debug = false): array {
+function encrypt($publicKey, $policy, $inputFile, $debug = false):string {
     $args = (object)[
         'method' => 'keygen',
         'properties' => ENCRYPTION_PROPERTIES,
@@ -68,19 +68,20 @@ function encrypt($publicKey, $policy, $inputFile, $debug = false): array {
         'inputFile' => base64_encode($inputFile),
     ];
 
-    return callApi($args, $debug);
+    return  (string)base64_decode(callApi($args, $debug)['encryptedFile']);
 }
 
 /*Return: decryptedFile: string */
-function decrypt($publicKey, $privateKey, $encryptedFile, $debug = false): array {
+function decrypt($publicKey, $privateKey, $encryptedFile, $debug = false):string {
     $args = (object)[
         'method' => 'keygen',
         'properties' => ENCRYPTION_PROPERTIES,
+        'publicKey' => $publicKey,
         'privateKey' => $privateKey,
         'encryptedFile' => base64_encode($encryptedFile),
     ];
 
-    return callApi($args, $debug);
+    return (string)base64_decode(callApi($args, $debug)['decryptedFile']);
 }
 /*TODO: turn into test cases */
 // $properties = generateProperties();
