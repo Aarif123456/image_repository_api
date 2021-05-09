@@ -7,12 +7,14 @@ require_once __DIR__ . '/../../views/apiReturn.php';
 function checkFileForError($fileErrorStatus) {
     switch ($fileErrorStatus) {
         case UPLOAD_ERR_OK:
-            break;
+            return;
         case UPLOAD_ERR_NO_FILE:
             exitWithError(NO_FILE_SENT);
+            break;
         case UPLOAD_ERR_INI_SIZE: // INTENTIONAL FALL THROUGH
         case UPLOAD_ERR_FORM_SIZE:
             exitWithError(FILE_SIZE_LIMIT_EXCEEDED);
+            break;
         default:
             header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
             exitWithError(INTERNAL_SERVER_ERROR);

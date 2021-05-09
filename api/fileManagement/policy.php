@@ -6,14 +6,18 @@ require_once __DIR__ . '/../../common/constants.php';
 require_once __DIR__ . '/../../views/apiReturn.php';
 
 function getPolicy($fileAccess, $user): string {
+    $policy = '';
     switch ($fileAccess) {
         case PRIVATE_ACCESS:
-            return "public:true 1of1";
+            $policy = 'public:true 1of1';
+            break;
         case PUBLIC_ACCESS:
             $userID = $user->id;
-
-            return "userID:$userID 1of1";
+            $policy = "userID:$userID 1of1";
+            break;
         default:
             exitWithError(INVALID_ACCESS_TYPE);
     }
+
+    return $policy;
 }
