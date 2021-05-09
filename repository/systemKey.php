@@ -6,7 +6,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/error.php';
 
 
-function getSystemKeys($conn) {
+function getSystemKeys($conn): array {
     $stmt = $conn->prepare(
         'SELECT keysName, keyData FROM systemKeys WHERE keysName=:masterKey OR keysName=:publicKey'
     );
@@ -15,7 +15,7 @@ function getSystemKeys($conn) {
     $rows = getExecutedResult($stmt);
     $result = [];
     foreach ($rows as $row) {
-        $result[$row["keysName"]] = $row["keyData"];
+        $result[$row['keysName']] = $row['keyData'];
     }
     return $result;
 }

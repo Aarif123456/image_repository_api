@@ -1,5 +1,5 @@
 <?php
-
+/*TODO: manual test function from front-end */
 declare(strict_types=1);
 
 /* Imports */
@@ -14,7 +14,7 @@ requiredHeaderAndSessionStart();
 /* Connect to database */
 $conn = getConnection();
 
-if (checkSessionInfo() && validateUser($conn)) {
+if (validateUser($conn)) {
     echo 'true';
 } else {
     echo 'false';
