@@ -31,15 +31,6 @@ const USER_NOT_ADMIN = 'User is not an admin.';
 
 /* error as functions*/
 /* We HTML entities any data coming back from the user before printing */
-function authenticatedSuccessfully($userType): string {
-    $userType = htmlentities($userType);
-    $return = (object)[
-        'success' => true,
-        'userType' => $userType
-    ];
-
-    return json_encode($return);
-}
 
 function createQueryJSON($arr, $noRowReturn = NO_ROWS_RETURNED_JSON) {
     if (!$arr) {
@@ -82,6 +73,7 @@ function startSession() {
 function requiredHeaderAndSessionStart() {
     getHeader();
     startSession();
+    $_POST = json_decode(file_get_contents('php://input'), true);
 }
 
 /* utility function for post, get and session if enough function this will go to it's own file*/

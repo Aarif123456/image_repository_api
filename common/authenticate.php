@@ -24,7 +24,7 @@ function validateUser($conn): bool {
     return false;
 }
 
-function getUserID($conn): int {
+function getUserID($conn) {
     $auth = getAuth($conn);
 
     return $auth->getCurrentUID();
@@ -40,11 +40,10 @@ function verifyUserAdmin($userID, $conn): bool {
     return getUserInfo($userID, $conn)['isAdmin'];
 }
 
-function login($loginInfo, $conn): bool {
+function login($loginInfo, $conn){
     $auth = getAuth($conn);
-    $result = $auth->login($loginInfo->email, $loginInfo->password, $loginInfo->remember);
 
-    return !$result['error'];
+    return $auth->login($loginInfo->email, $loginInfo->password, $loginInfo->remember); 
 }
 
 function logout($conn): bool {
