@@ -23,15 +23,18 @@ function checkFileForError($fileErrorStatus) {
 
 /*NOTE: pass in $_FILES[$fileName]['size'] or $_FILES[$fileName]['size'][key]*/
 function checkFileSize($fileSize) {
-    if ($fileSize > 1000000) {
-        exitWithError(FILE_SIZE_LIMIT_EXCEEDED);
-    }
+//    if ($fileSize > 2097152) {
+//        exitWithError(FILE_SIZE_LIMIT_EXCEEDED);
+//    }
 }
 
-/* NOTE: Pass in $_FILES[$fileName]['tmp_name']*/
-function checkFileType($fileTmpName) {
+/**
+ * @param $fileTmpName :  Pass in $_FILES[$fileName]['tmp_name']
+ * @throws Exception
+ */
+function checkFileType($fileTmpName, $fileType) {
     /*We cannot trust MIME values in the php array so we check it ourselves */
-    $fileInfo = new finfo(FILEINFO_MIME_TYPE);
+//    $fileInfo = new finfo(FILEINFO_MIME_TYPE);
     $ext = [
         'bmp' => 'image/bmp',
         'gif' => 'image/gif',
@@ -45,11 +48,11 @@ function checkFileType($fileTmpName) {
         'webp' => 'image/webp'
     ];
     if (false === array_search(
-            $fileInfo->file($fileTmpName),
-            $ext,
-            true
+//            $fileInfo->file($fileTmpName),
+            $fileType,
+            $ext
         )) {
-        exitWithError(INVALID_FILE_FORMAT);
+        throw new Exception(INVALID_FILE_FORMAT);
     }
 }
 
@@ -57,5 +60,5 @@ function checkFileType($fileTmpName) {
 function checkFile($file) {
     checkFileForError($file->errorStatus);
     checkFileSize($file->size);
-    checkFileType($file->location);
+    checkFileType($file->location, $file->type);
 }
