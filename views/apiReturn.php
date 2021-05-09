@@ -17,7 +17,6 @@ const COMMAND_FAILED = 'Query failed to execute, ensure you use the correct valu
 const FILE_SIZE_LIMIT_EXCEEDED = 'Exceeded file size limit';
 const INTERNAL_SERVER_ERROR = 'Something went wrong:(';
 const INTERNAL_SERVER_ERROR_JSON = '{"error":"Something went wrong:("}';
-const INVALID_ACCESS_TYPE = 'Invalid file access policy.';
 const INVALID_FILE_FORMAT = 'Invalid file format.';
 const INVALID_PASSWORD_JSON = '{"loggedIn":false}';
 const MISSING_PARAMETERS = 'Missing value';
@@ -51,8 +50,9 @@ function getHeader() {
     // header('Access-Control-Allow-Origin: https://abdullaharif.tech');
     // header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Origin: https://localhost:3000');
+    header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS');
     header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Allow-Headers: X-Requested-With,content-type');
+    header('Access-Control-Allow-Headers: X-Requested-With, X-PINGOTHER, content-type');
     header('Access-Control-Max-Age: 86400');    // cache for 1 day
     header('Content-Type: application/json'); // most endpoints application will always return JSON
 }

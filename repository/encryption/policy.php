@@ -11,13 +11,13 @@ require_once __DIR__ . '/encryptionConstants.php';
  * @throws Exception
  */
 function getPolicy($fileAccess, $user): string {
+    $userID = $user->id;
     switch ($fileAccess ?? PRIVATE_ACCESS) {
         case PRIVATE_ACCESS:
-            $policy = 'public:true 1of1';
+            $policy = "userId:$userID public:true 2of2";
             break;
         case PUBLIC_ACCESS:
-            $userID = $user->id;
-            $policy = "userID:$userID 1of1";
+            $policy = "userId:$userID public:true 1of2";
             break;
         default:
             throw new Exception(INVALID_ACCESS_TYPE);

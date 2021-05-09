@@ -17,11 +17,8 @@ function getAuth($conn): PHPAuth {
 /*Make sure user is validated */
 function validateUser($conn): bool {
     $auth = getAuth($conn);
-    if ($auth->isLogged()) {
-        return (int)$auth->getCurrentUID() === (int)($_SESSION['userID'] ?? -1);
-    }
 
-    return false;
+    return $auth->isLogged();
 }
 
 function getUserID($conn) {
@@ -40,7 +37,7 @@ function verifyUserAdmin($userID, $conn): bool {
     return getUserInfo($userID, $conn)['isAdmin'];
 }
 
-function login($loginInfo, $conn){
+function login($loginInfo, $conn): array {
     $auth = getAuth($conn);
 
     return $auth->login($loginInfo->email, $loginInfo->password, $loginInfo->remember); 
@@ -50,10 +47,6 @@ function logout($conn): bool {
     $auth = getAuth($conn);
 
     return $auth->logout($auth->getCurrentSessionHash());
-}
-
-function checkSessionInfo(): bool {
-    return isset($_SESSION['userID']) && isset($_SESSION['userType']);
 }
 
 /* logout function */

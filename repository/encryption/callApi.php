@@ -4,7 +4,14 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/encryptionConstants.php';
 
-/* Modified: https://stackoverflow.com/questions/5647461/how-do-i-send-a-post-request-with-php */
+/**
+ * Modified: https://stackoverflow.com/questions/5647461/how-do-i-send-a-post-request-with-php
+ * @param $args
+ * @param false $debug
+ * @param array $options
+ * @return array
+ * @throws Exception
+ */
 function callApi($args, $debug = false, $options = []): array {
     //transform the data for the POST request
     $fields = http_build_query($args);
@@ -22,7 +29,16 @@ function callApi($args, $debug = false, $options = []): array {
     curl_setopt_array($ch, ($options + $defaults));
 
     // Make the the post request
-    return (array)json_decode((string)curl_exec($ch), true);
+    $result = (array)json_decode((string)curl_exec($ch), true);
+
+    if (array_key_exists('Error', $result)) {
+        throw new Exception($result['Error'], 1);
+    }
+    if (array_key_exists('error', $result)) {
+        throw new Exception($result['error'], 1);
+    }
+
+    return $result;
 }
 
 /* Return properties used for encryption*/
@@ -45,7 +61,7 @@ function setup($debug = false): array {
     return callApi($args, $debug);
 }
 
-/*Return: privateKey: string */
+/*Return: privateKey: string on success otherwise we get an error  */
 function keygen($publicKey, $masterKey, $userAttributes, $debug = false): string {
     $args = (object)[
         'method' => 'keygen',
@@ -54,34 +70,40 @@ function keygen($publicKey, $masterKey, $userAttributes, $debug = false): string
         'masterKey' => $masterKey,
         'userAttributes' => $userAttributes,
     ];
+    $result = callApi($args, $debug);
+    if (array_key_exists('privateKey', $result)) return $result['privateKey'];
 
-    return callApi($args, $debug)['privateKey'];
+    return '';
 }
 
 /*Return: encryptedFile: string */
-function encrypt($publicKey, $policy, $inputFile, $debug = false):string {
+function encrypt($publicKey, $policy, $inputFile, $debug = false): string {
     $args = (object)[
-        'method' => 'keygen',
+        'method' => 'encrypt',
         'properties' => ENCRYPTION_PROPERTIES,
         'publicKey' => $publicKey,
         'policy' => $policy,
         'inputFile' => base64_encode($inputFile),
     ];
+    $result = callApi($args, $debug);
+    if (array_key_exists('encryptedFile', $result)) return (string)base64_decode($result['encryptedFile']);
 
-    return  (string)base64_decode(callApi($args, $debug)['encryptedFile']);
+    return '';
 }
 
 /*Return: decryptedFile: string */
-function decrypt($publicKey, $privateKey, $encryptedFile, $debug = false):string {
+function decrypt($publicKey, $privateKey, $encryptedFile, $debug = false): string {
     $args = (object)[
-        'method' => 'keygen',
+        'method' => 'decrypt',
         'properties' => ENCRYPTION_PROPERTIES,
         'publicKey' => $publicKey,
         'privateKey' => $privateKey,
         'encryptedFile' => base64_encode($encryptedFile),
     ];
+    $result = callApi($args, $debug);
+    if (array_key_exists('decryptedFile', $result)) return (string)base64_decode($result['decryptedFile']);
 
-    return (string)base64_decode(callApi($args, $debug)['decryptedFile']);
+    return '';
 }
 /*TODO: turn into test cases */
 // $properties = generateProperties();
@@ -89,7 +111,21 @@ function decrypt($publicKey, $privateKey, $encryptedFile, $debug = false):string
 // $setupReturn = setup();
 // $masterKey = $setupReturn['masterKey'];
 // $publicKey = $setupReturn['publicKey'];
-// // var_dump($setupReturn);
-// $keygenReturn = keygen($publicKey, $masterKey, "userId:1");
-// $privateKey = $keygenReturn['privateKey'];
-// var_dump($keygenReturn);
+////  var_dump($setupReturn);
+//echo 'privat Key****************************************************************';
+//$privateKey  = keygen($publicKey, $masterKey, 'userId:1 public:true');
+//// var_dump($privateKey);
+//$policy = 'userId:1 public:true 2of2';
+//echo 'input****************************************************************';
+//echo '<br>';
+//$inputFile = '10220220w20dsdassaeadaed2edwd2e2wewdsaxsasdcedf33rer3r33r33e2e2';
+//echo $inputFile;
+////echo 'encrypted****************************************************************';
+////echo '<br>';
+//$encryptedFile =  encrypt($publicKey, $policy, $inputFile);
+//echo 'decrypted****************************************************************';
+//echo '<br>';
+//$decryptedFile = decrypt($publicKey, $privateKey, $encryptedFile);
+//echo $decryptedFile;
+//assert($inputFile === $decryptedFile);
+//echo("DONE");
