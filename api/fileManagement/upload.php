@@ -85,8 +85,7 @@ function processFile($file, $user, $conn, $debug = DEBUG): array {
         }
     } catch (Exception $e) {
         $output = ['success' => false];
-        echo $e;
-        if ($debug) $output['error'] = $e;
+        $output['error'] = $e->getMessage();
     }
 
     return $output;

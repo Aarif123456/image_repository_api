@@ -86,7 +86,7 @@ function encrypt($publicKey, $policy, $inputFile, $debug = false): string {
         'inputFile' => base64_encode($inputFile),
     ];
     $result = callApi($args, $debug);
-    if (array_key_exists('encryptedFile', $result)) return (string)base64_decode($result['encryptedFile']);
+    if (array_key_exists('encryptedFile', $result)) return base64_decode($result['encryptedFile']);
 
     return '';
 }
@@ -101,7 +101,7 @@ function decrypt($publicKey, $privateKey, $encryptedFile, $debug = false): strin
         'encryptedFile' => base64_encode($encryptedFile),
     ];
     $result = callApi($args, $debug);
-    if (array_key_exists('decryptedFile', $result)) return (string)base64_decode($result['decryptedFile']);
+    if (array_key_exists('decryptedFile', $result)) return base64_decode($result['decryptedFile']);
 
     return '';
 }
@@ -111,7 +111,7 @@ function decrypt($publicKey, $privateKey, $encryptedFile, $debug = false): strin
 // $setupReturn = setup();
 // $masterKey = $setupReturn['masterKey'];
 // $publicKey = $setupReturn['publicKey'];
-////  var_dump($setupReturn);
+//  var_dump($setupReturn);
 //echo 'privat Key****************************************************************';
 //$privateKey  = keygen($publicKey, $masterKey, 'userId:1 public:true');
 //// var_dump($privateKey);
@@ -119,13 +119,16 @@ function decrypt($publicKey, $privateKey, $encryptedFile, $debug = false): strin
 //echo 'input****************************************************************';
 //echo '<br>';
 //$inputFile = '10220220w20dsdassaeadaed2edwd2e2wewdsaxsasdcedf33rer3r33r33e2e2';
-//echo $inputFile;
+////echo $inputFile;
 ////echo 'encrypted****************************************************************';
 ////echo '<br>';
 //$encryptedFile =  encrypt($publicKey, $policy, $inputFile);
-//echo 'decrypted****************************************************************';
+////echo 'decrypted****************************************************************';
 //echo '<br>';
 //$decryptedFile = decrypt($publicKey, $privateKey, $encryptedFile);
 //echo $decryptedFile;
-//assert($inputFile === $decryptedFile);
+//assert(strcmp ($inputFile , $decryptedFile)===0);
 //echo("DONE");
+////var_dump($decryptedFile);
+////var_dump($inputFile);
+////var_dump($encryptedFile);
