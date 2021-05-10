@@ -73,7 +73,7 @@ function keygen($publicKey, $masterKey, $userAttributes, $debug = false): string
     $result = callApi($args, $debug);
     if (array_key_exists('privateKey', $result)) return $result['privateKey'];
 
-    return '';
+    throw new Exception('Keygen Failed!',1);
 }
 
 /*Return: encryptedFile: string */
@@ -88,7 +88,7 @@ function encrypt($publicKey, $policy, $inputFile, $debug = false): string {
     $result = callApi($args, $debug);
     if (array_key_exists('encryptedFile', $result)) return base64_decode($result['encryptedFile']);
 
-    return '';
+    throw new Exception('Encrypt Failed!',1);
 }
 
 /*Return: decryptedFile: string */
@@ -103,15 +103,15 @@ function decrypt($publicKey, $privateKey, $encryptedFile, $debug = false): strin
     $result = callApi($args, $debug);
     if (array_key_exists('decryptedFile', $result)) return base64_decode($result['decryptedFile']);
 
-    return '';
+    throw new Exception('Decrypt Failed!',1);
 }
-/*TODO: turn into test cases */
-// $properties = generateProperties();
-// var_dump($properties);
-// $setupReturn = setup();
-// $masterKey = $setupReturn['masterKey'];
-// $publicKey = $setupReturn['publicKey'];
-//  var_dump($setupReturn);
+//TODO: turn into test cases
+//$properties = generateProperties();
+//var_dump($properties);
+//$setupReturn = setup();
+//$masterKey = $setupReturn['masterKey'];
+//$publicKey = $setupReturn['publicKey'];
+//var_dump($setupReturn);
 //echo 'privat Key****************************************************************';
 //$privateKey  = keygen($publicKey, $masterKey, 'userId:1 public:true');
 //// var_dump($privateKey);
@@ -122,7 +122,7 @@ function decrypt($publicKey, $privateKey, $encryptedFile, $debug = false): strin
 ////echo $inputFile;
 ////echo 'encrypted****************************************************************';
 ////echo '<br>';
-//$encryptedFile =  encrypt($publicKey, $policy, $inputFile);
+//$encryptedFile = encrypt($publicKey, $policy, $inputFile);
 ////echo 'decrypted****************************************************************';
 //echo '<br>';
 //$decryptedFile = decrypt($publicKey, $privateKey, $encryptedFile);

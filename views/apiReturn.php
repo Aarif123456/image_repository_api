@@ -54,7 +54,7 @@ function getHeader() {
     header('Access-Control-Allow-Credentials: true');
     header('Access-Control-Allow-Headers: X-Requested-With, X-PINGOTHER, content-type');
     header('Access-Control-Max-Age: 86400');    // cache for 1 day
-    header('Content-Type: application/json'); // most endpoints application will always return JSON
+    header('Content-Type: application/json; charset=UTF-8'); // most endpoints application will always return JSON
 }
 
 function startSession() {
