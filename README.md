@@ -28,28 +28,6 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 
 ## TODO ##
 
-<summary> Registering user </summary>
-
-    1. Description: Users can register for their own account
-    2. userManagement/addUser.php --> /api/userManagement/addUsers
-    3. Parameter list:
-        Accepts POST variable: firstName, lastName, username, password, admin(optional)  
-    4. httpie command:
-        http --session=/tmp/session.json --form POST https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/userManagement/addUser username='shopifyAccount' password='ruby in rails'  firstName='Tobias' lastName='Lutke'
-
-</details>
-
-<details>
-<summary>Upload file </summary>
-
-    1. Description:  A logged in user should be able to upload a file securely. The policy will allows the user to control who can see their file. 
-    2. fileManagement/upload.php --> /api/fileManagement/upload
-    3. Parameter list: filePath(Optional), fileName, file, policy
-        If no filePath is passed in, we will assume the fill will be in the users roots directory 
-    4. httpie command:
-
-</details>
-
 <details>
 <summary>Delete file </summary>
 
@@ -80,25 +58,25 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
     4. httpie command:
 </details>
  -->
-<details>
 
 
 <!-- ______________________________________________________ -->
 
-# Endpoints #
-
+## Pending Testing ##
+### File Management 
 <details>
-<summary> Verify users: </summary>
+<summary>Upload file </summary>
 
-    1. Description: Log the user in and then store the cookie
-    2. userManagement/loginUser.php  --> /api/userManagement/loginUser
-    3. Parameter list:
-        Accepts POST variable:  username, password, remember
+    1. Description:  A logged in user should be able to upload a file securely. The policy will allows the user to control who can see their file. 
+    2. fileManagement/upload.php --> /api/fileManagement/upload
+    3. Parameter list: filePath(Optional), fileName, file, policy
+        If no filePath is passed in, we will assume the fill will be in the users roots directory 
     4. httpie command:
-        http --session=/tmp/session.json --form POST https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/userManagement/loginUser username='abdullah' password='imageRepo' remember=false
-
+<!-- TODO: Need to implement logic to make sure we tell the user we overwrote a file - and we should make sure multiple copies fake references to the file don't exist in the database -->
 </details>
 
+
+## User Management 
 <details>
 <summary> Check Email </summary>
 
@@ -111,6 +89,7 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 
 </details>
 
+## User Information
 <details>
 <summary> check if user is logged in</summary>
 
@@ -132,3 +111,33 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
          http --session=/tmp/session.json --form POST https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/user/logout
 
 </details>
+
+
+
+# Endpoints #
+
+<details>
+<summary> Verify users: </summary>
+
+    1. Description: Log the user in and then store the cookie
+    2. userManagement/loginUser.php  --> /api/userManagement/loginUser
+    3. Parameter list:
+        Accepts POST variable:  email, password, remember
+    4. httpie command:
+        http --session=/tmp/session.json --form POST https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/userManagement/loginUser email='abdullahmeo11@gmail.com' password='imageRepo' remember=false
+
+</details>
+
+<details>
+<summary> Registering user </summary>
+
+    1. Description: Users can register for their own account
+    2. userManagement/addUser.php --> /api/userManagement/addUsers
+    3. Parameter list:
+        Accepts POST variable: firstName, lastName, email, password, admin(optional)  
+    4. httpie command:
+        http --session=/tmp/session.json --form POST https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/userManagement/addUser email='shopifyAccount@shopify.com' password='ruby in rails'  firstName='Tobias' lastName='Lutke'
+
+</details>
+<!-- Link PHP Auth module -->
+<!-- Link picture to the tables you added -->
