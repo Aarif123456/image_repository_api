@@ -8,11 +8,10 @@ require_once __DIR__ . '/callApi.php';
 function encryptFile($file, $policy,  $conn, $debug = false): bool {
     /* Get the bytes of files */
     $fileData = file_get_contents($file->location);
-    /* Delete the temp file*/
-    unlink($file->location);
     $encryptedFile = getFileEncrypted($fileData, $policy, $conn, $debug);
-
-    return !(empty(file_put_contents("$file->path/$file->name", $encryptedFile)));
+    
+    $encryptedFileLocation = getEncryptedFileLocation($file);
+    return !(empty(file_put_contents($encryptedFileLocation, $encryptedFile)));
 }
 
 function getFileEncrypted($inputFile, $policy, $conn, $debug = false): string {
@@ -20,4 +19,8 @@ function getFileEncrypted($inputFile, $policy, $conn, $debug = false): string {
     $publicKey = $systemKeys['publicKey'];
 
     return encrypt($publicKey, $policy, $inputFile, $debug);
+}
+
+function getEncryptedFileLocation($file) : string{
+    return "$file->path/$file->name.Encrypted";
 }

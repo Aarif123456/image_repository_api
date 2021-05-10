@@ -3,12 +3,23 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/encryptionConstants.php';
 require_once __DIR__ . '/callApi.php';
+require_once __DIR__ . '/encryptFile.php';
 
-function getFileDecrypted($filePath, $fileName, $user, $conn, $debug = false) {
+/**
+ * @param $file
+ * @param $user
+ * @param $conn
+ * @param false $debug
+ * @return string
+ * @throws Exception
+ */
+function getFileDecrypted($file, $user, $conn, $debug = false): string {
     $systemKeys = getSystemKeys($conn);
     $publicKey = $systemKeys['publicKey'];
     $privateKey = getUserKey($user, $conn);
-    file_get_contents("$filePath/$fileName.Encrypted");
+    $encryptedFileLocation = getEncryptedFileLocation($file);
+    $encryptedFile = file_get_contents($encryptedFileLocation);
+
     return decrypt($publicKey, $privateKey, $encryptedFile, $debug);
 }
 

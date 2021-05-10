@@ -45,27 +45,29 @@ if (empty($_FILES)) exit(NO_FILE_SENT_JSON);
 if (is_array($_FILES[$fileNames]['error']) || is_object($_FILES[$fileNames]['error'])) {
     foreach ($_FILES[$fileNames]['error'] as $key =>$value) {
         $file = (object)[
-            'size' => $_FILES[$fileNames]['size'][$key],
-            'errorStatus' => $_FILES[$fileNames]['error'][$key],
-            'location' => $_FILES[$fileNames]['tmp_name'][$key],
-             'type' => $_FILES[$fileNames]['type'][$key],
             /*File names cannot have slashes because it would mess up paths -
             * and we want to clean the input cause we might want to display the filename later */
             'name' => htmlentities(str_replace(['/', '\\'], '', basename($_FILES[$fileNames]['name'][$key]))),
+            'path' => $filePath,
+            'size' => $_FILES[$fileNames]['size'][$key],
+            'errorStatus' => $_FILES[$fileNames]['error'][$key],
+            'location' => $_FILES[$fileNames]['tmp_name'][$key],
+            /* NOTE: getting the type from the file is not always safe as it can be tampered. However, since users 
+            * have to access to their own files, we don't really care  */
+            'type' => $_FILES[$fileNames]['type'][$key],
             'access' => $fileAccess,
-            'path' => $filePath
         ];
         $uploadSuccess[$file->name] = processFile($file, $user, $conn);
     }
 } else {
+    /*Look at the above section for detail about the file fields. 
+    * Here we handle the case where the user only uploads one file */
     $file = (object)[
+        'name' => htmlentities(str_replace(['/', '\\'], '', basename($_FILES[$fileNames]['name']))),
         'size' => $_FILES[$fileNames]['size'],
         'errorStatus' => $_FILES[$fileNames]['error'],
         'location' => $_FILES[$fileNames]['tmp_name'],
         'type' => $_FILES[$fileNames]['type'],
-        /*File names cannot have slashes because it would mess up paths -
-        * and we want to clean the input cause we might want to display the filename later */
-        'name' => htmlentities(str_replace(['/', '\\'], '', basename($_FILES[$fileNames]['name']))),
         'access' => $fileAccess,
         'path' => $filePath
     ];
@@ -83,6 +85,8 @@ function processFile($file, $user, $conn, $debug = DEBUG): array {
         if (!$output['success']) {
             throw new Exception(COMMAND_FAILED);
         }
+        /*TODO: if we have successfully encrypted our file then remove them temporary non encrypted version */
+        /* unlink($file->location); // Remove temp file */
     } catch (Exception $e) {
         $output = ['success' => false];
         $output['error'] = $e->getMessage();
