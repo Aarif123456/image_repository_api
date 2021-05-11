@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../views/apiReturn.php';
 require_once __DIR__ . '/../../views/errorHandling.php';
-require_once __DIR__ . '/../../repository/encryption/encryptFile.php';
 
 function checkFileForError(int $fileErrorStatus) {
     switch ($fileErrorStatus) {
@@ -35,7 +34,7 @@ function checkFileType(File $file) {
 }
 
 function checkFileExists(FileLocationInfo $fileInfo) {
-    if (file_exists(getEncryptedFileLocation($fileInfo))) {
+    if (file_exists($fileInfo->getEncryptedFilePath())) {
         throw new Exception(FILE_ALREADY_EXISTS);
     }
 }

@@ -26,12 +26,11 @@ if (!validateUser($conn)) {
 }
 
 /* Set variables */
-$userInfo = getCurrentUserInfo($conn);
 $user = new User(getCurrentUserInfo($conn));
-
 $fileAccess = $_REQUEST['fileAccess'] ?? null;
-$filePath = $_REQUEST['filePath'] ?? "userFiles/$user->id/";
+$filePath = $_REQUEST['filePath'] ?? '';
 $fileNames = $_REQUEST['fileNames'] ?? 'images';
+
 /* Make sure user uploaded a file*/
 if (!isValidFileVar($fileNames)) {
     throw new Exception(MISSING_PARAMETERS);
@@ -39,7 +38,7 @@ if (!isValidFileVar($fileNames)) {
 
 /* Create folder where user files will be stored */
 if (!file_exists($filePath)) {
-    mkdir($filePath, 0777, true);
+    mkdir(File::getUserFolder($filePath, $user->id), 0777, true);
 }
 /*Create array to track if upload was successful */
 $uploadSuccess = [];
@@ -59,6 +58,7 @@ if (is_array($_FILES[$fileNames]['error']) || is_object($_FILES[$fileNames]['err
             * have to access to their own files, we don't really care  */
             'type' => $_FILES[$fileNames]['type'][$key],
             'access' => $fileAccess,
+            'ownerId' => $user->id
         ]);
         $uploadSuccess[$file->name] = processFile($file, $user, $conn);
     }
@@ -67,12 +67,13 @@ if (is_array($_FILES[$fileNames]['error']) || is_object($_FILES[$fileNames]['err
     * Here we handle the case where the user only uploads one file */
     $file = new File([
         'name' => htmlentities(str_replace(['/', '\\'], '', basename($_FILES[$fileNames]['name']))),
+        'path' => $filePath,
         'size' => $_FILES[$fileNames]['size'],
         'errorStatus' => $_FILES[$fileNames]['error'],
         'location' => $_FILES[$fileNames]['tmp_name'],
         'type' => $_FILES[$fileNames]['type'],
         'access' => $fileAccess,
-        'path' => $filePath
+        'ownerId' => $user->id
     ]);
     $uploadSuccess[$file->name] = processFile($file, $user, $conn);
 }

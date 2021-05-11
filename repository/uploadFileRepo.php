@@ -25,13 +25,14 @@ function getPolicy(int $fileAccess, User $user): string {
 function insertFile($file, $user, $conn, $debug): bool {
     $file->access ??= PRIVATE_ACCESS;
     $stmt = $conn->prepare(
-        'INSERT INTO files (memberID, filePath, fileName, fileSize, accessID) VALUES (:memberID, :filePath, :fileName, :fileSize, :accessID)'
+        'INSERT INTO files (memberID, filePath, fileName, fileSize, accessID, mime) VALUES (:memberID, :filePath, :fileName, :fileSize, :accessID, :mime)'
     );
     $stmt->bindValue(':memberID', $user->id, PDO::PARAM_INT);
-    $stmt->bindValue(':filePath', $file->path, PDO::PARAM_STR);
+    $stmt->bindValue(':filePath', $file::getRealPath($user), PDO::PARAM_STR);
     $stmt->bindValue(':fileName', $file->name, PDO::PARAM_STR);
     $stmt->bindValue(':fileSize', $file->size, PDO::PARAM_INT);
     $stmt->bindValue(':accessID', $file->access, PDO::PARAM_INT);
+    $stmt->bindValue(':mime', $file->type, PDO::PARAM_STR);
     $policy = getPolicy($file->access, $user);
     encryptFile($file, $policy, $conn);
 
