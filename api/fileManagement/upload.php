@@ -37,8 +37,9 @@ if (!isValidFileVar($fileNames)) {
 }
 
 /* Create folder where user files will be stored */
-if (!file_exists($filePath)) {
-    mkdir(File::getUserFolder($filePath, $user->id), 0777, true);
+$userFolder = File::getUserFolder($filePath, $user->id);
+if (!file_exists($userFolder)) {
+    mkdir($userFolder, 0777, true);
 }
 /*Create array to track if upload was successful */
 $uploadSuccess = [];
