@@ -1,18 +1,19 @@
 <?php
 
 declare(strict_types=1);
-/* TODO: Make it so we only have two types of users */
 
 /* Imports */
 require_once __DIR__ . '/error.php';
 require_once __DIR__ . '/systemKey.php';
 require_once __DIR__ . '/encryption/callApi.php';
+require_once __DIR__ . '/encryption/userAttributes.php';
+require_once __DIR__ . '/User.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use PHPAuth\Auth as PHPAuth;
 use PHPAuth\Config as PHPAuthConfig;
-
-function insertUser($user, $account, $conn, $debug = false): array {
+/*NOTE: leaving account as object because it is a one time use object */
+function insertUser(User $user, object $account, PDO $conn, bool $debug = false): array {
     $output = [];
     try {
         $config = new PHPAuthConfig($conn);
@@ -22,7 +23,7 @@ function insertUser($user, $account, $conn, $debug = false): array {
         $params = [
             'firstName' => $user->firstName,
             'lastName' => $user->lastName,
-            'isAdmin' => (int)$user->admin
+            'isAdmin' => $user->isAdmin
         ];
         $result = $auth->register($account->email, $account->password, $account->password, $params);
         if ($result['error']) {
@@ -30,16 +31,17 @@ function insertUser($user, $account, $conn, $debug = false): array {
 
             return $output;
         }
-        
+
         $output['message'] = $result['message'];
         /* Store the user's login info */
         $output['id'] = $id = $auth->getUID($account->email);
+        $user->id = $id;
         /* store user info in member table */
-        storeUserKeys($id, $user, $conn, $debug);
+        storeUserKeys($user, $conn, $debug);
         $conn->commit();
     } catch (Exception $e) {
         /* remove all queries from queue if error (undo) */
-        $conn->rollback();
+        $conn->rollBack();
         if ($debug) {
             $output['debug'] = debugException($e, $conn);
         }
@@ -49,32 +51,26 @@ function insertUser($user, $account, $conn, $debug = false): array {
     return $output;
 }
 
-/* Create user attributes for the encryption */
-function createUserAttributes($id, $user): string {
-    /* Set user id and give public access*/
-    return "userId:$id public:true";
-}
-
-function getUserPrivatKey($id, $user, $conn, $debug = false): string {
-    $userAttributes = createUserAttributes($id, $user);
+function getUserPrivatKey(User $user, PDO $conn, bool $debug = false): string {
+    $userAttributes = createUserAttributes($user);
     /* Get public and private key */
     $systemKeys = getSystemKeys($conn);
     $publicKey = $systemKeys['publicKey'];
     $masterKey = $systemKeys['masterKey'];
 
-    return keygen($publicKey, $masterKey, $userAttributes, $debug);
+    return keygen($publicKey, $masterKey, $userAttributes);
 }
 
 /**
  * @throws Exception
  */
-function storeUserKeys($id, $user, $conn, $debug = false): bool {
+function storeUserKeys(User $user, PDO $conn, bool $debug = false): bool {
     $stmt = $conn->prepare(
         'INSERT INTO `userKeys` (memberID, privateKey) VALUES (:id, :privateKey)'
     );
-    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-    $privateKey = getUserPrivatKey($id, $user, $conn, $debug);
-    $stmt->bindValue(':privateKey', $privateKey, PDO::PARAM_STR);
+    $stmt->bindValue(':id', $user->id, PDO::PARAM_INT);
+    $privateKey = getUserPrivatKey($user, $conn, $debug);
+    $stmt->bindValue(':privateKey', $privateKey);
 
     return safeWriteQueries($stmt, $conn, $debug);
 }

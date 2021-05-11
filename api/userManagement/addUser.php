@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 /* Imports */
 require_once __DIR__ . '/../../views/apiReturn.php';
+require_once __DIR__ . '/../../views/errorHandling.php';
 require_once __DIR__ . '/../../common/constants.php';
 require_once __DIR__ . '/../../common/authenticate.php';
 require_once __DIR__ . '/../../repository/database.php';
 require_once __DIR__ . '/../../repository/registerUserRepo.php';
+require_once __DIR__ . '/../../repository/User.php';
 
 /* Set required header and session start */
 requiredHeaderAndSessionStart();
@@ -19,14 +21,14 @@ $debug = DEBUG;
 /* Make sure we have a valid request */
 if (!(isValidPostVar('firstName') && isValidPostVar('lastName') &&
     isValidPostVar('email') && isValidPostVar('password'))) {
-    exitWithError(MISSING_PARAMETERS);
+    throw new Exception(MISSING_PARAMETERS);
 }
 /* Get user info in a object */
-$user = (object)[
+$user = new User([
     'firstName' => trim($_POST['firstName']),
     'lastName' => trim($_POST['lastName']),
-    'admin' => (bool)($_POST['admin'] ?? false)
-];
+    'isAdmin' => (bool)($_POST['admin'] ?? false)
+]);
 
 /* If we have the information needed to create new account then we will make it */
 $account = null;
