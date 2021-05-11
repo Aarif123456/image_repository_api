@@ -1,26 +1,33 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/encryptionConstants.php';
 require_once __DIR__ . '/callApi.php';
+require_once __DIR__ . '/encryptionExceptionConstants.php';
+
+function getEncryptedFileLocation(FileLocationInfo $file): string {
+    return "$file->path/$file->name.Encrypted";
+}
 
 /* We encrypt the file and delete the temporary file that holds the unencrypted version */
-function encryptFile($file, $policy,  $conn, $debug = false): bool {
+function encryptFile(File $file, string $policy, PDO $conn, bool $debug = false) {
     /* Get the bytes of files */
     $fileData = file_get_contents($file->location);
     $encryptedFile = getFileEncrypted($fileData, $policy, $conn, $debug);
-    
     $encryptedFileLocation = getEncryptedFileLocation($file);
-    return !(empty(file_put_contents($encryptedFileLocation, $encryptedFile)));
+    $encryptedFileSize = file_put_contents($encryptedFileLocation, $encryptedFile);
+    if (empty($encryptedFileSize)) {
+        unlink($encryptedFileLocation);
+        throw new EncryptedFileNotCreatedException();
+    }
 }
 
-function getFileEncrypted($inputFile, $policy, $conn, $debug = false): string {
+/* Return encrypted version of file */
+function getFileEncrypted(string $inputFile, string $policy, PDO $conn, bool $debug = false): string {
     $systemKeys = getSystemKeys($conn);
     $publicKey = $systemKeys['publicKey'];
 
-    return encrypt($publicKey, $policy, $inputFile, $debug);
+    return encrypt($publicKey, $policy, $inputFile);
 }
 
-function getEncryptedFileLocation($file) : string{
-    return "$file->path/$file->name.Encrypted";
-}
