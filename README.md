@@ -63,7 +63,9 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 <!-- ______________________________________________________ -->
 
 ## Pending Testing ##
-### File Management 
+
+### File Management
+
 <details>
 <summary>Upload file </summary>
 
@@ -72,11 +74,12 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
     3. Parameter list: filePath(Optional), fileName, file, policy
         If no filePath is passed in, we will assume the fill will be in the users roots directory 
     4. httpie command:
+
 <!-- TODO: Need to implement logic to make sure we tell the user we overwrote a file - and we should make sure multiple copies fake references to the file don't exist in the database -->
 </details>
 
+## User Management
 
-## User Management 
 <details>
 <summary> Check Email </summary>
 
@@ -90,6 +93,7 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 </details>
 
 ## User Information
+
 <details>
 <summary> check if user is logged in</summary>
 
@@ -111,8 +115,6 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
          http --session=/tmp/session.json --form POST https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/user/logout
 
 </details>
-
-
 
 # Endpoints #
 
