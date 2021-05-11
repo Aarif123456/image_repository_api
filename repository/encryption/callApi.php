@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 declare(strict_types=1);
 
@@ -6,13 +6,12 @@ require_once __DIR__ . '/encryptionConstants.php';
 
 /**
  * Modified: https://stackoverflow.com/questions/5647461/how-do-i-send-a-post-request-with-php
- * @param $args
- * @param false $debug
+ * @param object $args
  * @param array $options
  * @return array
  * @throws Exception
  */
-function callApi($args, $debug = false, $options = []): array {
+function callApi(object $args, array $options = []): array {
     //transform the data for the POST request
     $fields = http_build_query($args);
     //open connection
@@ -42,27 +41,27 @@ function callApi($args, $debug = false, $options = []): array {
 }
 
 /* Return properties used for encryption*/
-function generateProperties($type = 'a', $debug = false): array {
+function generateProperties(string $type = 'a'): array {
     $args = (object)[
         'method' => 'generateProperties',
         'type' => $type
     ];
 
-    return callApi($args, $debug);
+    return callApi($args);
 }
 
 /* Returns: $publicKey:string, $masterKey: string */
-function setup($debug = false): array {
+function setup(): array {
     $args = (object)[
         'method' => 'setup',
         'properties' => ENCRYPTION_PROPERTIES,
     ];
 
-    return callApi($args, $debug);
+    return callApi($args);
 }
 
 /*Return: privateKey: string on success otherwise we get an error  */
-function keygen($publicKey, $masterKey, $userAttributes, $debug = false): string {
+function keygen(string $publicKey, string $masterKey, string $userAttributes): string {
     $args = (object)[
         'method' => 'keygen',
         'properties' => ENCRYPTION_PROPERTIES,
@@ -70,14 +69,14 @@ function keygen($publicKey, $masterKey, $userAttributes, $debug = false): string
         'masterKey' => $masterKey,
         'userAttributes' => $userAttributes,
     ];
-    $result = callApi($args, $debug);
+    $result = callApi($args);
     if (array_key_exists('privateKey', $result)) return $result['privateKey'];
 
-    throw new Exception('Keygen Failed!',1);
+    throw new Exception('Keygen Failed!', 1);
 }
 
 /*Return: encryptedFile: string */
-function encrypt($publicKey, $policy, $inputFile, $debug = false): string {
+function encrypt(string $publicKey, string $policy, string $inputFile): string {
     $args = (object)[
         'method' => 'encrypt',
         'properties' => ENCRYPTION_PROPERTIES,
@@ -85,14 +84,14 @@ function encrypt($publicKey, $policy, $inputFile, $debug = false): string {
         'policy' => $policy,
         'inputFile' => base64_encode($inputFile),
     ];
-    $result = callApi($args, $debug);
+    $result = callApi($args);
     if (array_key_exists('encryptedFile', $result)) return base64_decode($result['encryptedFile']);
 
-    throw new Exception('Encrypt Failed!',1);
+    throw new Exception('Encrypt Failed!', 1);
 }
 
 /*Return: decryptedFile: string */
-function decrypt($publicKey, $privateKey, $encryptedFile, $debug = false): string {
+function decrypt(string $publicKey, string $privateKey, string $encryptedFile): string {
     $args = (object)[
         'method' => 'decrypt',
         'properties' => ENCRYPTION_PROPERTIES,
@@ -100,11 +99,12 @@ function decrypt($publicKey, $privateKey, $encryptedFile, $debug = false): strin
         'privateKey' => $privateKey,
         'encryptedFile' => base64_encode($encryptedFile),
     ];
-    $result = callApi($args, $debug);
+    $result = callApi($args);
     if (array_key_exists('decryptedFile', $result)) return base64_decode($result['decryptedFile']);
 
-    throw new Exception('Decrypt Failed!',1);
+    throw new Exception('Decrypt Failed!', 1);
 }
+
 //TODO: turn into test cases
 //$properties = generateProperties();
 //var_dump($properties);

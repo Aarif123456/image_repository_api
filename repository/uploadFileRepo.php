@@ -6,7 +6,7 @@ require_once __DIR__ . '/error.php';
 require_once __DIR__ . '/systemKey.php';
 require_once __DIR__ . '/encryption/policy.php';
 require_once __DIR__ . '/encryption/encryptFile.php';
-require_once __DIR__ . 'databaseConstants.php';
+require_once __DIR__ . '/databaseConstants.php';
 
 function getPolicy(int $fileAccess, User $user): string {
     switch ($fileAccess) {

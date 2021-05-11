@@ -5,7 +5,6 @@ declare(strict_types=1);
 /* Error handling for calls to the database */
 
 const INVALID_ACCESS_TYPE = 'Invalid file access policy.';
-const MISSING_PARAMETER_FOR_USER_TYPE = 'Missing required parameter for selected user type';
 const PHP_EXCEPTION = 'The following exception was thrown:';
 const SQL_ERROR = 'The following SQL error was detected:';
 const WRITE_QUERY_FAILED = 'Failed to update the database';
@@ -32,7 +31,7 @@ function safeWriteQueries($stmt, $conn, $debug): bool {
             $conn->rollback();
         }
         if ($debug) {
-            throw new Exception(debugException($e, $conn), 1);
+            throw new PDOException(debugException($e, $conn), 1);
         }
     }
     throw new Exception(WRITE_QUERY_FAILED, 1);
@@ -55,7 +54,7 @@ function safeUpdateQueries($stmt, $conn, $debug): int {
             $conn->rollback();
         }
         if ($debug) {
-            throw new Exception(debugException($e, $conn), 1);
+            throw new PDOException(debugException($e, $conn), 1);
         }
     }
     throw new Exception(WRITE_QUERY_FAILED, 1);

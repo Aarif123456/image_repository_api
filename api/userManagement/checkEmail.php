@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 /* Imports */
 require_once __DIR__ . '/../../views/apiReturn.php';
+require_once __DIR__ . '/../../views/errorHandling.php';
 require_once __DIR__ . '/../../common/constants.php';
 require_once __DIR__ . '/../../common/authenticate.php';
 require_once __DIR__ . '/../../repository/database.php';
@@ -15,7 +16,7 @@ requiredHeaderAndSessionStart();
 $conn = getConnection();
 
 if (!isValidPostVar('email')) {
-    exitWithError(MISSING_PARAMETERS);
+    throw new Exception(MISSING_PARAMETERS);
 }
 
 $auth = getAuth($conn);

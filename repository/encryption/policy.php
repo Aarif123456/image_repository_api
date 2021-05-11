@@ -2,13 +2,10 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '../databaseConstants.php';
-
-function getPrivatePolicy(User $user) {
+function getPrivatePolicy(User $user): string {
     return "userId:$user->id public:true 2of2";
 }
 
-
-function getPublicPolicy(User $user) {
+function getPublicPolicy(User $user): string {
     return "userId:$user->id public:true 1of2";
 }

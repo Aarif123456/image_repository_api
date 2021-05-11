@@ -19,7 +19,7 @@ class File extends FileLocationInfo {
     public int $errorStatus;
     public string $location;
     public string $type;
-    public int $access;
+    public ?int $access;
 
     public function __construct(array $properties = []) {
         parent::__construct($properties);
