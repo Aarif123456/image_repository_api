@@ -12,6 +12,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use PHPAuth\Auth as PHPAuth;
 use PHPAuth\Config as PHPAuthConfig;
+
 /*NOTE: leaving account as object because it is a one time use object */
 function insertUser(User $user, object $account, PDO $conn, bool $debug = false): array {
     $output = [];

@@ -12,7 +12,7 @@ class User {
     public string $lastName;
     public bool $isAdmin;
 
-    public function __construct(array $properties ) {
+    public function __construct(array $properties) {
         $this->email = $properties['email'];
         $this->isactive = (bool)$properties['isactive'];
         $this->id = $properties['id'];

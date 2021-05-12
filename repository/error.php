@@ -95,3 +95,4 @@ function debugQuery($affectedRow, $success, $functionName): string {
         "FUNCTION $functionName: row affected = $affectedRow \n FUNCTION $functionName: successful = $success"
     );
 }
+

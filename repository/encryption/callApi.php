@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 declare(strict_types=1);
 
@@ -8,7 +8,7 @@ require_once __DIR__ . '/encryptionConstants.php';
  * Modified: https://stackoverflow.com/questions/5647461/how-do-i-send-a-post-request-with-php
  * @throws Exception
  */
-function callApi($fields, array $options = [], bool $debug=false): array {
+function callApi($fields, array $options = [], bool $debug = false): array {
     $ch = curl_init();
 
     //set the url, number of POST vars, POST data
@@ -29,7 +29,7 @@ function callApi($fields, array $options = [], bool $debug=false): array {
     if (array_key_exists('error', $result)) {
         throw new Exception($result['error'], 1);
     }
-    if($debug){
+    if ($debug) {
         echo 'result <br/>';
         var_dump($result);
         echo ' <br/>';
@@ -42,7 +42,7 @@ function callApi($fields, array $options = [], bool $debug=false): array {
         var_dump($error);
         echo ' <br/>';
     }
-   
+
     return $result;
 }
 
@@ -88,8 +88,8 @@ function encrypt(string $publicKey, string $policy, string $inputFile): string {
         'properties' => ENCRYPTION_PROPERTIES,
         'publicKey' => $publicKey,
         'policy' => $policy,
-        'inputFile' => curl_file_create($inputFile,'application/octet-stream','inputFile')
-    ];  
+        'inputFile' => curl_file_create($inputFile, 'application/octet-stream', 'inputFile')
+    ];
 
     $result = callApi($args);
     if (array_key_exists('encryptedFile', $result)) return base64_decode($result['encryptedFile']);
@@ -104,7 +104,7 @@ function decrypt(string $publicKey, string $privateKey, string $encryptedFile): 
         'properties' => ENCRYPTION_PROPERTIES,
         'publicKey' => $publicKey,
         'privateKey' => $privateKey,
-        'encryptedFile' => curl_file_create($encryptedFile,'application/octet-stream','encryptedFile'),
+        'encryptedFile' => curl_file_create($encryptedFile, 'application/octet-stream', 'encryptedFile'),
     ];
     $result = callApi($args);
     if (array_key_exists('decryptedFile', $result)) return base64_decode($result['decryptedFile']);
