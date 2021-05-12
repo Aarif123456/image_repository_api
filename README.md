@@ -1,6 +1,6 @@
 # What is this? 🤔
 
-An API built to be used by the for the [Image Repository](https://abdullaharif.tech/imagerepository/)
+An API built to be used by the for the [Image Repository](https://arif115.myweb.cs.uwindsor.ca/imagerepository/docs)
 
 # API for the Image Repository#
 
@@ -12,7 +12,6 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 * Description
 * File name - Since, code will always be updated even if the read me isn't
 * Parameter list -including which method to use such as POST, GET or REQUEST(both)
-* httpie command with expected result format to validate the listed information about the endpoint
 
 ## Format ##
 
@@ -22,34 +21,11 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
     1. Description: 
     2. fileName.php --> /api/fileName
     3. Parameter list:
-    4. httpie command:
 
 </details>
 
-## TODO ##
+# Endpoints #
 
-<details>
-
-<summary>Get file access </summary>
-
-    1. Description:  The system return back the description and name of the types of access the system support. This includes public access which means anyone can see the file and private access which means only the uploader can see the file.
-    2. fileManagement/getFileAccess.php --> /api/fileManagement/getFileAccess
-    3. Parameter list: 
-    4. httpie command:
-
-</details>
-
-<!-- <summary>Search File </summary>
-
-    1. Description: Allow the user to search for files by different attributes such as image tags, file name or uploader. Can be used to show the user their own files as well
-    2. fileManagement/search.php -> /api/fileManagement/search
-    3. Parameter list: searchType, keyword
-    4. httpie command:
-</details>
- -->
-
-
-<!-- ______________________________________________________ -->
 
 ## Pending Testing ##
 
@@ -62,9 +38,7 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
     2. fileManagement/upload.php --> /api/fileManagement/upload
     3. Parameter list: filePath(Optional), fileName, file, policy
         If no filePath is passed in, we will assume the fill will be in the users roots directory 
-    4. httpie command:
 
-<!-- TODO: Need to implement logic to make sure we tell the user we overwrote a file - and we should make sure multiple copies fake references to the file don't exist in the database -->
 </details>
 
 <details>
@@ -74,7 +48,6 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
     2. fileManagement/delete.php --> /api/fileManagement/delete
     3. Parameter list: filePath(Optional), fileName
         If no filePath is passed in, we will assume the fill will be in the users roots directory 
-    4. httpie command:
 
 </details>
 
@@ -82,42 +55,13 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 ## User Management
 
 <details>
-<summary> Check Email </summary>
-
-    1. Description: Check if email is in database
-    2. userManagement/checkEmail.php  --> /api/userManagement/checkEmail
-    3. Parameter list: 
-         Accepts POST variable: email
-    4. httpie command:
-        http --session=/tmp/session.json --form POST https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/userManagement/checkEmail email='shopify@hogwarts.com'
-
-</details>
-
-## User Information
-
-<details>
-<summary> check if user is logged in</summary>
-
-    1. Description: returns true if user is logged in and false if they are not 
-    2. user/isLoggedIn.php --> /api/user/isLoggedIn
-    3. Parameter list:
-    4. httpie command: 
-         http --session=/tmp/session.json --form POST https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/user/isLoggedIn
-
-</details>
-
-<details>
 <summary> logout user</summary>
 
     1. Description: Logout the user
     2. user/logout.php --> /api/user/logout
     3. Parameter list:
-    4. httpie command: 
-         http --session=/tmp/session.json --form POST https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/user/logout
 
 </details>
-
-# Endpoints #
 
 <details>
 <summary> Verify users: </summary>
@@ -126,8 +70,6 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
     2. userManagement/loginUser.php  --> /api/userManagement/loginUser
     3. Parameter list:
         Accepts POST variable:  email, password, remember
-    4. httpie command:
-        http --session=/tmp/session.json --form POST https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/userManagement/loginUser email='abdullahmeo11@gmail.com' password='imageRepo' remember=false
 
 </details>
 
@@ -138,9 +80,47 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
     2. userManagement/addUser.php --> /api/userManagement/addUsers
     3. Parameter list:
         Accepts POST variable: firstName, lastName, email, password, admin(optional)  
-    4. httpie command:
-        http --session=/tmp/session.json --form POST https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/userManagement/addUser email='shopifyAccount@shopify.com' password='ruby in rails'  firstName='Tobias' lastName='Lutke'
-
 </details>
-<!-- Link PHP Auth module -->
-<!-- Link picture to the tables you added -->
+
+
+# Building :construction:
+## Technology stack :gear:
+**PHPAuth**: [PHPAuth](https://github.com/PHPAuth/PHPAuth) is a package to handle everything related to authentication. It includes features such as automatically emailing the user for password resets and blocking attackers by IP. \
+**PDO**: [PDO](https://www.php.net/manual/en/book.pdo.php) PHP data objects are used securely access databases without being locked to one type of database \
+**PHPUnit**: [PHPUnit](https://phpunit.de/) is a testing framework used to easily create unit tests for my program. Tests can be found in the "tests" folder.
+
+## Database design ## 
+![Database ER diagram](https://i.imgur.com/INi6Iro.png)
+
+## TODO ##
+<details>
+<summary>List sub-folders </summary>
+
+    1. Description: Return a list of all folders in the selected folder
+    2. fileManagement/listSubfolder.php -> /api/fileManagement/listSubfolder
+    3. Parameter list: folderPath
+</details>
+
+<details>
+<summary>Search file </summary>
+
+    1. Description: Allow the user to search for files by different attributes such as image tags, file name or uploader. Can be used to show the user their own files as well
+    2. search/searchImage.php -> /api/search/searchImage
+    3. Parameter list: searchType, keyword
+</details>
+
+<details>
+<summary>Change file permission </summary>
+
+    1. Description: Allow the user to choose what files to share with the public and what to keep private
+    2. fileManagement/setFilePermission.php -> /api/fileManagement/setFilePermission
+    3. Parameter list:  
+</details>
+
+<details>
+<summary>Reset Password </summary>
+
+    1. Description: Email the user a link so they can reset their password.
+    2. userManagement/resetPassword.php -> /api/userManagement/resetPassword
+    3. Parameter list: email
+</details>
