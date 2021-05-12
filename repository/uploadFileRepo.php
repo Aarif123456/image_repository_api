@@ -28,7 +28,7 @@ function insertFile($file, $user, $conn, $debug): bool {
         'INSERT INTO files (memberID, filePath, fileName, fileSize, accessID, mime) VALUES (:memberID, :filePath, :fileName, :fileSize, :accessID, :mime)'
     );
     $stmt->bindValue(':memberID', $user->id, PDO::PARAM_INT);
-    $stmt->bindValue(':filePath', $file->getRealPath($user), PDO::PARAM_STR);
+    $stmt->bindValue(':filePath', $file->path, PDO::PARAM_STR);
     $stmt->bindValue(':fileName', $file->name, PDO::PARAM_STR);
     $stmt->bindValue(':fileSize', $file->size, PDO::PARAM_INT);
     $stmt->bindValue(':accessID', $file->access, PDO::PARAM_INT);
