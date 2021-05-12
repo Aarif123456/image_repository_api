@@ -28,9 +28,6 @@ if (!validateUser($conn)) {
 $user = new User(getCurrentUserInfo($conn));
 $filePath = $_REQUEST['filePath'] ?? '';
 
-/* Make sure user is contained to their folder */
-$filePath = File::getUserFolder($filePath, $user->id);
-
 $result = getFolderDetail($filePath, $user, $conn);
 echo createQueryJSON($result);
 
