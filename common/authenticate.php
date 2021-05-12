@@ -60,14 +60,6 @@ function resetPassword(string $email, PDO $conn): array {
     $auth = getAuth($conn);
 
     return $auth->requestReset($email, true);
-    /* TODO: create php auth wrapper and use email to reset
-    $return (array)
-        error (bool): Informs whether an error was encountered or not
-        message (string): User-friendly error / success message
-        token (string): Token/Key of the request that is needed by the user to reset password
-        expire (string): Timestamp of the expiration of the request (valid until this timestamp)
-        uid (string): Id of the user which belongs to the email address
- */
 }
 
 /*TODO: create custom exception */
