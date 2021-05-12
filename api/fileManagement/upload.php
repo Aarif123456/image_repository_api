@@ -90,8 +90,8 @@ function processFile(File $file, User $user, PDO $conn, bool $debug = DEBUG): ar
         if (!$output['success']) {
             throw new Exception(COMMAND_FAILED);
         }
-        /*TODO: if we have successfully encrypted our file then remove them temporary non encrypted version */
-        /* unlink($file->location); // Remove temp file */
+        /*if we have successfully encrypted our file then remove them temporary non encrypted version */
+        unlink($file->location);
     } catch (Exception $e) {
         $output = ['success' => false];
         $output['error'] = $e->getMessage();
