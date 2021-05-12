@@ -51,7 +51,7 @@ function insertUser(User $user, object $account, PDO $conn, bool $debug = false)
     return $output;
 }
 
-function getUserPrivatKey(User $user, PDO $conn, bool $debug = false): string {
+function getUserPrivatKey(User $user, PDO $conn): string {
     $userAttributes = createUserAttributes($user);
     /* Get public and private key */
     $systemKeys = getSystemKeys($conn);
@@ -69,7 +69,7 @@ function storeUserKeys(User $user, PDO $conn, bool $debug = false): bool {
         'INSERT INTO `userKeys` (memberID, privateKey) VALUES (:id, :privateKey)'
     );
     $stmt->bindValue(':id', $user->id, PDO::PARAM_INT);
-    $privateKey = getUserPrivatKey($user, $conn, $debug);
+    $privateKey = getUserPrivatKey($user, $conn);
     $stmt->bindValue(':privateKey', $privateKey);
 
     return safeWriteQueries($stmt, $conn, $debug);
