@@ -29,17 +29,6 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 ## TODO ##
 
 <details>
-<summary>Delete file </summary>
-
-    1. Description:  A logged in user should be able to delete any files they uploaded.
-    2. fileManagement/delete.php --> /api/fileManagement/delete
-    3. Parameter list: filePath(Optional), fileName
-        If no filePath is passed in, we will assume the fill will be in the users roots directory 
-    4. httpie command:
-
-</details>
-
-<details>
 
 <summary>Get file access </summary>
 
@@ -77,6 +66,18 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 
 <!-- TODO: Need to implement logic to make sure we tell the user we overwrote a file - and we should make sure multiple copies fake references to the file don't exist in the database -->
 </details>
+
+<details>
+<summary>Delete file </summary>
+
+    1. Description:  A logged in user should be able to delete any files they uploaded.
+    2. fileManagement/delete.php --> /api/fileManagement/delete
+    3. Parameter list: filePath(Optional), fileName
+        If no filePath is passed in, we will assume the fill will be in the users roots directory 
+    4. httpie command:
+
+</details>
+
 
 ## User Management
 

@@ -8,26 +8,26 @@ class FileLocationInfo {
     public string $realPath;
 
     /* Make sure we have the file location */
-    public function __construct(array $properties = []){
+    public function __construct(array $properties = []) {
         $this->name = $properties['name'];
-        /* str_replace('..', '') */
         $this->path = str_replace('..', '', $properties['path']);
-        $ownerId =  (int)$properties['ownerId'];
+        $ownerId = (int)$properties['ownerId'];
         /* Make sure user is contained to their folder */
-        $this->realPath = self::getUserFolder($this->path, $ownerId);
+        $this->realPath = self::getUserFolder($this->path, $ownerId)."/$this->name" ;
     }
-    
+
     /* Handle getting the actual file path for the user */
+
+    public static function getUserFolder(string $filePath, int $ownerId): string {
+        return "userFiles/$ownerId/" . str_replace('..', '', $filePath);
+    }
+
     public function getRealPath(): string {
         return $this->realPath;
     }
 
     public function getEncryptedFilePath(): string {
-        return "$this->realPath/$this->name.Encrypted";
-    }
-
-    public static function getUserFolder(string $filePath, int $ownerId): string {
-        return "userFiles/$ownerId/". str_replace('..', '', $filePath);
+        return "$this->realPath.Encrypted";
     }
 }
 

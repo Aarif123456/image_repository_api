@@ -24,14 +24,14 @@ function viewImageDetail(FileLocationInfo $file, User $user, PDO $conn): array {
 /* Wrapper function to get file information using the file id */
 function getImageDetailWithId(int $fileId, User $user, PDO $conn): FileLocationInfo {
     $stmt = $conn->prepare(
-        'SELECT fileName, filePath, memberID FROM files WHERE fileID=:fileId'
+        'SELECT fileName as \'name\', filePath as \'path\', memberID as \'ownerId\' FROM files WHERE fileID=:fileId AND memberID=:id'
     );
-    $stmt->bindValue(':fileId', $fileId);
+    $stmt->bindValue(':fileId', $fileId, PDO::PARAM_INT);
+    $stmt->bindValue(':id', $user->id, PDO::PARAM_INT);
     $rows = getExecutedResult($stmt);
     if (empty($rows)) {
         throw new NoSuchFileException();
     }
-    $result = $rows[0];
 
     return new FileLocationInfo($rows[0]);
 }

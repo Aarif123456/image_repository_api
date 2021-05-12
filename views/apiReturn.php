@@ -56,6 +56,7 @@ function requiredHeaderAndSessionStart() {
     startSession();
     if (empty($_REQUEST)) {
         $_REQUEST = json_decode(file_get_contents('php://input'), true);
+        $_POST = json_decode(file_get_contents('php://input'), true);
     }
 }
 
