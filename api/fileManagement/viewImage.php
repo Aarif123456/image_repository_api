@@ -16,10 +16,6 @@ require_once __DIR__ . '/../../repository/User.php';
 requiredHeaderAndSessionStart();
 header('Content-Type: text/html; charset=UTF-8');
 
-if (empty($_REQUEST)) {
-    $_REQUEST = json_decode(file_get_contents('php://input'), true);
-}
-
 $debug = DEBUG;
 /* Connect to database */
 $conn = getConnection();

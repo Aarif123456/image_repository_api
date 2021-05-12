@@ -54,7 +54,9 @@ function startSession() {
 function requiredHeaderAndSessionStart() {
     getHeader();
     startSession();
-    $_POST = json_decode(file_get_contents('php://input'), true);
+    if (empty($_REQUEST)) {
+        $_REQUEST = json_decode(file_get_contents('php://input'), true);
+    }
 }
 
 /* utility function for post, get and session if enough function this will go to it's own file*/

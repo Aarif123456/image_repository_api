@@ -8,15 +8,12 @@ require_once __DIR__ . '/../../views/errorHandling.php';
 require_once __DIR__ . '/../../common/constants.php';
 require_once __DIR__ . '/../../common/authenticate.php';
 require_once __DIR__ . '/../../repository/database.php';
-require_once __DIR__ . '/../../repository/viewImageRepo.php';
+require_once __DIR__ . '/../../repository/folderDetailRepo.php';
 require_once __DIR__ . '/../../repository/User.php';
 require_once __DIR__ . '/../../repository/File.php';
 
 /* Set required header and session start */
 requiredHeaderAndSessionStart();
-if (empty($_REQUEST)) {
-    $_REQUEST = json_decode(file_get_contents('php://input'), true);
-}
 
 $debug = DEBUG;
 /* Connect to database */
