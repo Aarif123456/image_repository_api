@@ -27,17 +27,12 @@ if (!(isValidPostVar('firstName') && isValidPostVar('lastName') &&
 $user = new User([
     'firstName' => trim($_POST['firstName']),
     'lastName' => trim($_POST['lastName']),
-    'isAdmin' => (bool)($_POST['admin'] ?? false)
+    'isAdmin' => (bool)($_POST['admin'] ?? false),
+    'email' => $_POST['email'],
+    'password' => $_POST['password'],
 ]);
 
-/* If we have the information needed to create new account then we will make it */
-$account = null;
-$account = (object)[
-    'email' => $_POST['email'] ?? '',
-    'password' => $_POST['password'] ?? '',
-];
-
-$result = insertUser($user, $account, $conn, $debug);
+$result = insertUser($user, $conn, $debug);
 
 if (!isset($result['error']) && (!isset($result['id']) || empty($result['id']))) {
     $result['error'] = COMMAND_FAILED;

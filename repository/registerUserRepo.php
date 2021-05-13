@@ -13,8 +13,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use PHPAuth\Auth as PHPAuth;
 use PHPAuth\Config as PHPAuthConfig;
 
-/*NOTE: leaving account as object because it is a one time use object */
-function insertUser(User $user, object $account, PDO $conn, bool $debug = false): array {
+function insertUser(User $user, PDO $conn, bool $debug = false): array {
     $output = [];
     try {
         $config = new PHPAuthConfig($conn);
@@ -24,9 +23,9 @@ function insertUser(User $user, object $account, PDO $conn, bool $debug = false)
         $params = [
             'firstName' => $user->firstName,
             'lastName' => $user->lastName,
-            'isAdmin' => $user->isAdmin
+            'isAdmin' =>(int)$user->isAdmin
         ];
-        $result = $auth->register($account->email, $account->password, $account->password, $params);
+        $result = $auth->register($user->email, $user->password, $user->password, $params);
         if ($result['error']) {
             $output['error'] = $result['message'];
 
@@ -35,7 +34,7 @@ function insertUser(User $user, object $account, PDO $conn, bool $debug = false)
 
         $output['message'] = $result['message'];
         /* Store the user's login info */
-        $output['id'] = $id = $auth->getUID($account->email);
+        $output['id'] = $id = $auth->getUID($user->email);
         $user->id = $id;
         /* store user info in member table */
         storeUserKeys($user, $conn, $debug);
@@ -52,6 +51,9 @@ function insertUser(User $user, object $account, PDO $conn, bool $debug = false)
     return $output;
 }
 
+/**
+ * @throws EncryptionFailureException
+ */
 function getUserPrivatKey(User $user, PDO $conn): string {
     $userAttributes = createUserAttributes($user);
     /* Get public and private key */
