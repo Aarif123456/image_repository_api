@@ -96,3 +96,16 @@ function debugQuery($affectedRow, $success, $functionName): string {
     );
 }
 
+
+class InvalidAccessException extends Exception {
+    public function __construct(string $message = null, int $code = 0) {
+        if (!$message) {
+            throw new $this(get_class($this) . ': ' . INVALID_ACCESS_TYPE);
+        }
+        parent::__construct($message, $code);
+    }
+
+    public function __toString() {
+        return get_class($this) . ': ' . $this->message;
+    }
+}

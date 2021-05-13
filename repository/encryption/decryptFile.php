@@ -12,7 +12,8 @@ require_once __DIR__ . '/encryptFile.php';
  * @param string $privateKey
  * @param string $publicKey
  * @return string
- * @throws Exception
+ * @throws EncryptionFailureException
+ * @throws NoSuchFileException
  */
 function getFileDecrypted(FileLocationInfo $file, string $privateKey, string $publicKey): string {
     $encryptedFileLocation = $file->getEncryptedFilePath();

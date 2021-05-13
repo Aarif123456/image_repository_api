@@ -8,6 +8,9 @@ require_once __DIR__ . '/encryption/policy.php';
 require_once __DIR__ . '/encryption/encryptFile.php';
 require_once __DIR__ . '/databaseConstants.php';
 
+/**
+ * @throws InvalidAccessException
+ */
 function getPolicy(int $fileAccess, User $user): string {
     switch ($fileAccess) {
         case PRIVATE_ACCESS:
@@ -15,14 +18,15 @@ function getPolicy(int $fileAccess, User $user): string {
         case PUBLIC_ACCESS:
             return getPublicPolicy($user);
         default:
-            throw new Exception(INVALID_ACCESS_TYPE);
+            throw new InvalidAccessException();
     }
 }
 
 /**
- * @throws Exception
+ * @throws EncryptedFileNotCreatedException
+ * @throws InvalidAccessException
  */
-function insertFile($file, $user, $conn, $debug): bool {
+function insertFile(File $file, User $user, PDO $conn, bool $debug = false): bool {
     $file->access ??= PRIVATE_ACCESS;
     $stmt = $conn->prepare(
         'INSERT INTO files (memberID, filePath, fileName, fileSize, accessID, mime) VALUES (:memberID, :filePath, :fileName, :fileSize, :accessID, :mime)'
