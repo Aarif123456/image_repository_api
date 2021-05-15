@@ -2,6 +2,7 @@
 /* Define the strings the api will return  */
 
 declare(strict_types=1);
+
 /* Stores the return of the API, created to make localization easier
 Some API return that come from SQL related error are located in repository/error.php
 */
@@ -9,7 +10,7 @@ Some API return that come from SQL related error are located in repository/error
 /* Manually turn on error reporting */
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
-ini_set('session.cookie_secure', '1');
+
 /*TODO: turn off in production */
 error_reporting(E_ALL);
 
@@ -28,9 +29,8 @@ function createQueryJSON($arr, $noRowReturn = NO_ROWS_RETURNED_JSON) {
 
 /* Required header */
 function getHeader() {
-    // header('Access-Control-Allow-Origin: https://abdullaharif.tech');
-    // header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Origin: https://localhost:3000');
+    header('Access-Control-Allow-Origin: https://abdullaharif.tech');
+    // header('Access-Control-Allow-Origin: https://localhost:3000');
     header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS');
     header('Access-Control-Allow-Credentials: true');
     header('Access-Control-Allow-Headers: X-Requested-With, X-PINGOTHER, content-type');
@@ -38,22 +38,8 @@ function getHeader() {
     header('Content-Type: application/json; charset=UTF-8'); // most endpoints application will always return JSON
 }
 
-function startSession() {
-    $status = session_status();
-    if (PHP_SESSION_DISABLED === $status) {
-        // That's why you cannot rely on sessions!
-        return;
-    }
-
-    if (PHP_SESSION_NONE === $status) {
-        session_cache_limiter('private_no_expire');
-        session_start();
-    }
-}
-
 function requiredHeaderAndSessionStart() {
     getHeader();
-    startSession();
     if (empty($_REQUEST)) {
         $_REQUEST = json_decode(file_get_contents('php://input'), true);
         $_POST = json_decode(file_get_contents('php://input'), true);

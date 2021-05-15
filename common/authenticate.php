@@ -28,12 +28,6 @@ function getUserID(PDO $conn) {
     return $auth->getCurrentUID();
 }
 
-function getUserInfo(int $userID, PDO $conn): array {
-    $auth = getAuth($conn);
-
-    return $auth->getUser($userID);
-}
-
 function getCurrentUserInfo(PDO $conn): array {
     $auth = getAuth($conn);
 
@@ -44,10 +38,27 @@ function verifyUserAdmin(PDO $conn): bool {
     return getCurrentUserInfo($conn)['isAdmin'];
 }
 
-function login($loginInfo, PDO $conn): array {
-    $auth = getAuth($conn);
 
-    return $auth->login($loginInfo->email, $loginInfo->password, $loginInfo->remember);
+/* Login function a bit ugly because we have multiple domains*/
+function login($loginInfo, PDO $conn): array {
+    $config = new PHPAuthConfig($conn);
+    $auth = new PHPAuth($conn, $config);
+
+    $loginInfo = $auth->login($loginInfo->email, $loginInfo->password, $loginInfo->remember);
+    $arrCookieOptions = [
+        'expires' => $loginInfo['expire'],
+        'path' => $config->cookie_path,
+        'domain' => $config->cookie_domain,
+        'secure' => $config->cookie_secure,
+        'httponly' =>  $config->cookie_http,
+        'samesite' => 'None' // Needed cause using multiple domain 
+    ];
+
+    if(!$loginInfo['error']){
+        setcookie($loginInfo['cookie_name'], $loginInfo['hash'], $arrCookieOptions);
+    }
+
+    return $loginInfo;
 }
 
 function logout(PDO $conn): bool {
