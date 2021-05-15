@@ -1,8 +1,12 @@
+[![MIT License](https://img.shields.io/github/license/Aarif123456/image_repository_api?style=for-the-badge)](https://lbesson.mit-license.org/)
+![Lines of code](https://img.shields.io/tokei/lines/github/Aarif123456/image_repository_api?style=for-the-badge)
+[![BCH compliance](https://bettercodehub.com/edge/badge/Aarif123456/image_repository_api?branch=main)](https://bettercodehub.com/)
+
 # What is this? 🤔
 
-An API built to be used by the for the [Image Repository](https://arif115.myweb.cs.uwindsor.ca/imagerepository/docs)
+An API built to be used by the for the [Image Repository](https://abdullaharif.tech/image_repository)
 
-# API for the Image Repository#
+# API for the Image Repository #
 
 API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 
@@ -34,7 +38,7 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 <details>
 <summary>Upload file </summary>
 
-    1. Description:  A logged in user should be able to upload a file securely. The policy will allows the user to control who can see their file. 
+    1. Description: A logged in user should be able to upload a file securely. The policy will allows the user to control who can see their file. 
     2. fileManagement/upload.php --> /api/fileManagement/upload
     3. Parameter list: filePath(Optional), fileName, file, policy
         If no filePath is passed in, we will assume the fill will be in the users roots directory 
@@ -44,8 +48,28 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 <details>
 <summary>Delete file </summary>
 
-    1. Description:  A logged in user should be able to delete any files they uploaded.
+    1. Description: A logged in user should be able to delete any files they uploaded.
     2. fileManagement/delete.php --> /api/fileManagement/delete
+    3. Parameter list: filePath(Optional), fileName
+        If no filePath is passed in, we will assume the fill will be in the users roots directory 
+
+</details>
+
+<details>
+<summary>Get images in folder</summary>
+
+    1. Description: A logged in user should be able to view the files in their folder
+    2. fileManagement/getFolderImages.php --> /api/fileManagement/getFolderImages
+    3. Parameter list: filePath(Optional)
+        If no filePath is passed in, we will assume the fill will be in the users roots directory 
+
+</details>
+
+<details>
+<summary>View image</summary>
+
+    1. Description: A user should be able to view images that are open to them
+    2. fileManagement/viewImage.php --> /api/fileManagement/viewImage
     3. Parameter list: filePath(Optional), fileName
         If no filePath is passed in, we will assume the fill will be in the users roots directory 
 
