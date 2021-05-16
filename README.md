@@ -30,7 +30,6 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 
 # Endpoints #
 
-
 ## Pending Testing ##
 
 ### File Management
@@ -75,7 +74,6 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 
 </details>
 
-
 ## User Management
 
 <details>
@@ -104,25 +102,33 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
     2. userManagement/addUser.php --> /api/userManagement/addUsers
     3. Parameter list:
         Accepts POST variable: firstName, lastName, email, password, admin(optional)  
+
 </details>
 
-
 # Building :construction:
+
 ## Technology stack :gear:
-**PHPAuth**: [PHPAuth](https://github.com/PHPAuth/PHPAuth) is a package to handle everything related to authentication. It includes features such as automatically emailing the user for password resets and blocking attackers by IP. \
-**PDO**: [PDO](https://www.php.net/manual/en/book.pdo.php) PHP data objects are used securely access databases without being locked to one type of database \
-**PHPUnit**: [PHPUnit](https://phpunit.de/) is a testing framework used to easily create unit tests for my program. Tests can be found in the "tests" folder.
+
+**PHPAuth**: [PHPAuth](https://github.com/PHPAuth/PHPAuth) is a package to handle everything related to authentication.
+It includes features such as automatically emailing the user for password resets and blocking attackers by IP. \
+**PDO**: [PDO](https://www.php.net/manual/en/book.pdo.php) PHP data objects are used securely access databases without
+being locked to one type of database \
+**PHPUnit**: [PHPUnit](https://phpunit.de/) is a testing framework used to easily create unit tests for my program.
+Tests can be found in the "tests" folder.
 
 ## Database design ## 
+
 ![Database ER diagram](https://i.imgur.com/INi6Iro.png)
 
 ## TODO ##
+
 <details>
 <summary>List sub-folders </summary>
 
     1. Description: Return a list of all folders in the selected folder
     2. fileManagement/listSubfolder.php -> /api/fileManagement/listSubfolder
     3. Parameter list: folderPath
+
 </details>
 
 <details>
@@ -131,6 +137,7 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
     1. Description: Allow the user to search for files by different attributes such as image tags, file name or uploader. Can be used to show the user their own files as well
     2. search/searchImage.php -> /api/search/searchImage
     3. Parameter list: searchType, keyword
+
 </details>
 
 <details>
@@ -139,6 +146,7 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
     1. Description: Allow the user to choose what files to share with the public and what to keep private
     2. fileManagement/setFilePermission.php -> /api/fileManagement/setFilePermission
     3. Parameter list:  
+
 </details>
 
 <details>
@@ -147,4 +155,7 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
     1. Description: Email the user a link so they can reset their password.
     2. userManagement/resetPassword.php -> /api/userManagement/resetPassword
     3. Parameter list: email
+
 </details>
+
+<!-- Figure out how to use name space -->
