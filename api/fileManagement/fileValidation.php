@@ -1,10 +1,7 @@
 <?php
-
 declare(strict_types=1);
-
 require_once __DIR__ . '/../../views/apiReturn.php';
 require_once __DIR__ . '/../../views/errorHandling.php';
-
 function checkFileForError(int $fileErrorStatus) {
     switch ($fileErrorStatus) {
         case UPLOAD_ERR_OK:
@@ -19,7 +16,6 @@ function checkFileForError(int $fileErrorStatus) {
             throw new Exception(INTERNAL_SERVER_ERROR);
     }
 }
-
 
 /**
  * @param File $file

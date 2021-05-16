@@ -1,7 +1,5 @@
 <?php
-
 declare(strict_types=1);
-
 require_once __DIR__ . '/constants.php';
 require_once __DIR__ . '/../views/errorHandling.php';
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -38,23 +36,20 @@ function verifyUserAdmin(PDO $conn): bool {
     return getCurrentUserInfo($conn)['isAdmin'];
 }
 
-
 /* Login function a bit ugly because we have multiple domains*/
 function login($loginInfo, PDO $conn): array {
     $config = new PHPAuthConfig($conn);
     $auth = new PHPAuth($conn, $config);
-
     $loginInfo = $auth->login($loginInfo->email, $loginInfo->password, $loginInfo->remember);
     $arrCookieOptions = [
         'expires' => $loginInfo['expire'],
         'path' => $config->cookie_path,
         'domain' => $config->cookie_domain,
         'secure' => $config->cookie_secure,
-        'httponly' =>  $config->cookie_http,
-        'samesite' => $config->cookie_samesite 
+        'httponly' => $config->cookie_http,
+        'samesite' => $config->cookie_samesite
     ];
-
-    if(!$loginInfo['error']){
+    if (!$loginInfo['error']) {
         setcookie($loginInfo['cookie_name'], $loginInfo['hash'], $arrCookieOptions);
     }
 

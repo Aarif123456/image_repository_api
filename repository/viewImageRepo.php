@@ -1,7 +1,5 @@
 <?php
-
 declare(strict_types=1);
-
 /* Imports */
 require_once __DIR__ . '/error.php';
 require_once __DIR__ . '/User.php';
@@ -35,7 +33,6 @@ function getImageDetailWithId(int $fileId, User $user, PDO $conn): FileLocationI
 
     return new FileLocationInfo($rows[0]);
 }
-
 
 /* Helper function to get the mime type of the file */
 function getFileMimeType(FileLocationInfo $file, User $user, PDO $conn) {

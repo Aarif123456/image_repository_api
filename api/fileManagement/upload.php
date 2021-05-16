@@ -1,7 +1,5 @@
 <?php
-
 declare(strict_types=1);
-
 /* Imports */
 require_once __DIR__ . '/../../views/apiReturn.php';
 require_once __DIR__ . '/../../views/errorHandling.php';
@@ -12,30 +10,24 @@ require_once __DIR__ . '/../../repository/uploadFileRepo.php';
 require_once __DIR__ . '/../../repository/File.php';
 require_once __DIR__ . '/../../repository/User.php';
 require_once __DIR__ . '/fileValidation.php';
-
 /* Set required header and session start */
 requiredHeaderAndSessionStart();
-
 $debug = DEBUG;
 /* Connect to database */
 $conn = getConnection();
-
 /* Make sure user is logged in */
 if (!validateUser($conn)) {
     redirectToLogin();
 }
-
 /* Set variables */
 $user = new User(getCurrentUserInfo($conn));
 $fileAccess = $_REQUEST['fileAccess'] ?? null;
 $filePath = $_REQUEST['filePath'] ?? '';
 $fileNames = $_REQUEST['fileNames'] ?? 'images';
-
 /* Make sure user uploaded a file*/
 if (!isValidFileVar($fileNames)) {
     throw new Exception(MISSING_PARAMETERS);
 }
-
 /* Create folder where user files will be stored */
 $userFolder = File::getUserFolder($filePath, $user->id);
 if (!file_exists($userFolder)) {
@@ -43,7 +35,6 @@ if (!file_exists($userFolder)) {
 }
 /*Create array to track if upload was successful */
 $uploadSuccess = [];
-
 if (empty($_FILES)) exit(NO_FILE_SENT_JSON);
 if (is_array($_FILES[$fileNames]['error']) || is_object($_FILES[$fileNames]['error'])) {
     foreach ($_FILES[$fileNames]['error'] as $key => $value) {
@@ -78,11 +69,8 @@ if (is_array($_FILES[$fileNames]['error']) || is_object($_FILES[$fileNames]['err
     ]);
     $uploadSuccess[$file->name] = processFile($file, $user, $conn);
 }
-
-
 echo createQueryJSON($uploadSuccess, NO_FILE_SENT_JSON);
 $conn = null;
-
 function processFile(File $file, User $user, PDO $conn, bool $debug = DEBUG): array {
     try {
         checkFile($file);

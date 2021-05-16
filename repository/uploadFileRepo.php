@@ -1,13 +1,10 @@
 <?php
-
 declare(strict_types=1);
-
 require_once __DIR__ . '/error.php';
 require_once __DIR__ . '/systemKey.php';
 require_once __DIR__ . '/encryption/policy.php';
 require_once __DIR__ . '/encryption/encryptFile.php';
 require_once __DIR__ . '/databaseConstants.php';
-
 /**
  * @throws InvalidAccessException
  */

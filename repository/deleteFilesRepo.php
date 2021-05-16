@@ -1,13 +1,10 @@
 <?php
-
 declare(strict_types=1);
-
 /* Imports */
 require_once __DIR__ . '/error.php';
 require_once __DIR__ . '/User.php';
 require_once __DIR__ . '/File.php';
 require_once __DIR__ . '/viewImageRepo.php';
-
 /* Function to delete file */
 function deleteImage(FileLocationInfo $file, User $user, PDO $conn, bool $debug = false): bool {
     $stmt = $conn->prepare(
@@ -17,7 +14,6 @@ function deleteImage(FileLocationInfo $file, User $user, PDO $conn, bool $debug 
     $stmt->bindValue(':filePath', $file->path);
     $stmt->bindValue(':id', $user->id);
     $filePath = $file->getEncryptedFilePath();
-
 
     return file_exists($filePath) && safeWriteQueries($stmt, $conn, $debug) && unlink($filePath);
 }

@@ -1,10 +1,7 @@
 <?php
 /* Define the error handlers  */
-
 declare(strict_types=1);
-
 require_once __DIR__ . '/apiReturn.php';
-
 /* constants */
 const COMMAND_FAILED = 'Query failed to execute, ensure you use the correct values';
 const FILE_ALREADY_EXISTS = 'File already exists';
@@ -18,7 +15,6 @@ const NO_FILE_SENT_JSON = '{"error":"No file sent."}';
 const NO_ROWS_RETURNED_JSON = '{"error":"No rows were found in database"}';
 const UNAUTHORIZED_NO_LOGIN_JSON = '{"error":"user is not logged in!"}';
 const USER_NOT_ADMIN = 'User is not an admin.';
-
 set_exception_handler('exitWithJsonExceptionHandler');
 // set_error_handler('exitWithJsonExceptionHandler');
 function exitWithJsonExceptionHandler(Throwable $e) {

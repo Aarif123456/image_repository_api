@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 class FileLocationInfo {
@@ -13,11 +12,10 @@ class FileLocationInfo {
         $this->path = str_replace('..', '', $properties['path']);
         $ownerId = (int)$properties['ownerId'];
         /* Make sure user is contained to their folder */
-        $this->realPath = self::getUserFolder($this->path, $ownerId)."/$this->name" ;
+        $this->realPath = self::getUserFolder($this->path, $ownerId) . "/$this->name";
     }
 
     /* Handle getting the actual file path for the user */
-
     public static function getUserFolder(string $filePath, int $ownerId): string {
         return "userFiles/$ownerId/" . str_replace('..', '', $filePath);
     }
@@ -30,7 +28,6 @@ class FileLocationInfo {
         return "$this->realPath.Encrypted";
     }
 }
-
 
 class File extends FileLocationInfo {
     public int $size;

@@ -1,12 +1,9 @@
 <?php
-
 declare(strict_types=1);
-
 require_once __DIR__ . '/encryptionConstants.php';
 require_once __DIR__ . '/encryptionExceptionConstants.php';
 require_once __DIR__ . '/callApi.php';
 require_once __DIR__ . '/encryptFile.php';
-
 /**
  * @param FileLocationInfo $file
  * @param string $privateKey

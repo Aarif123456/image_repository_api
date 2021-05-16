@@ -1,23 +1,16 @@
 <?php
 /* Define the strings the api will return  */
-
 declare(strict_types=1);
-
 /* Stores the return of the API, created to make localization easier
 Some API return that come from SQL related error are located in repository/error.php
 */
-
 /* Manually turn on error reporting */
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
-
 /*TODO: turn off in production */
 error_reporting(E_ALL);
-
-
 /* constants */
 const USER_LOGGED_OUT_JSON = '{"message":"User has successfully logged out"}';
-
 /* We HTML entities any data coming back from the user before printing */
 function createQueryJSON($arr, $noRowReturn = NO_ROWS_RETURNED_JSON) {
     if (!$arr) {

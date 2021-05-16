@@ -1,17 +1,13 @@
 <?php
-
 declare(strict_types=1);
-
 require_once __DIR__ . '/encryptionConstants.php';
 require_once __DIR__ . '/encryptionExceptionConstants.php';
-
 /**
  * Modified: https://stackoverflow.com/questions/5647461/how-do-i-send-a-post-request-with-php
  * @throws Exception
  */
 function callApi(array $fields, array $options = [], bool $debug = false): array {
     $ch = curl_init();
-
     //set the url, number of POST vars, POST data
     $defaults = [
         CURLOPT_URL => ENCRYPTION_ENDPOINT,
@@ -20,10 +16,8 @@ function callApi(array $fields, array $options = [], bool $debug = false): array
         CURLOPT_RETURNTRANSFER => true,
     ];
     curl_setopt_array($ch, ($options + $defaults));
-
     // Make the the post request
     $result = (array)json_decode((string)curl_exec($ch), true);
-
     if (array_key_exists('Error', $result)) {
         throw new EncryptionFailureException($result['Error'], 1);
     }
@@ -78,7 +72,6 @@ function keygen(string $publicKey, string $masterKey, string $userAttributes, st
     ];
     $result = callApi($args);
     if (array_key_exists('privateKey', $result)) return $result['privateKey'];
-
     throw new EncryptionFailureException('Keygen Failed!', 1);
 }
 
@@ -93,7 +86,6 @@ function encrypt(string $publicKey, string $policy, string $inputFile, string $p
     ];
     $result = callApi($args);
     if (array_key_exists('encryptedFile', $result)) return base64_decode($result['encryptedFile']);
-
     throw new EncryptionFailureException('Encrypt Failed!', 1);
 }
 
@@ -108,7 +100,6 @@ function decrypt(string $publicKey, string $privateKey, string $encryptedFile, s
     ];
     $result = callApi($args);
     if (array_key_exists('decryptedFile', $result)) return base64_decode($result['decryptedFile']);
-
     throw new EncryptionFailureException('Decrypt Failed!', 1);
 }
 

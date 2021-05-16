@@ -1,11 +1,8 @@
 <?php
-
 declare(strict_types=1);
-
 require_once __DIR__ . '/encryptionConstants.php';
 require_once __DIR__ . '/callApi.php';
 require_once __DIR__ . '/encryptionExceptionConstants.php';
-
 /* We encrypt the file and delete the temporary file that holds the unencrypted version */
 function encryptFile(File $file, string $policy, PDO $conn) {
     $encryptedFile = getFileEncrypted($file->location, $policy, $conn);
