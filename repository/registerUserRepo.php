@@ -1,7 +1,5 @@
 <?php
-
 declare(strict_types=1);
-
 /* Imports */
 require_once __DIR__ . '/error.php';
 require_once __DIR__ . '/systemKey.php';
@@ -15,38 +13,27 @@ use PHPAuth\Config as PHPAuthConfig;
 
 function insertUser(User $user, PDO $conn, bool $debug = false): array {
     $output = [];
-    try {
-        $config = new PHPAuthConfig($conn);
-        $auth = new PHPAuth($conn, $config);
+    $config = new PHPAuthConfig($conn);
+    $auth = new PHPAuth($conn, $config);
+    $conn->beginTransaction();
+    $params = [
+        'firstName' => $user->firstName,
+        'lastName' => $user->lastName,
+        'isAdmin' => (int)$user->isAdmin
+    ];
+    $result = $auth->register($user->email, $user->password, $user->password, $params);
+    if ($result['error']) {
+        $output['error'] = $result['message'];
 
-        $conn->beginTransaction();
-        $params = [
-            'firstName' => $user->firstName,
-            'lastName' => $user->lastName,
-            'isAdmin' =>(int)$user->isAdmin
-        ];
-        $result = $auth->register($user->email, $user->password, $user->password, $params);
-        if ($result['error']) {
-            $output['error'] = $result['message'];
-
-            return $output;
-        }
-
-        $output['message'] = $result['message'];
-        /* Store the user's login info */
-        $output['id'] = $id = $auth->getUID($user->email);
-        $user->id = $id;
-        /* store user info in member table */
-        storeUserKeys($user, $conn, $debug);
-        $conn->commit();
-    } catch (Exception $e) {
-        /* remove all queries from queue if error (undo) */
-        $conn->rollBack();
-        if ($debug) {
-            $output['debug'] = debugException($e, $conn);
-        }
-        $output['error'] = WRITE_QUERY_FAILED;
+        return $output;
     }
+    $output['message'] = $result['message'];
+    /* Store the user's login info */
+    $output['id'] = $id = $auth->getUID($user->email);
+    $user->id = $id;
+    /* store user info in member table */
+    storeUserKeys($user, $conn, $debug);
+    $conn->commit();
 
     return $output;
 }
