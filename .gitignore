@@ -24,3 +24,6 @@
 
 # encryption files
 *.ENCRYPTED
+
+# caches
+testCache
