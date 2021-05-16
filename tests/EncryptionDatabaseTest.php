@@ -13,6 +13,7 @@ require_once __DIR__ . '/../repository/encryption/decryptFile.php';
 require_once __DIR__ . '/../repository/encryption/userAttributes.php';
 require_once __DIR__ . '/../repository/encryption/encryptionExceptionConstants.php';
 require_once __DIR__ . '/helper.php';
+require_once __DIR__ . '/dataProviders.php';
 
 /* This class make sure that the encryption system works using the information that we 
  * have saved locally in constants or stored in our database 
@@ -38,54 +39,9 @@ final class EncryptionDatabaseTest extends TestCase {
      * @testdox Create users for testing
      */
     public function userProvider(): array {
-        return [new User([
-            'email' => 'testUser@testing.com',
-            'isactive' => true,
-            'id' => 0,
-            'dt' => (string)date('Y/m/d'),
-            'firstName' => 'Test first name',
-            'lastName' => '',
-            'isAdmin' => false,
-        ]),
-            new User([
-                'email' => 'testUser2@testing.com',
-                'isactive' => true,
-                'id' => 1,
-                'dt' => (string)date('Y/m/d'),
-                'firstName' => 'Another one',
-                'lastName' => '',
-                'isAdmin' => false,
-            ]),
-            new User([
-                'email' => 'testUser3@testing.com',
-                'isactive' => false,
-                'id' => 3,
-                'dt' => (string)date('Y/m/d'),
-                'firstName' => 'I am not active',
-                'lastName' => 'and not an admin',
-                'isAdmin' => false,
-            ]),
-            new User([
-                'email' => 'testUser4@testing.com',
-                'isactive' => false,
-                'id' => 4,
-                'dt' => (string)date('Y/m/d'),
-                'firstName' => 'I am not active',
-                'lastName' => 'and a admin',
-                'isAdmin' => true,
-            ]),
-            new User([
-                'email' => 'testUser5@testing.com',
-                'isactive' => true,
-                'id' => 5,
-                'dt' => (string)date('Y/m/d'),
-                'firstName' => 'I am active',
-                'lastName' => 'and a admin',
-                'isAdmin' => true,
-            ]),
-        ];
+        return array_map(function (array $userInfo) {
+            return new User($userInfo);}, VALID_USER_INFO);
     }
-
     /**
      * @testdox Uniqueness of id is guaranteed by database and
      * email validated during registration.
@@ -105,14 +61,10 @@ final class EncryptionDatabaseTest extends TestCase {
     public function notWorkingAccessProvider(): array {
         $invalidAccess = [0, 3, 100, -1];
         $users = $this->userProvider();
-        $output = [];
-        foreach ($invalidAccess as $accessId) {
-            foreach ($users as $user) {
-                array_push($output, [$user, $accessId]);
-            }
-        }
 
-        return $output;
+        return cartesian(['user' => $users,
+            'access' => $invalidAccess
+        ]);
     }
 
 
