@@ -51,7 +51,7 @@ function login($loginInfo, PDO $conn): array {
         'domain' => $config->cookie_domain,
         'secure' => $config->cookie_secure,
         'httponly' =>  $config->cookie_http,
-        'samesite' => 'None' // Needed cause using multiple domain 
+        'samesite' => $config->cookie_samesite 
     ];
 
     if(!$loginInfo['error']){
