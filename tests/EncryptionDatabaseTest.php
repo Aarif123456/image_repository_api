@@ -115,19 +115,6 @@ final class EncryptionDatabaseTest extends TestCase {
         return $output;
     }
 
-    /**************************************************************************/
-    /* Mock objects */
-
-    private function getMockFile($fileLocation, $fileEncryptedLocation) {
-        $file = $this->createMock(File::class);
-        $file->method('getEncryptedFilePath')->willReturn($fileEncryptedLocation);
-        $file->path = $fileLocation;
-        $file->location = $fileLocation;
-
-        return $file;
-    }
-
-    
 
     /**************************************************************************/
     /* Test cases */
@@ -225,7 +212,7 @@ final class EncryptionDatabaseTest extends TestCase {
     public function testFileEncrypted(User $user, int $accessId): File {
         $policy = $this->testValidPolicy($user, $accessId);
         $encryptedFile = $this->encryptedFileLocationCreator($accessId, $user->id);
-        $file = $this->getMockFile($this->inputFile, $encryptedFile);
+        $file = FileMockProvider::getMockFile($this->inputFile, $encryptedFile);
         $conn = self::$mockedSQL->getMockedPDO();
         encryptFile($file, $policy, $conn);
         $encryptedFileBytes = file_get_contents($encryptedFile);
@@ -245,7 +232,7 @@ final class EncryptionDatabaseTest extends TestCase {
      */
     public function testFileValidDecrypted(User $user, int $accessId): void {
         $encryptedFile = $this->encryptedFileLocationCreator($accessId, $user->id);
-        $file = $this->getMockFile($this->inputFile, $encryptedFile);
+        $file = FileMockProvider::getMockFile($this->inputFile, $encryptedFile);
         /* Go through all users and check if we can decrypt if we have access and vice-versa*/
         foreach (self::$mockedSQL->userKeys as $curUserId => $privateKey) {
             /* If file is private only people with access can expect */

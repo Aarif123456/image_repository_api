@@ -20,6 +20,19 @@ function cartesian(array $input): array {
     return $result;
 }
 
+/**************************************************************************/
+/* Mock objects */
+final class FileMockProvider extends TestCase {
+    public static function getMockFile($fileLocation, $fileEncryptedLocation) {
+        $file = (new FileMockProvider)->createMock(File::class);
+        $file->method('getEncryptedFilePath')->willReturn($fileEncryptedLocation);
+        $file->path = $fileLocation;
+        $file->location = $fileLocation;
+
+        return $file;
+    }
+}
+    
 final class SQLMockProvider extends TestCase {
     /* Tracks what user we are testing */
     private static SQLMockProvider $singleton;
