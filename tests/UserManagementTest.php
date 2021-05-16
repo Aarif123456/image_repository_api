@@ -20,7 +20,8 @@ require_once __DIR__ . '/../repository/error.php';
  */
 final class UserManagementTest extends TestCase {
 
-    function getTestUsers(): array{
+    
+    public function getTestUsers(): array {
         return [
             ['Testing active user who is not an admin' => [
                         'email' =>'testUser@testing.com',
