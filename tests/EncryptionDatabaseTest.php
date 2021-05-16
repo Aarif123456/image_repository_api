@@ -19,12 +19,14 @@ require_once __DIR__ . '/helper.php';
  */
 
 final class EncryptionDatabaseTest extends TestCase {
-    /* Hold the private key of the user */
-    public static array $userKeys = [];
-    /* Tracks what user we are testing */
-    public static int $lastUserId = 0;
-    private static string $publicKey = '', $masterKey = '';
     private string $inputFile = __DIR__ . '/test.png';
+    public static SQLMockProvider $mockedSQL;
+
+    public function __construct($name = null, array $data = [], $dataName = ''){
+        self::$mockedSQL = new SQLMockProvider();
+        parent::__construct($name, $data, $dataName);
+    }
+
 
     private function encryptedFileLocationCreator(int $accessId, int $userId): string {
         return "$this->inputFile.$userId.$accessId.ENCRYPTED";
@@ -115,40 +117,6 @@ final class EncryptionDatabaseTest extends TestCase {
 
     /**************************************************************************/
     /* Mock objects */
-    /**
-     * @testdox One function to make it easy to change as we change the SQL
-     */
-    public static function mockedSQL(string $query) {
-        switch ($query) {
-            /* Getting system keys */
-            case 'SELECT keysName, keyData FROM systemKeys WHERE keysName=:masterKey OR keysName=:publicKey':
-                $result = [[
-                    'keysName' => 'publicKey',
-                    'keyData' => self::$publicKey
-                ],
-                    [
-                        'keysName' => 'masterKey',
-                        'keyData' => self::$masterKey
-                    ]
-                ];
-                break;
-            case 'SELECT privateKey FROM userKeys WHERE memberID=:id':
-                $result = [['privateKey' => self::$userKeys[self::$lastUserId]]];
-                break;
-            default:
-                fwrite(STDERR, "Warning unrecognized query: \"$query\"");
-                fwrite(STDERR, print_r($query, true));
-                $result = [];
-                break;
-        }
-        $stmt = (new EncryptionDatabaseTest)->createStub(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('closeCursor')->willReturn(true);
-        $stmt->method('bindValue')->willReturn(true);
-        $stmt->method('fetchAll')->willReturn($result);
-
-        return $stmt;
-    }
 
     private function getMockFile($fileLocation, $fileEncryptedLocation) {
         $file = $this->createMock(File::class);
@@ -159,15 +127,7 @@ final class EncryptionDatabaseTest extends TestCase {
         return $file;
     }
 
-    /**
-     * @testdox One function to make it easy to change as we change the SQL
-     */
-    private function getMockedPDO() {
-        $conn = $this->createMock(PDO::class);
-        $conn->method('prepare')->will($this->returnCallback('EncryptionDatabaseTest::mockedSQL'));
-
-        return $conn;
-    }
+    
 
     /**************************************************************************/
     /* Test cases */
@@ -182,8 +142,8 @@ final class EncryptionDatabaseTest extends TestCase {
         $this->assertArrayHasKey('publicKey', $setupReturn);
         $this->assertArrayHasKey('masterKey', $setupReturn);
         /* Push keys to be used in future queries */
-        self::$publicKey = $setupReturn['publicKey'];
-        self::$masterKey = $setupReturn['masterKey'];
+        self::$mockedSQL->publicKey = $setupReturn['publicKey'];
+        self::$mockedSQL->masterKey = $setupReturn['masterKey'];
 
         return $setupReturn;
     }
@@ -235,12 +195,12 @@ final class EncryptionDatabaseTest extends TestCase {
      * @covers ::keygen
      * @throws EncryptionFailureException
      */
-    public function testValidUserKeyGeneration(User $user, int $_accessId): void {
+    public function testValidUserKeyGeneration(User $user): void {
         $userAttributes = $this->testUserAttributes($user);
-        $privateKey = keygen(self::$publicKey, self::$masterKey, $userAttributes);
-        self::$userKeys[$user->id] = $privateKey;
+        $privateKey = keygen(self::$mockedSQL->publicKey, self::$mockedSQL->masterKey, $userAttributes);
+        self::$mockedSQL->userKeys[$user->id] = $privateKey;
         $this->assertNotEmpty($privateKey);
-        self::$lastUserId = $user->id;
+        self::$mockedSQL->lastUserId = $user->id;
     }
 
     /**
@@ -250,7 +210,7 @@ final class EncryptionDatabaseTest extends TestCase {
      */
     public function testInvalidUserKeyGeneration(): void {
         $this->expectException(EncryptionFailureException::class);
-        keygen(self::$publicKey, self::$masterKey, 'This is an invalid attribute...');
+        keygen(self::$mockedSQL->publicKey, self::$mockedSQL->masterKey, 'This is an invalid attribute...');
     }
 
     /**
@@ -260,12 +220,13 @@ final class EncryptionDatabaseTest extends TestCase {
      * @covers ::encryptFile
      * @covers ::getFileEncrypted
      * @throws EncryptedFileNotCreatedException
+     * @throws InvalidAccessException
      */
     public function testFileEncrypted(User $user, int $accessId): File {
         $policy = $this->testValidPolicy($user, $accessId);
         $encryptedFile = $this->encryptedFileLocationCreator($accessId, $user->id);
         $file = $this->getMockFile($this->inputFile, $encryptedFile);
-        $conn = $this->getMockedPDO();
+        $conn = self::$mockedSQL->getMockedPDO();
         encryptFile($file, $policy, $conn);
         $encryptedFileBytes = file_get_contents($encryptedFile);
         $this->assertNotEmpty($encryptedFileBytes);
@@ -286,13 +247,13 @@ final class EncryptionDatabaseTest extends TestCase {
         $encryptedFile = $this->encryptedFileLocationCreator($accessId, $user->id);
         $file = $this->getMockFile($this->inputFile, $encryptedFile);
         /* Go through all users and check if we can decrypt if we have access and vice-versa*/
-        foreach (self::$userKeys as $curUserId => $privateKey) {
+        foreach (self::$mockedSQL->userKeys as $curUserId => $privateKey) {
             /* If file is private only people with access can expect */
             if (isFilePrivate($accessId) && $user->id !== $curUserId) {
                 $this->expectException(EncryptionFailureException::class);
             }
             /* Check if we can decrypt */
-            $decryptedFileBytes = getFileDecrypted($file, $privateKey, self::$publicKey);
+            $decryptedFileBytes = getFileDecrypted($file, $privateKey, self::$mockedSQL->publicKey);
             $this->assertTrue(strcmp(file_get_contents($this->inputFile), $decryptedFileBytes) === 0);
         }
 
