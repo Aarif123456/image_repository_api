@@ -1,15 +1,14 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
+
 /* https://devqa.io/user-registration-test-cases-scenarios/
 * Sanity test to make sure we didn't accidentally break our login and registration page
 * I am using a library to handle the registration which is why I am not going to test 
 * these functions heavily. 
 * TODO: test login, register, logout, -> forget password
 */
-
-//require_once __DIR__ . '/../api/userManagement/addUser.php';
-//require_once __DIR__ . '/../api/userManagement/loginUser.php';
 require_once __DIR__ . '/../repository/User.php';
 require_once __DIR__ . '/../repository/error.php';
 
@@ -20,7 +19,6 @@ require_once __DIR__ . '/../repository/error.php';
  */
 final class UserManagementTest extends TestCase {
 
-    
     public function getTestUsers(): array {
         return [
             ['Testing active user who is not an admin' => [
@@ -121,18 +119,19 @@ final class UserManagementTest extends TestCase {
                         'isactive' => true,
                         'id' => 5,
                         'dt' =>  (string)date('Y/m/d'),
-                        'firstName' => 'no isAdmin field',
-                        'lastName' => '',
-                    ], true],
-
+                'firstName' => 'no isAdmin field',
+                'lastName' => '',
+            ], true],
         ];
     }
+
     /**
-    * @testdox Make sure we can create new users that are valid
-    * @dataProvider getTestUsers
-    */
+     * @testdox Make sure we can create new users that are valid
+     * @dataProvider getTestUsers
+     * @covers User
+     */
     public function testUserCreation(array $userInfo, bool $isValid): User {
-        if(!$isValid){
+        if (!$isValid) {
             $this->expectException(InvalidPropertyException::class);
             $this->expectError();
         }
