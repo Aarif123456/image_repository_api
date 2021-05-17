@@ -27,8 +27,6 @@ $user = new User([
     'password' => $_POST['password'],
 ]);
 $result = insertUser($user, $conn, $debug);
-if (!isset($result['error']) && (!isset($result['id']) || empty($result['id']))) {
-    $result['error'] = COMMAND_FAILED;
-}
+$result['message'] ??= COMMAND_FAILED;
 echo createQueryJSON($result);
 $conn = null;

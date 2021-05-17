@@ -69,7 +69,7 @@ if (is_array($_FILES[$fileNames]['error']) || is_object($_FILES[$fileNames]['err
     ]);
     $uploadSuccess[$file->name] = processFile($file, $user, $conn);
 }
-echo createQueryJSON($uploadSuccess, NO_FILE_SENT_JSON);
+echo createQueryJSON($uploadSuccess);
 $conn = null;
 function processFile(File $file, User $user, PDO $conn, bool $debug = DEBUG): array {
     try {
@@ -82,7 +82,7 @@ function processFile(File $file, User $user, PDO $conn, bool $debug = DEBUG): ar
         unlink($file->location);
     } catch (Exception $e) {
         $output = ['success' => false];
-        $output['error'] = $e->getMessage();
+        $output['message'] = $e->getMessage();
     }
 
     return $output;

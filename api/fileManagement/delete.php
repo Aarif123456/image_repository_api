@@ -39,7 +39,7 @@ try {
         $output['success'] = deleteImage($file, $user, $conn, $debug);
     }
 } catch (Exception $e) {
-    $output['error'] = $e->getMessage();
+    $output['message'] = $e->getMessage();
     $output['success'] = false;
 }
 echo createQueryJSON($output);
