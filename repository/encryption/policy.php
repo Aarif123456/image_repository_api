@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 function getPrivatePolicy(User $user): string {
     return "userId:$user->id public:true 2of2";

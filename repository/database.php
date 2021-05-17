@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /* Used to get mysql database connection */
 require_once __DIR__ . '/loginConstants.php';

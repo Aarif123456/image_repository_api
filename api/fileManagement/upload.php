@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /* Imports */
 require_once __DIR__ . '/../../views/apiReturn.php';
@@ -35,7 +36,9 @@ if (!file_exists($userFolder)) {
 }
 /*Create array to track if upload was successful */
 $uploadSuccess = [];
-if (empty($_FILES)) exit(NO_FILE_SENT_JSON);
+if (empty($_FILES)) {
+    exit(NO_FILE_SENT_JSON);
+}
 if (is_array($_FILES[$fileNames]['error']) || is_object($_FILES[$fileNames]['error'])) {
     foreach ($_FILES[$fileNames]['error'] as $key => $value) {
         $file = new File([

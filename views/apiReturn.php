@@ -1,4 +1,5 @@
 <?php
+
 /* Define the strings the api will return  */
 declare(strict_types=1);
 /* Stores the return of the API, created to make localization easier

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /* Error handling for calls to the database */
 const INVALID_ACCESS_TYPE = 'Invalid file access policy.';
@@ -35,7 +36,8 @@ function safeWriteQueries($stmt, $conn, $debug): bool {
     throw new PDOException(WRITE_QUERY_FAILED, 1);
 }
 
-class InvalidAccessException extends Exception {
+class InvalidAccessException extends Exception
+{
     public function __construct(string $message = null, int $code = 0) {
         if (!$message) {
             throw new $this(get_class($this) . ': ' . INVALID_ACCESS_TYPE);
@@ -48,7 +50,8 @@ class InvalidAccessException extends Exception {
     }
 }
 
-class InvalidPropertyException extends Exception {
+class InvalidPropertyException extends Exception
+{
     public function __construct(string $message = null, int $code = 0) {
         if (!$message) {
             throw new $this(get_class($this) . ': ' . INVALID_PROPERTY);
@@ -61,10 +64,13 @@ class InvalidPropertyException extends Exception {
     }
 }
 
-class DebugPDOException extends Exception {
+class DebugPDOException extends Exception
+{
     public function __construct(PDO $conn, Exception $e, int $code = 1) {
         $output = PHP_EXCEPTION . $e;
-        if (!empty($conn->errorCode())) $output = sprintf('%s%s%s', SQL_ERROR, json_encode($conn->errorInfo()), $output);
+        if (!empty($conn->errorCode())) {
+            $output = sprintf('%s%s%s', SQL_ERROR, json_encode($conn->errorInfo()), $output);
+        }
         parent::__construct($output, $code);
     }
 

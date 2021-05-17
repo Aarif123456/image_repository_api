@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 require_once __DIR__ . '/../repository/encryption/callApi.php';
 require_once __DIR__ . '/../repository/encryption/encryptionExceptionConstants.php';
@@ -10,13 +11,15 @@ use PHPUnit\Framework\TestCase;
  * only be read by the intended group. We will also be testing different components that 
  * make this possible.
  */
-final class EncryptionTest extends TestCase {
+final class EncryptionTest extends TestCase
+{
     private string $inputFile = __DIR__ . '/test.png';
 
     /**
      * @testdox Make sure we can generate new system properties if we ever want to in the future
      * @covers ::generateProperties
      * @covers ::callApi
+     * @throws EncryptionFailureException
      */
     public function testSystemPropertiesGeneration(): string {
         $type = 'a';
@@ -37,6 +40,7 @@ final class EncryptionTest extends TestCase {
      * @testdox Make sure we can generate the keys needed for the encryption decryption process
      * @depends testSystemPropertiesGeneration
      * @covers ::setup
+     * @throws EncryptionFailureException
      */
     public function testSystemKeyGeneration(string $properties): array {
         /* Make sure program uses system properties */
@@ -92,7 +96,6 @@ final class EncryptionTest extends TestCase {
         $masterKey = $setupReturn['masterKey'] ?? '';
         $publicKey = $setupReturn['publicKey'] ?? '';
         keygen($publicKey, $masterKey, 'This is an invalid attribute...', $properties);
-
     }
 
     /**
@@ -124,7 +127,6 @@ final class EncryptionTest extends TestCase {
         $publicKey = $setupReturn['publicKey'] ?? '';
         $policy = 'This is an invalid policy....';
         encrypt($publicKey, $policy, $this->inputFile, $properties);
-
     }
 
     /**
@@ -135,7 +137,12 @@ final class EncryptionTest extends TestCase {
      * @covers ::decrypt
      * @throws EncryptionFailureException
      */
-    public function testFileValidDecrypted(string $properties, array $setupReturn, string $privateKey, string $encryptedFile): string {
+    public function testFileValidDecrypted(
+        string $properties,
+        array $setupReturn,
+        string $privateKey,
+        string $encryptedFile
+    ): string {
         $publicKey = $setupReturn['publicKey'] ?? '';
         $decryptedFile = decrypt($publicKey, $privateKey, $encryptedFile, $properties);
         $this->assertTrue(strcmp(file_get_contents($this->inputFile), $decryptedFile) === 0);
@@ -151,10 +158,14 @@ final class EncryptionTest extends TestCase {
      * @depends testFileEncrypted
      * @covers ::decrypt
      */
-    public function testFileInvalidDecrypted(string $properties, array $setupReturn, string $privateKey, string $encryptedFile): void {
+    public function testFileInvalidDecrypted(
+        string $properties,
+        array $setupReturn,
+        string $privateKey,
+        string $encryptedFile
+    ): void {
         $this->expectException(EncryptionFailureException::class);
         $publicKey = $setupReturn['publicKey'] ?? '';
         decrypt($publicKey, $privateKey, $encryptedFile, $properties);
-
     }
 }

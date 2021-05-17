@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /* Imports */
 require_once __DIR__ . '/error.php';
@@ -7,15 +8,18 @@ require_once __DIR__ . '/encryption/callApi.php';
 require_once __DIR__ . '/encryption/userAttributes.php';
 require_once __DIR__ . '/User.php';
 require_once __DIR__ . '/../vendor/autoload.php';
+/**
+ * @throws EncryptionFailureException
+ * @throws DebugPDOException
+ */
 function insertUser(User $user, PDO $conn, bool $debug = false): array {
     $conn->beginTransaction();
-    
     $output = registerUser($conn, $user);
-    if ($output['error']) return $output;
-    
+    if ($output['error']) {
+        return $output;
+    }
     /* Store the user's login info */
     $user->id = $output['id'];
-    
     /* store user info in member table */
     storeUserKeys($user, $conn, $debug);
     $conn->commit();

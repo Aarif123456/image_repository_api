@@ -1,4 +1,5 @@
 <?php
+
 /* Define the error handlers  */
 declare(strict_types=1);
 require_once __DIR__ . '/apiReturn.php';
@@ -14,8 +15,10 @@ const USER_NOT_ADMIN = 'User is not an admin.';
 set_exception_handler('exitWithJsonExceptionHandler');
 // set_error_handler('exitWithJsonExceptionHandler');
 function exitWithJsonExceptionHandler(Throwable $e) {
-    $errorMessage = createQueryJSON(['error' => true,
-                                     'message' => (string)$e]);
+    $errorMessage = createQueryJSON([
+        'error' => true,
+        'message' => (string)$e
+    ]);
     exit($errorMessage);
 }
 

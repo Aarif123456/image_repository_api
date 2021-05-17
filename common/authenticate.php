@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 require_once __DIR__ . '/constants.php';
 require_once __DIR__ . '/authenticationExceptions.php';
@@ -63,7 +64,7 @@ function registerUser(PDO $conn, User $user): array {
         'lastName' => $user->lastName,
         'isAdmin' => (int)$user->isAdmin
     ];
-   
+
     return $auth->register($user->email, $user->password, $user->password, $params);
 }
 
@@ -81,6 +82,7 @@ function resetPassword(string $email, PDO $conn): array {
 
 /**
  * logout function
+ *
  * @throws UnauthorizedUserException
  */
 function redirectToLogin() {

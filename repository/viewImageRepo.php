@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /* Imports */
 require_once __DIR__ . '/error.php';
@@ -6,7 +7,6 @@ require_once __DIR__ . '/User.php';
 require_once __DIR__ . '/systemKey.php';
 require_once __DIR__ . '/encryption/decryptFile.php';
 require_once __DIR__ . '/encryption/encryptionExceptionConstants.php';
-
 /* Get information about the image */
 function viewImageDetail(FileLocationInfo $file, User $user, PDO $conn): array {
     $stmt = $conn->prepare(
@@ -19,7 +19,11 @@ function viewImageDetail(FileLocationInfo $file, User $user, PDO $conn): array {
     return getExecutedResult($stmt);
 }
 
-/* Wrapper function to get file information using the file id */
+/**
+ * Wrapper function to get file information using the file id
+ *
+ * @throws NoSuchFileException
+ */
 function getImageDetailWithId(int $fileId, User $user, PDO $conn): FileLocationInfo {
     $stmt = $conn->prepare(
         'SELECT fileName as \'name\', filePath as \'path\', memberID as \'ownerId\' FROM files WHERE fileID=:fileId AND memberID=:id'
@@ -39,7 +43,12 @@ function getFileMimeType(FileLocationInfo $file, User $user, PDO $conn) {
     return viewImageDetail($file, $user, $conn)[0]['mime'];
 }
 
-/* Get back the information needed to display the image */
+/**
+ * Get back the information needed to display the image
+ *
+ * @throws EncryptionFailureException
+ * @throws NoSuchFileException
+ */
 function getImage(FileLocationInfo $file, User $user, PDO $conn): array {
     $privateKey = getUserKey($user, $conn);
     $systemKeys = getSystemKeys($conn);
@@ -49,5 +58,4 @@ function getImage(FileLocationInfo $file, User $user, PDO $conn): array {
         'data' => getFileDecrypted($file, $privateKey, $publicKey),
         'mime' => getFileMimeType($file, $user, $conn)
     ];
-
 }

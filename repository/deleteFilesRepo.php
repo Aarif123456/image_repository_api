@@ -1,11 +1,16 @@
 <?php
+
 declare(strict_types=1);
 /* Imports */
 require_once __DIR__ . '/error.php';
 require_once __DIR__ . '/User.php';
 require_once __DIR__ . '/File.php';
 require_once __DIR__ . '/viewImageRepo.php';
-/* Function to delete file */
+/**
+ * Function to delete file
+ *
+ * @throws DebugPDOException
+ */
 function deleteImage(FileLocationInfo $file, User $user, PDO $conn, bool $debug = false): bool {
     $stmt = $conn->prepare(
         'DELETE FROM files WHERE fileName=:fileName AND filePath=:filePath AND memberID=:id'
@@ -18,7 +23,12 @@ function deleteImage(FileLocationInfo $file, User $user, PDO $conn, bool $debug 
     return file_exists($filePath) && safeWriteQueries($stmt, $conn, $debug) && unlink($filePath);
 }
 
-/* Wrapper function to delete files using their id */
+/**
+ * Wrapper function to delete files using their id
+ *
+ * @throws NoSuchFileException
+ * @throws DebugPDOException
+ */
 function deleteImageWithId(int $fileId, User $user, PDO $conn, bool $debug = false): bool {
     $file = getImageDetailWithId($fileId, $user, $conn);
 

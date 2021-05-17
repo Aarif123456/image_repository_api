@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 require_once __DIR__ . '/../../views/apiReturn.php';
 require_once __DIR__ . '/../../views/errorHandling.php';
@@ -41,5 +42,4 @@ function checkFile(File $file, bool $checkForExistingFile = true) {
     if ($checkForExistingFile) {
         checkFileExists($file);
     }
-
 }

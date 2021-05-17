@@ -1,8 +1,10 @@
 <?php
+
 declare(strict_types=1);
 require_once __DIR__ . '/error.php';
 
-class User {
+class User
+{
     public string $email;
     public bool $isactive;
     public int $id;
@@ -24,6 +26,9 @@ class User {
         $this->password = $properties['password'] ?? '';
     }
 
+    /**
+     * @throws InvalidPropertyException
+     */
     public function __get(string $property) {
         /* Certain fields are not supposed to be used if they are empty */
         if (property_exists($this, $property)) {
@@ -33,7 +38,6 @@ class User {
             ) {
                 if (empty($this->$property)) {
                     throw new InvalidPropertyException();
-
                 }
             }
 

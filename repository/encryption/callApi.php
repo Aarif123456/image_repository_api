@@ -1,9 +1,11 @@
 <?php
+
 declare(strict_types=1);
 require_once __DIR__ . '/encryptionConstants.php';
 require_once __DIR__ . '/encryptionExceptionConstants.php';
 /**
  * Modified: https://stackoverflow.com/questions/5647461/how-do-i-send-a-post-request-with-php
+ *
  * @throws EncryptionFailureException
  */
 function callApi(array $fields, array $options = [], bool $debug = false): array {
@@ -77,7 +79,12 @@ function setup(string $properties = ENCRYPTION_PROPERTIES): array {
  * @return string $privateKey: string on success otherwise we get an error
  * @throws EncryptionFailureException
  */
-function keygen(string $publicKey, string $masterKey, string $userAttributes, string $properties = ENCRYPTION_PROPERTIES): string {
+function keygen(
+    string $publicKey,
+    string $masterKey,
+    string $userAttributes,
+    string $properties = ENCRYPTION_PROPERTIES
+): string {
     $args = [
         'method' => 'keygen',
         'properties' => $properties,
@@ -86,7 +93,9 @@ function keygen(string $publicKey, string $masterKey, string $userAttributes, st
         'userAttributes' => $userAttributes,
     ];
     $result = callApi($args);
-    if (array_key_exists('privateKey', $result)) return $result['privateKey'];
+    if (array_key_exists('privateKey', $result)) {
+        return $result['privateKey'];
+    }
     throw new EncryptionFailureException('Keygen Failed!', 1);
 }
 
@@ -98,7 +107,12 @@ function keygen(string $publicKey, string $masterKey, string $userAttributes, st
  * @return string $encryptedFile: string
  * @throws EncryptionFailureException
  */
-function encrypt(string $publicKey, string $policy, string $inputFile, string $properties = ENCRYPTION_PROPERTIES): string {
+function encrypt(
+    string $publicKey,
+    string $policy,
+    string $inputFile,
+    string $properties = ENCRYPTION_PROPERTIES
+): string {
     $args = [
         'method' => 'encrypt',
         'properties' => $properties,
@@ -107,7 +121,9 @@ function encrypt(string $publicKey, string $policy, string $inputFile, string $p
         'inputFile' => curl_file_create($inputFile, 'application/octet-stream', 'inputFile')
     ];
     $result = callApi($args);
-    if (array_key_exists('encryptedFile', $result)) return base64_decode($result['encryptedFile']);
+    if (array_key_exists('encryptedFile', $result)) {
+        return base64_decode($result['encryptedFile']);
+    }
     throw new EncryptionFailureException('Encrypt Failed!', 1);
 }
 
@@ -119,7 +135,12 @@ function encrypt(string $publicKey, string $policy, string $inputFile, string $p
  * @return string $decryptedFile: string
  * @throws EncryptionFailureException
  */
-function decrypt(string $publicKey, string $privateKey, string $encryptedFile, string $properties = ENCRYPTION_PROPERTIES): string {
+function decrypt(
+    string $publicKey,
+    string $privateKey,
+    string $encryptedFile,
+    string $properties = ENCRYPTION_PROPERTIES
+): string {
     $args = [
         'method' => 'decrypt',
         'properties' => $properties,
@@ -128,7 +149,9 @@ function decrypt(string $publicKey, string $privateKey, string $encryptedFile, s
         'encryptedFile' => curl_file_create($encryptedFile, 'application/octet-stream', 'encryptedFile'),
     ];
     $result = callApi($args);
-    if (array_key_exists('decryptedFile', $result)) return base64_decode($result['decryptedFile']);
+    if (array_key_exists('decryptedFile', $result)) {
+        return base64_decode($result['decryptedFile']);
+    }
     throw new EncryptionFailureException('Decrypt Failed!', 1);
 }
 

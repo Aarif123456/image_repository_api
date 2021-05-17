@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /* shared data used to generate test cases */
 /* Create Cartesian test cases */
@@ -19,7 +20,8 @@ function cartesian(array $input): array {
 }
 
 define('VALID_USER_INFO', [
-    ['email' => 'testUser@testing.com',
+    [
+        'email' => 'testUser@testing.com',
         'isactive' => true,
         'id' => 0,
         'dt' => (string)date('Y/m/d'),
@@ -27,7 +29,8 @@ define('VALID_USER_INFO', [
         'lastName' => '',
         'isAdmin' => false,
     ],
-    ['email' => 'testUser2@testing.com',
+    [
+        'email' => 'testUser2@testing.com',
         'isactive' => true,
         'id' => 1,
         'dt' => (string)date('Y/m/d'),
@@ -35,7 +38,8 @@ define('VALID_USER_INFO', [
         'lastName' => '',
         'isAdmin' => false,
     ],
-    ['email' => 'testUser3@testing.com',
+    [
+        'email' => 'testUser3@testing.com',
         'isactive' => false,
         'id' => 3,
         'dt' => (string)date('Y/m/d'),
@@ -43,7 +47,8 @@ define('VALID_USER_INFO', [
         'lastName' => 'and not an admin',
         'isAdmin' => false,
     ],
-    ['email' => 'testUser4@testing.com',
+    [
+        'email' => 'testUser4@testing.com',
         'isactive' => false,
         'id' => 4,
         'dt' => (string)date('Y/m/d'),
@@ -51,7 +56,8 @@ define('VALID_USER_INFO', [
         'lastName' => '',
         'isAdmin' => true,
     ],
-    ['email' => 'testUser5@testing.com',
+    [
+        'email' => 'testUser5@testing.com',
         'isactive' => true,
         'id' => 5,
         'dt' => (string)date('Y/m/d'),
@@ -116,4 +122,5 @@ define('INVALID_USER_INFO', [
         'dt' => (string)date('Y/m/d'),
         'firstName' => 'Don\'t have last name',
         'isAdmin' => true,
-    ]]);
+    ]
+]);

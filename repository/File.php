@@ -1,7 +1,9 @@
 <?php
+
 declare(strict_types=1);
 
-class FileLocationInfo {
+class FileLocationInfo
+{
     public string $name;
     public string $path;
     public string $realPath;
@@ -20,16 +22,13 @@ class FileLocationInfo {
         return "userFiles/$ownerId/" . str_replace('..', '', $filePath);
     }
 
-    public function getRealPath(): string {
-        return $this->realPath;
-    }
-
     public function getEncryptedFilePath(): string {
         return "$this->realPath.Encrypted";
     }
 }
 
-class File extends FileLocationInfo {
+class File extends FileLocationInfo
+{
     public int $size;
     public int $errorStatus;
     public string $location;

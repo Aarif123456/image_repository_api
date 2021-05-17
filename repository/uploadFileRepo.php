@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 require_once __DIR__ . '/error.php';
 require_once __DIR__ . '/systemKey.php';
@@ -20,6 +21,7 @@ function getPolicy(int $fileAccess, User $user): string {
 }
 
 /**
+ * @throws DebugPDOException
  * @throws EncryptedFileNotCreatedException
  * @throws InvalidAccessException
  */

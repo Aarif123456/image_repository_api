@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
@@ -17,23 +18,26 @@ require_once __DIR__ . '/dataProviders.php';
  * only be read by the intended group. We will also be testing different components that 
  * make this possible.
  */
-final class UserManagementTest extends TestCase {
+final class UserManagementTest extends TestCase
+{
 
     public function getTestUsers(): array {
-        $validUsers = cartesian(['userInfo' => VALID_USER_INFO,
+        $validUsers = cartesian([
+            'userInfo' => VALID_USER_INFO,
             'isValid' => [true]
         ]);
-        $invalidUsers = cartesian(['userInfo' => INVALID_USER_INFO,
+        $invalidUsers = cartesian([
+            'userInfo' => INVALID_USER_INFO,
             'isValid' => [false]
         ]);
 
         return array_merge($validUsers, $invalidUsers);
-    }   
+    }
 
     /**
      * @testdox Make sure we can create new users that are valid
      * @dataProvider getTestUsers
-     * @covers User
+     * @covers       User
      */
     public function testUserCreation(array $userInfo, bool $isValid): User {
         if (!$isValid) {
