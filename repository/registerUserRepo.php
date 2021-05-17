@@ -26,7 +26,7 @@ function insertUser(User $user, PDO $conn, bool $debug = false): array {
 /**
  * @throws EncryptionFailureException
  */
-function getUserPrivatKey(User $user, PDO $conn): string {
+function getUserPrivateKey(User $user, PDO $conn): string {
     $userAttributes = createUserAttributes($user);
     /* Get public and private key */
     $systemKeys = getSystemKeys($conn);
@@ -37,14 +37,15 @@ function getUserPrivatKey(User $user, PDO $conn): string {
 }
 
 /**
- * @throws Exception
+ * @throws EncryptionFailureException
+ * @throws DebugPDOException
  */
 function storeUserKeys(User $user, PDO $conn, bool $debug = false): bool {
     $stmt = $conn->prepare(
         'INSERT INTO `userKeys` (memberID, privateKey) VALUES (:id, :privateKey)'
     );
     $stmt->bindValue(':id', $user->id, PDO::PARAM_INT);
-    $privateKey = getUserPrivatKey($user, $conn);
+    $privateKey = getUserPrivateKey($user, $conn);
     $stmt->bindValue(':privateKey', $privateKey);
 
     return safeWriteQueries($stmt, $conn, $debug);
