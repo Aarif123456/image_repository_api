@@ -7,30 +7,15 @@ require_once __DIR__ . '/encryption/callApi.php';
 require_once __DIR__ . '/encryption/userAttributes.php';
 require_once __DIR__ . '/User.php';
 require_once __DIR__ . '/../vendor/autoload.php';
-
-use PHPAuth\Auth as PHPAuth;
-use PHPAuth\Config as PHPAuthConfig;
-
 function insertUser(User $user, PDO $conn, bool $debug = false): array {
-    $output = [];
-    $config = new PHPAuthConfig($conn);
-    $auth = new PHPAuth($conn, $config);
     $conn->beginTransaction();
-    $params = [
-        'firstName' => $user->firstName,
-        'lastName' => $user->lastName,
-        'isAdmin' => (int)$user->isAdmin
-    ];
-    $result = $auth->register($user->email, $user->password, $user->password, $params);
-    if ($result['error']) {
-        $output['error'] = $result['message'];
-
-        return $output;
-    }
-    $output['message'] = $result['message'];
+    
+    $output = registerUser($conn, $user);
+    if ($output['error']) return $output;
+    
     /* Store the user's login info */
-    $output['id'] = $id = $auth->getUID($user->email);
-    $user->id = $id;
+    $user->id = $output['id'];
+    
     /* store user info in member table */
     storeUserKeys($user, $conn, $debug);
     $conn->commit();

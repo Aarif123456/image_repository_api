@@ -56,6 +56,17 @@ function login($loginInfo, PDO $conn): array {
     return $loginInfo;
 }
 
+function registerUser(PDO $conn, User $user): array {
+    $auth = getAuth($conn);
+    $params = [
+        'firstName' => $user->firstName,
+        'lastName' => $user->lastName,
+        'isAdmin' => (int)$user->isAdmin
+    ];
+   
+    return $auth->register($user->email, $user->password, $user->password, $params);
+}
+
 function logout(PDO $conn): bool {
     $auth = getAuth($conn);
 
