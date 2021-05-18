@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-require_once __DIR__ . '../common/CustomException.php';
+require_once __DIR__ . '/../common/CustomException.php';
 /* Error handling for calls to the database */
 const INVALID_ACCESS_TYPE = 'Invalid file access policy.';
 const PHP_EXCEPTION = 'The following exception was thrown:';
