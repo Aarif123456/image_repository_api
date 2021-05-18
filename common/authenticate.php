@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 require_once __DIR__ . '/constants.php';
-require_once __DIR__ . '/authenticationExceptions.php';
+require_once __DIR__ . '/../views/errorHandling.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use PHPAuth\Auth as PHPAuth;
@@ -80,14 +80,9 @@ function resetPassword(string $email, PDO $conn): array {
     return $auth->requestReset($email, true);
 }
 
-/**
- * logout function
- *
- * @throws UnauthorizedUserException
- */
-function redirectToLogin() {
+function unauthorizedExit() {
     header('HTTP/1.0 403 Forbidden');
-    throw new UnauthorizedUserException();
+    exitWithJsonExceptionHandler(new UnauthorizedUserException());
 }
 
 
