@@ -24,6 +24,7 @@ function getPolicy(int $fileAccess, User $user): string {
  * @throws DebugPDOException
  * @throws EncryptedFileNotCreatedException
  * @throws InvalidAccessException
+ * @throws EncryptionFailureException
  */
 function insertFile(File $file, User $user, PDO $conn, bool $debug = false): bool {
     $file->access ??= PRIVATE_ACCESS;

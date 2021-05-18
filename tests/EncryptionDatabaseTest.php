@@ -147,6 +147,7 @@ final class EncryptionDatabaseTest extends TestCase
      * @covers ::getFileEncrypted
      * @throws EncryptedFileNotCreatedException
      * @throws InvalidAccessException
+     * @throws EncryptionFailureException
      */
     public function testFileEncrypted(User $user, int $accessId): File {
         $policy = $this->testValidPolicy($user, $accessId);

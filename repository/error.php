@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+require_once __DIR__ . '../common/CustomException.php';
 /* Error handling for calls to the database */
 const INVALID_ACCESS_TYPE = 'Invalid file access policy.';
 const PHP_EXCEPTION = 'The following exception was thrown:';
@@ -36,32 +37,16 @@ function safeWriteQueries($stmt, $conn, $debug): bool {
     throw new PDOException(WRITE_QUERY_FAILED, 1);
 }
 
-class InvalidAccessException extends Exception
+class InvalidAccessException extends CustomException
 {
-    public function __construct(string $message = null, int $code = 0) {
-        if (!$message) {
-            throw new $this(get_class($this) . ': ' . INVALID_ACCESS_TYPE);
-        }
-        parent::__construct($message, $code);
-    }
+    protected $message = INVALID_ACCESS_TYPE;
 
-    public function __toString() {
-        return get_class($this) . ': ' . $this->message;
-    }
 }
 
-class InvalidPropertyException extends Exception
+class InvalidPropertyException extends CustomException
 {
-    public function __construct(string $message = null, int $code = 0) {
-        if (!$message) {
-            throw new $this(get_class($this) . ': ' . INVALID_PROPERTY);
-        }
-        parent::__construct($message, $code);
-    }
+    protected $message = INVALID_PROPERTY;
 
-    public function __toString() {
-        return get_class($this) . ': ' . $this->message;
-    }
 }
 
 class DebugPDOException extends Exception
@@ -74,7 +59,4 @@ class DebugPDOException extends Exception
         parent::__construct($output, $code);
     }
 
-    public function __toString() {
-        return get_class($this) . ': ' . $this->message;
-    }
 }
