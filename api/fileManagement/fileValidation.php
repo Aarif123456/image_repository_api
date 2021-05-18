@@ -1,41 +1,55 @@
 <?php
 
 declare(strict_types=1);
-require_once __DIR__ . '/../../views/apiReturn.php';
 require_once __DIR__ . '/../../views/errorHandling.php';
+/**
+ * @throws FileNotSentException
+ * @throws UnknownErrorException
+ * @throws FileLimitExceededException
+ */
 function checkFileForError(int $fileErrorStatus) {
     switch ($fileErrorStatus) {
         case UPLOAD_ERR_OK:
             return;
         case UPLOAD_ERR_NO_FILE:
-            throw new Exception(NO_FILE_SENT);
+            throw new FileNotSentException();
         case UPLOAD_ERR_INI_SIZE: // INTENTIONAL FALL THROUGH
         case UPLOAD_ERR_FORM_SIZE:
-            throw new Exception(FILE_SIZE_LIMIT_EXCEEDED);
+            throw new FileLimitExceededException();
         default:
             header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
-            throw new Exception(INTERNAL_SERVER_ERROR);
+            throw new UnknownErrorException();
     }
 }
 
 /**
  * @param File $file
- * @throws Exception
+ * @throws InvalidFileFormatException
  */
 function checkFileType(File $file) {
     $fileSize = $file->size;
     $fileLocation = $file->location;
     if ($fileSize < 12 || !((bool)exif_imagetype($fileLocation))) {
-        throw new Exception(INVALID_FILE_FORMAT);
+        throw new InvalidFileFormatException();
     }
 }
 
+/**
+ * @throws FileAlreadyExistsException
+ */
 function checkFileExists(FileLocationInfo $fileInfo) {
     if (file_exists($fileInfo->getEncryptedFilePath())) {
-        throw new Exception(FILE_ALREADY_EXISTS);
+        throw new FileAlreadyExistsException();
     }
 }
 
+/**
+ * @throws FileNotSentException
+ * @throws FileAlreadyExistsException
+ * @throws UnknownErrorException
+ * @throws FileLimitExceededException
+ * @throws InvalidFileFormatException
+ */
 function checkFile(File $file, bool $checkForExistingFile = true) {
     checkFileForError($file->errorStatus);
     checkFileType($file);
