@@ -83,6 +83,7 @@ function processFile(File $file, User $user, PDO $conn, bool $debug = DEBUG): ar
         unlink($file->location);
     } catch (Exception $e) {
         $output = ['success' => false];
+        $output['error'] = true;
         $output['message'] = $e->getMessage();
     }
 

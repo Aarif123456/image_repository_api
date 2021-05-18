@@ -29,6 +29,7 @@ $loginInfo = (object)[
 ];
 /* Make sure the password is correct */
 $result = login($loginInfo, $conn);
+$output['error'] = $result['error'] ?? true;
 $output['message'] = $result['message'];
 $output['loggedIn'] = !$result['error'];
 /* Make sure user is actually an admin*/
@@ -37,6 +38,7 @@ if ($admin && !(verifyUserAdmin($conn))) {
     header('HTTP/1.0 403 Forbidden');
     /* Exit and tell the client that their user type is they are not admin */
     $output['message'] = USER_NOT_ADMIN;
+    $output['error'] = true;
 }
 echo createQueryJSON($output);
 $conn = null;
