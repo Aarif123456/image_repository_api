@@ -75,14 +75,13 @@ $conn = null;
 function processFile(File $file, User $user, PDO $conn, bool $debug = DEBUG): array {
     try {
         checkFile($file);
-        $output = ['success' => !empty(insertFile($file, $user, $conn, $debug))];
-        if (!$output['success']) {
+        $output = ['error' => empty(insertFile($file, $user, $conn, $debug))];
+        if ($output['error']) {
             $output['message'] = COMMAND_FAILED;
         }
         /*if we have successfully encrypted our file then remove them temporary non encrypted version */
         unlink($file->location);
     } catch (Exception $e) {
-        $output = ['success' => false];
         $output['error'] = true;
         $output['message'] = $e->getMessage();
     }

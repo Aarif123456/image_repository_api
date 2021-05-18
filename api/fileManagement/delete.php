@@ -30,20 +30,20 @@ $fileName = $_REQUEST['fileName'] ?? '';
 $fileId = $_REQUEST['fileId'] ?? null;
 $output = [];
 try {
+    $file = null;
     if (!empty($fileId)) {
-        $output['success'] = deleteImageWithId((int)$fileId, $user, $conn, $debug);
+        $file = getImageDetailWithId($fileId, $user, $conn);
     } elseif (!empty($fileName)) {
         $file = new FileLocationInfo([
             'name' => $fileName,
             'path' => $filePath,
             'ownerId' => $user->id
-        ]);
-        $output['success'] = deleteImage($file, $user, $conn, $debug);
+        ]); 
     }
+    if($file !== null) $output['error'] = !deleteImage($file, $user, $conn, $debug);
 } catch (Exception $e) {
     $output['message'] = $e->getMessage();
     $output['error'] = true;
-    $output['success'] = false;
 }
 echo createQueryJSON($output);
 

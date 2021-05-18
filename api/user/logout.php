@@ -10,5 +10,5 @@ require_once __DIR__ . '/../../repository/database.php';
 requiredHeaderAndSessionStart();
 /* Connect to database */
 $conn = getConnection();
-echo createQueryJSON(['success' => logout($conn)]);
+echo createQueryJSON(['error' => !logout($conn)]);
 $conn = null;
