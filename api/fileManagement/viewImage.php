@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 /* Imports */
+require_once __DIR__ . '/../validEndpoint.php';
 require_once __DIR__ . '/../../views/apiReturn.php';
 require_once __DIR__ . '/../../views/errorHandling.php';
 require_once __DIR__ . '/../../common/constants.php';
@@ -19,10 +20,10 @@ $debug = DEBUG;
 $conn = getConnection();
 /* Make sure user is logged in */
 if (!validateUser($conn)) {
-    redirectToLogin();
+    unauthorizedExit();
 }
 if (!(isValidRequestVar('fileName'))) {
-    throw new Exception(MISSING_PARAMETERS);
+    missingParameterExit();
 }
 /* Set variables */
 $user = new User(getCurrentUserInfo($conn));
@@ -33,10 +34,12 @@ $file = new FileLocationInfo([
     'path' => $filePath,
     'ownerId' => $user->id
 ]);
+
 $fileData = getImage($file, $user, $conn);
 $fileBinary = $fileData['data'];
 $mime = $fileData['mime'];
-echo '<img src="' . dataUri($fileBinary, $mime) . '" alt="you Image"/>';
+echo '<img src="' . dataUri($fileBinary, $mime) . '" alt="your image"/>';
+
 $conn = null;
 function dataUri($fileBinary, $mime): string {
     return 'data:' . $mime . ';base64,' . base64_encode($fileBinary);

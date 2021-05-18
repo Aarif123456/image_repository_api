@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 /* program to authenticate user */
+require_once __DIR__ . '/../validEndpoint.php';
 require_once __DIR__ . '/../../views/apiReturn.php';
 require_once __DIR__ . '/../../views/errorHandling.php';
 require_once __DIR__ . '/../../common/constants.php';
@@ -14,7 +15,7 @@ $conn = getConnection();
 if (validateUser($conn)) {
     logout($conn);
 }
-if (!(isValidPostVar('email') && isValidPostVar('password'))) throw new Exception(MISSING_PARAMETERS);
+checkMissingPostVars(['email', 'password']);
 /* Store user type in session */
 $admin = $_POST['admin'] ?? false;
 $email = $_POST['email'] ?? '';

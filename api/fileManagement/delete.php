@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 /* Imports */
+require_once __DIR__ . '/../validEndpoint.php';
 require_once __DIR__ . '/../../views/apiReturn.php';
 require_once __DIR__ . '/../../views/errorHandling.php';
 require_once __DIR__ . '/../../common/constants.php';
@@ -17,10 +18,10 @@ $debug = DEBUG;
 $conn = getConnection();
 /* Make sure user is logged in */
 if (!validateUser($conn)) {
-    redirectToLogin();
+    unauthorizedExit();
 }
 if (!(isValidRequestVar('fileName') || isValidRequestVar('fileId'))) {
-    throw new Exception(MISSING_PARAMETERS);
+    missingParameterExit();
 }
 /* Set variables */
 $user = new User(getCurrentUserInfo($conn));
@@ -41,6 +42,7 @@ try {
     }
 } catch (Exception $e) {
     $output['message'] = $e->getMessage();
+    $output['error'] = true;
     $output['success'] = false;
 }
 echo createQueryJSON($output);

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 /* Imports */
+require_once __DIR__ . '/../validEndpoint.php';
 require_once __DIR__ . '/../../views/apiReturn.php';
 require_once __DIR__ . '/../../views/errorHandling.php';
 require_once __DIR__ . '/../../common/constants.php';
@@ -15,10 +16,7 @@ requiredHeaderAndSessionStart();
 $conn = getConnection();
 $debug = DEBUG;
 /* Make sure we have a valid request */
-if (!(isValidPostVar('firstName') && isValidPostVar('lastName') &&
-    isValidPostVar('email') && isValidPostVar('password'))) {
-    throw new Exception(MISSING_PARAMETERS);
-}
+checkMissingPostVars(['firstName', 'lastName', 'email', 'password']);
 /* Get user info in a object */
 $user = new User([
     'firstName' => trim($_POST['firstName']),
@@ -27,7 +25,13 @@ $user = new User([
     'email' => $_POST['email'],
     'password' => $_POST['password'],
 ]);
-$result = insertUser($user, $conn, $debug);
-$result['message'] ??= COMMAND_FAILED;
+$result = [];
+try {
+    $result = insertUser($user, $conn, $debug);
+    $result['message'] ??= COMMAND_FAILED;
+} catch (Exception $e) {
+    $result['error'] = true;
+    $result['message'] = $e;
+}
 echo createQueryJSON($result);
 $conn = null;

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 /* Imports */
+require_once __DIR__ . '/../validEndpoint.php';
 require_once __DIR__ . '/../../views/apiReturn.php';
 require_once __DIR__ . '/../../views/errorHandling.php';
 require_once __DIR__ . '/../../common/constants.php';
@@ -17,7 +18,7 @@ $debug = DEBUG;
 $conn = getConnection();
 /* Make sure user is logged in */
 if (!validateUser($conn)) {
-    redirectToLogin();
+    unauthorizedExit();
 }
 /* Set variables */
 $user = new User(getCurrentUserInfo($conn));

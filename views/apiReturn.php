@@ -34,18 +34,3 @@ function requiredHeaderAndSessionStart() {
         $_POST = json_decode(file_get_contents('php://input'), true);
     }
 }
-
-/* utility function for post, get and session if enough function this will go to it's own file*/
-/*TODO: move to own file and move into common folder */
-function isValidPostVar($varName): bool {
-    return $_POST[$varName] ?? false;
-}
-
-function isValidRequestVar($varName): bool {
-    return $_REQUEST[$varName] ?? false;
-}
-
-function isValidFileVar($fileName): bool {
-    return $_FILES[$fileName]['error'] ?? false;
-}
-
