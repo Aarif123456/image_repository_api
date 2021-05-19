@@ -1,11 +1,7 @@
 <?php
 
 declare(strict_types=1);
-/* Define the strings the api will return  */
 require_once __DIR__ . '/../common/constants.php';
-/* Stores the return of the API, created to make localization easier
-Some API return that come from SQL related error are located in repository/error.php
-*/
 /* Report errors depending on if we are in production mode */
 if (DEBUG) {
     ini_set('display_errors', 'stderr');
