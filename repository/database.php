@@ -1,6 +1,11 @@
 <?php
 
 declare(strict_types=1);
+namespace ImageRepository\Repository;
+
+use PDO;
+use PDOException;
+
 /* Used to get mysql database connection */
 require_once __DIR__ . '/loginConstants.php';
 function getConnection(): PDO {

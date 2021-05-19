@@ -31,6 +31,7 @@ function createFiles(string $fileNames): array {
  * @throws UnknownErrorException
  * @throws FileLimitExceededException
  * @throws EncryptionFailureException
+ * @throws PDOWriteException
  */
 function processFile(File $file, User $user, PDO $conn, bool $debug = DEBUG): array {
     checkFile($file);

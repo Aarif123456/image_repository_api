@@ -2,62 +2,125 @@
 
 /* Define the error handlers  */
 declare(strict_types=1);
+
+use ImageRepository\Views\Translator;
+
+use function ImageRepository\Repository\getConnection;
+
 require_once __DIR__ . '/apiReturn.php';
 require_once __DIR__ . '/../common/constants.php';
 require_once __DIR__ . '/../common/CustomException.php';
-/* constants */
-const COMMAND_FAILED = 'Query failed to execute, ensure you use the correct values';
-const FILE_ALREADY_EXISTS = 'File already exists';
-const FILE_SIZE_LIMIT_EXCEEDED = 'Exceeded file size limit';
-const INTERNAL_SERVER_ERROR = 'Something went wrong :(';
-const INVALID_FILE_FORMAT = 'Invalid file format.';
-const MISSING_PARAMETERS = 'Request is missing values. Please consult the documentation to ensure you are passing all the required arguments';
-const NO_FILE_SENT = 'No file sent.';
-const UNAUTHORIZED_NO_LOGIN = 'user is not logged in';
-const USER_NOT_ADMIN = 'User is not an admin.';
+require_once __DIR__ . '/../repository/database.php';
 /* During production we want a semi nice back-up in case we fail */
 if (!DEBUG) {
-    set_exception_handler('exitWithJsonExceptionHandler');
-    set_error_handler('exitWithJsonExceptionHandler');
+    set_exception_handler('errorJsonHandler');
+    set_error_handler('errorJsonHandler');
 }
-function exitWithJsonExceptionHandler(Throwable $e) {
-    $errorMessage = createQueryJSON([
+function createErrorJson(string $message): string {
+    return createQueryJSON([
         'error' => true,
-        'message' => (string)$e
+        'message' => $message
     ]);
-    exit($errorMessage);
 }
 
+function printErrorJson(string $message) {
+    echo createErrorJson($message);
+}
+
+function exitWithErrorJson(string $message) {
+    exit(createErrorJson($message));
+}
+
+function errorJsonHandler(Throwable $e) {
+    exitWithErrorJson((string)$e);
+}
+
+function safeApiRun(int $authorizationLevel, callable $callback, array $args = []) {
+    $translator = null;
+    $conn = null;
+    try {
+        /* Set required header and session start */
+        requiredHeaderAndSessionStart();
+        /* Connect to database */
+        $conn = getConnection();
+        $translator = new Translator($conn);
+        if (!isUserAuthorized($conn, $authorizationLevel)) {
+            unauthorizedExit();
+        }
+        $debug = DEBUG;
+        call_user_func_array($callback, array_merge([$conn, $debug], $args));
+    } catch (EncryptedFileNotCreatedException $e) {
+        printErrorJson($translator->ENCRYPTED_FILE_NOT_CREATED);
+    } catch (FileAlreadyExistsException $e) {
+        printErrorJson($translator->FILE_ALREADY_EXISTS);
+    } catch (FileLimitExceededException $e) {
+        printErrorJson($translator->FILE_SIZE_LIMIT_EXCEEDED);
+    } catch (EncryptionFailureException $e) {
+        printErrorJson($translator->INTERNAL_ENCRYPTION_FAILURE);
+    } catch (InvalidAccessException $e) {
+        printErrorJson($translator->INVALID_ACCESS_TYPE);
+    } catch (InvalidFileFormatException $e) {
+        printErrorJson($translator->INVALID_FILE_FORMAT);
+    } catch (InvalidPropertyException $e) {
+        printErrorJson($translator->INVALID_PROPERTY);
+    } catch (MissingParameterException $e) {
+        printErrorJson($translator->MISSING_PARAMETERS);
+    } catch (FileNotSentException $e) {
+        printErrorJson($translator->NO_FILE_SENT);
+    } catch (NoSuchFileException $e) {
+        printErrorJson($translator->NO_SUCH_FILE);
+    } catch (SqlCommandFailedException $e) {
+        printErrorJson($translator->COMMAND_FAILED);
+    } catch (DebugPDOException $e) {
+        if (!empty($conn ?? null) && !empty($conn->errorCode())) {
+            printErrorJson(sprintf('%s%s', $translator->SQL_ERROR, json_encode($conn->errorInfo())));
+        } else {
+            throw new PDOException('Expected PDO object', 1);
+        }
+    } catch (PDOException $e) {
+        printErrorJson($translator->PDO_ERROR);
+    } catch (UnauthorizedUserException $e) {
+        printErrorJson($translator->UNAUTHORIZED_NO_LOGIN);
+    } catch (UnauthorizedAdminException $e) {
+        printErrorJson($translator->USER_NOT_ADMIN);
+    } catch (PDOWriteException $e) {
+        printErrorJson($translator->WRITE_QUERY_FAILED);
+    } catch (Exception $e) {
+        printErrorJson($translator->INTERNAL_SERVER_ERROR);
+    } catch (Throwable $e) {
+        /* This meant we had a fatal an error instead of an exception so we don't have anyway to recover from it */
+        exitWithErrorJson($translator->INTERNAL_SERVER_ERROR);
+    } finally {
+        $conn = null;
+    }
+}
+
+/* TODO: move exception to separate file or maybe their own name space */
 class FileAlreadyExistsException extends CustomException
 {
-    protected $message = FILE_ALREADY_EXISTS;
 }
-
 class FileLimitExceededException extends CustomException
 {
-    protected $message = FILE_SIZE_LIMIT_EXCEEDED;
 }
-
 class FileNotSentException extends CustomException
 {
-    protected $message = NO_FILE_SENT;
 }
-
 class InvalidFileFormatException extends CustomException
 {
-    protected $message = INVALID_FILE_FORMAT;
 }
-
 class MissingParameterException extends CustomException
 {
-    protected $message = MISSING_PARAMETERS;
+}
+class SqlCommandFailedException extends CustomException
+{
+}
+class UnauthorizedUserException extends CustomException
+{
 }
 class UnknownErrorException extends CustomException
 {
-    protected $message = INTERNAL_SERVER_ERROR;
+}
+class UnauthorizedAdminException extends CustomException
+{
 }
 
-class UnauthorizedUserException extends CustomException
-{
-    protected $message = UNAUTHORIZED_NO_LOGIN;
-}

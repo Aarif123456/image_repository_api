@@ -11,6 +11,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 /**
  * @throws EncryptionFailureException
  * @throws DebugPDOException
+ * @throws PDOWriteException
  */
 function insertUser(User $user, PDO $conn, bool $debug = false): array {
     $conn->beginTransaction();
@@ -43,6 +44,7 @@ function getUserPrivateKey(User $user, PDO $conn): string {
 /**
  * @throws EncryptionFailureException
  * @throws DebugPDOException
+ * @throws PDOWriteException
  */
 function storeUserKeys(User $user, PDO $conn, bool $debug = false): bool {
     $stmt = $conn->prepare(

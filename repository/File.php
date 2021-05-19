@@ -10,7 +10,7 @@ class FileLocationInfo
 
     /* Make sure we have the file location */
     public function __construct(array $properties = []) {
-        $this->name = $properties['name'];
+        $this->name = htmlentities(str_replace(['/', '\\'], '', basename($properties['name'])));
         $this->path = str_replace('..', '', $properties['path']);
         $ownerId = (int)$properties['ownerId'];
         /* Make sure user is contained to their folder */
@@ -36,9 +36,10 @@ class File extends FileLocationInfo
     public ?int $access;
 
     public function __construct(array $properties = []) {
-        parent::__construct($properties);
         foreach ($properties as $key => $value) {
             $this->{$key} = $value;
         }
+        /* Make sure some variables are guaranteed to be there and are processed appropriately*/
+        parent::__construct($properties);
     }
 }

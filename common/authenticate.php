@@ -14,8 +14,22 @@ function getAuth(PDO $conn): PHPAuth {
     return new PHPAuth($conn, $config);
 }
 
+function isUserAuthorized(PDO $conn, int $authorizationLevel): bool {
+    switch ($authorizationLevel) {
+        /* If endpoint is authenticated anyone can use it */
+        case UNAUTHENTICATED:
+            return true;
+        case AUTHORIZED_USER:
+            return isUserLoggedIn($conn);
+        case AUTHORIZED_ADMIN:
+            return isUserLoggedIn($conn) && isUserAnAdmin($conn);
+        default:
+            return false;
+    }
+}
+
 /*Make sure user is validated */
-function validateUser(PDO $conn): bool {
+function isUserLoggedIn(PDO $conn): bool {
     $auth = getAuth($conn);
 
     return $auth->isLogged();
@@ -27,13 +41,19 @@ function getUserID(PDO $conn) {
     return $auth->getCurrentUID();
 }
 
+function getUser(PDO $conn, int $userId): array {
+    $auth = getAuth($conn);
+
+    return $auth->getUser($userId);
+}
+
 function getCurrentUserInfo(PDO $conn): array {
     $auth = getAuth($conn);
 
     return $auth->getCurrentUser();
 }
 
-function verifyUserAdmin(PDO $conn): bool {
+function isUserAnAdmin(PDO $conn): bool {
     return getCurrentUserInfo($conn)['isAdmin'];
 }
 
@@ -80,9 +100,12 @@ function resetPassword(string $email, PDO $conn): array {
     return $auth->requestReset($email, true);
 }
 
+/**
+ * @throws UnauthorizedUserException
+ */
 function unauthorizedExit() {
-    header('HTTP/1.0 403 Forbidden');
-    exitWithJsonExceptionHandler(new UnauthorizedUserException());
+    header('HTTP/1.0 401 Unauthorized');
+    throw new UnauthorizedUserException();
 }
 
 
