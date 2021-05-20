@@ -20,10 +20,10 @@ use ImageRepository\Exception\{DebugPDOException,
     SqlCommandFailedException,
     UnauthorizedAdminException,
     UnauthorizedUserException};
+use ImageRepository\Model\Database;
 use PDOException;
 use Throwable;
 
-use function ImageRepository\Model\getConnection;
 use function ImageRepository\Utils\{isUserAuthorized, unauthorizedExit};
 
 use const ImageRepository\Utils\DEBUG;
@@ -54,18 +54,18 @@ if (!DEBUG) {
 }
 function safeApiRun(int $authorizationLevel, callable $callback, array $args = []) {
     $translator = null;
-    $conn = null;
+    $db = null;
     try {
         /* Set required header and session start */
         requiredHeaderAndSessionStart();
         /* Connect to database */
-        $conn = getConnection();
-        $translator = new Translator($conn);
-        if (!isUserAuthorized($conn, $authorizationLevel)) {
+        $db = new Database();
+        $translator = new Translator($db->conn);
+        if (!isUserAuthorized($db, $authorizationLevel)) {
             unauthorizedExit();
         }
         $debug = DEBUG;
-        call_user_func_array($callback, array_merge([$conn, $debug], $args));
+        call_user_func_array($callback, array_merge([$db, $debug], $args));
     } catch (EncryptedFileNotCreatedException $e) {
         printErrorJson($translator->ENCRYPTED_FILE_NOT_CREATED);
     } catch (FileAlreadyExistsException $e) {
@@ -89,8 +89,8 @@ function safeApiRun(int $authorizationLevel, callable $callback, array $args = [
     } catch (SqlCommandFailedException $e) {
         printErrorJson($translator->COMMAND_FAILED);
     } catch (DebugPDOException $e) {
-        if (!empty($conn ?? null) && !empty($conn->errorCode())) {
-            printErrorJson(sprintf('%s%s', $translator->SQL_ERROR, json_encode($conn->errorInfo())));
+        if (!empty($db ?? null) && !empty($db->conn->errorCode())) {
+            printErrorJson(sprintf('%s%s', $translator->SQL_ERROR, json_encode($db->conn->errorInfo())));
         } else {
             throw new PDOException('Expected PDO object', 1);
         }
@@ -107,7 +107,5 @@ function safeApiRun(int $authorizationLevel, callable $callback, array $args = [
     } catch (Throwable $e) {
         /* This meant we had a fatal an error instead of an exception so we don't have anyway to recover from it */
         exitWithErrorJson($translator->INTERNAL_SERVER_ERROR);
-    } finally {
-        $conn = null;
     }
 }
