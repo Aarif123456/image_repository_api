@@ -45,6 +45,6 @@ class User
 
             return $this->$property;
         }
-        throw new InvalidPropertyException("The property '$property' does not exist in the User class ");
+        throw new InvalidPropertyException("The property '$property' does not exist in the User class");
     }
 }
