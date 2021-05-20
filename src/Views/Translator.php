@@ -8,6 +8,24 @@ use PDOException;
 
 /**
  * Class to return translated string
+ *
+ * @property string ENCRYPTED_FILE_NOT_CREATED
+ * @property string INTERNAL_SERVER_ERROR
+ * @property string WRITE_QUERY_FAILED
+ * @property string USER_NOT_ADMIN
+ * @property string UNAUTHORIZED_NO_LOGIN
+ * @property string PDO_ERROR
+ * @property string SQL_ERROR
+ * @property string COMMAND_FAILED
+ * @property string NO_SUCH_FILE
+ * @property string NO_FILE_SENT
+ * @property string MISSING_PARAMETERS
+ * @property string INVALID_PROPERTY
+ * @property string INVALID_FILE_FORMAT
+ * @property string INVALID_ACCESS_TYPE
+ * @property string INTERNAL_ENCRYPTION_FAILURE
+ * @property string FILE_SIZE_LIMIT_EXCEEDED
+ * @property string FILE_ALREADY_EXISTS
  */
 class Translator
 {
@@ -15,14 +33,15 @@ class Translator
     public string $translationTable = 'translations';
 
     public function __construct(PDO $conn, string $language = '') {
-        $this->dictionary = [];
+        $this->dictionary = $this->getFallbackDictionary();
         /* Determine site language */
         $siteLanguage = empty($language) ? 'en_CA' : $language;
         try {
             // check table exists in database
             $conn->query("SELECT * FROM $this->translationTable LIMIT 1;");
             $query = "SELECT `translation_key`, `$siteLanguage` as `lang` FROM $this->translationTable";
-            $this->dictionary = $conn->query($query)->fetchAll(PDO::FETCH_KEY_PAIR);
+            $queryDictionary = $conn->query($query)->fetchAll(PDO::FETCH_KEY_PAIR);
+            $this->dictionary = array_replace($this->dictionary, $queryDictionary);
         } catch (PDOException $e) {
             $this->dictionary = $this->getFallbackDictionary();
         }
