@@ -1,22 +1,23 @@
 <?php
 
 declare(strict_types=1);
+namespace App\Tests;
 
+use App\Model\Encryption\{EncryptedFileNotCreatedException, EncryptionFailureException, NoSuchFileException};
+use App\Model\File;
+use App\Model\InvalidAccessException;
+use App\Model\User;
 use PHPUnit\Framework\TestCase;
 
-require_once __DIR__ . '/../repository/User.php';
-require_once __DIR__ . '/../repository/File.php';
-require_once __DIR__ . '/../repository/uploadFileRepo.php';
-require_once __DIR__ . '/../repository/viewImageRepo.php';
-require_once __DIR__ . '/../repository/databaseConstants.php';
-require_once __DIR__ . '/../repository/encryption/encryptFile.php';
-require_once __DIR__ . '/../repository/encryption/decryptFile.php';
-require_once __DIR__ . '/../repository/encryption/userAttributes.php';
-require_once __DIR__ . '/../repository/encryption/encryptionExceptionConstants.php';
+use function App\Model\{FileManagement\getPolicy, isFilePrivate};
+use function App\Model\Encryption\{createUserAttributes, encryptFile, getFileDecrypted, keygen, setup};
+
+use const App\Model\{PRIVATE_ACCESS, PUBLIC_ACCESS};
+
 require_once __DIR__ . '/helper.php';
 require_once __DIR__ . '/dataProviders.php';
 
-/* This class make sure that the encryption system works using the information that we 
+/* This class make sure that the encryption system works using the information that we
  * have saved locally in constants or stored in our database 
  */
 

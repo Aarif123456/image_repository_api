@@ -1,6 +1,8 @@
 <?php
 
 declare(strict_types=1);
+namespace App\Tests;
+
 /* shared data used to generate test cases */
 /* Create Cartesian test cases */
 function cartesian(array $input): array {

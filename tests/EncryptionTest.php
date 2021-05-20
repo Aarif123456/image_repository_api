@@ -1,10 +1,12 @@
 <?php
 
 declare(strict_types=1);
-require_once __DIR__ . '/../repository/encryption/callApi.php';
-require_once __DIR__ . '/../repository/encryption/encryptionExceptionConstants.php';
+namespace App\Tests;
 
+use App\Model\Encryption\EncryptionFailureException;
 use PHPUnit\Framework\TestCase;
+
+use function App\Model\Encryption\{decrypt, encrypt, generateProperties, keygen, setup};
 
 /* This class tests the encryption endpoint
  * the point of this class is to ensure that we can securely generate encrypted files that can 

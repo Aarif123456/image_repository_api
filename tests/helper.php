@@ -1,7 +1,11 @@
 <?php
 
 declare(strict_types=1);
+namespace App\Tests;
 
+use App\Model\File;
+use PDO;
+use PDOStatement;
 use PHPUnit\Framework\TestCase;
 
 /**************************************************************************/

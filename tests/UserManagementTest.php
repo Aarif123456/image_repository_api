@@ -1,7 +1,9 @@
 <?php
 
 declare(strict_types=1);
+namespace App\Tests;
 
+use App\Model\{InvalidPropertyException, User};
 use PHPUnit\Framework\TestCase;
 
 /* https://devqa.io/user-registration-test-cases-scenarios/
@@ -10,9 +12,6 @@ use PHPUnit\Framework\TestCase;
 * these functions heavily. 
 * TODO: test login, register, logout, -> forget password
 */
-require_once __DIR__ . '/../repository/User.php';
-require_once __DIR__ . '/../repository/error.php';
-require_once __DIR__ . '/dataProviders.php';
 /* This class tests the encryption endpoint
  * the point of this class is to ensure that we can securely generate encrypted files that can 
  * only be read by the intended group. We will also be testing different components that 
@@ -37,7 +36,7 @@ final class UserManagementTest extends TestCase
     /**
      * @testdox Make sure we can create new users that are valid
      * @dataProvider getTestUsers
-     * @covers       User
+     * @covers ::User
      */
     public function testUserCreation(array $userInfo, bool $isValid): User {
         if (!$isValid) {
