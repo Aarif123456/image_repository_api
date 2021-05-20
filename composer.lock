@@ -4,7 +4,7 @@
     "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
     "This file is @generated automatically"
   ],
-  "content-hash": "c10b7317f2e79461ef79035173d539b3",
+  "content-hash": "08dd85536f1aacbfc297d3447f583d84",
   "packages": [
     {
       "name": "bjeavons/zxcvbn-php",
@@ -56,75 +56,6 @@
         "source": "https://github.com/bjeavons/zxcvbn-php/tree/1.2.0"
       },
       "time": "2020-11-30T16:47:23+00:00"
-    },
-    {
-      "name": "doctrine/instantiator",
-      "version": "1.4.0",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/doctrine/instantiator.git",
-        "reference": "d56bf6102915de5702778fe20f2de3b2fe570b5b"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/doctrine/instantiator/zipball/d56bf6102915de5702778fe20f2de3b2fe570b5b",
-        "reference": "d56bf6102915de5702778fe20f2de3b2fe570b5b",
-        "shasum": ""
-      },
-      "require": {
-        "php": "^7.1 || ^8.0"
-      },
-      "require-dev": {
-        "doctrine/coding-standard": "^8.0",
-        "ext-pdo": "*",
-        "ext-phar": "*",
-        "phpbench/phpbench": "^0.13 || 1.0.0-alpha2",
-        "phpstan/phpstan": "^0.12",
-        "phpstan/phpstan-phpunit": "^0.12",
-        "phpunit/phpunit": "^7.0 || ^8.0 || ^9.0"
-      },
-      "type": "library",
-      "autoload": {
-        "psr-4": {
-          "Doctrine\\Instantiator\\": "src/Doctrine/Instantiator/"
-        }
-      },
-      "notification-url": "https://packagist.org/downloads/",
-      "license": [
-        "MIT"
-      ],
-      "authors": [
-        {
-          "name": "Marco Pivetta",
-          "email": "ocramius@gmail.com",
-          "homepage": "https://ocramius.github.io/"
-        }
-      ],
-      "description": "A small, lightweight utility to instantiate objects in PHP without invoking their constructors",
-      "homepage": "https://www.doctrine-project.org/projects/instantiator.html",
-      "keywords": [
-        "constructor",
-        "instantiate"
-      ],
-      "support": {
-        "issues": "https://github.com/doctrine/instantiator/issues",
-        "source": "https://github.com/doctrine/instantiator/tree/1.4.0"
-      },
-      "funding": [
-        {
-          "url": "https://www.doctrine-project.org/sponsorship.html",
-          "type": "custom"
-        },
-        {
-          "url": "https://www.patreon.com/phpdoctrine",
-          "type": "patreon"
-        },
-        {
-          "url": "https://tidelift.com/funding/github/packagist/doctrine%2Finstantiator",
-          "type": "tidelift"
-        }
-      ],
-      "time": "2020-11-10T18:47:58+00:00"
     },
     {
       "name": "google/recaptcha",
@@ -412,6 +343,429 @@
       "time": "2021-04-26T09:17:50+00:00"
     },
     {
+      "name": "phpauth/phpauth",
+      "version": "1.2.1",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/PHPAuth/PHPAuth.git",
+        "reference": "8728c57315b1f923d2cdcbb01a7bce561847b23b"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/PHPAuth/PHPAuth/zipball/8728c57315b1f923d2cdcbb01a7bce561847b23b",
+        "reference": "8728c57315b1f923d2cdcbb01a7bce561847b23b",
+        "shasum": ""
+      },
+      "require": {
+        "bjeavons/zxcvbn-php": "^1.0",
+        "ext-pdo": "*",
+        "google/recaptcha": "^1.2",
+        "php": ">=7.0.0",
+        "phpmailer/phpmailer": "^6.0"
+      },
+      "require-dev": {
+        "phpunit/phpunit": "6.*"
+      },
+      "type": "library",
+      "autoload": {
+        "psr-4": {
+          "PHPAuth\\": "/"
+        }
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "MIT"
+      ],
+      "description": "A secure user authentication class for PHP websites, using a powerful password hashing system and attack blocking to keep your website and users secure.",
+      "homepage": "https://phpauth.github.io/PHPAuth/",
+      "keywords": [
+        "Authentication",
+        "class",
+        "secure"
+      ],
+      "support": {
+        "issues": "https://github.com/PHPAuth/PHPAuth/issues",
+        "source": "https://github.com/PHPAuth/PHPAuth/tree/1.2.1"
+      },
+      "time": "2020-12-03T07:47:50+00:00"
+    },
+    {
+      "name": "phpmailer/phpmailer",
+      "version": "v6.4.1",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/PHPMailer/PHPMailer.git",
+        "reference": "9256f12d8fb0cd0500f93b19e18c356906cbed3d"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/9256f12d8fb0cd0500f93b19e18c356906cbed3d",
+        "reference": "9256f12d8fb0cd0500f93b19e18c356906cbed3d",
+        "shasum": ""
+      },
+      "require": {
+        "ext-ctype": "*",
+        "ext-filter": "*",
+        "ext-hash": "*",
+        "php": ">=5.5.0"
+      },
+      "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
+        "doctrine/annotations": "^1.2",
+        "phpcompatibility/php-compatibility": "^9.3.5",
+        "roave/security-advisories": "dev-latest",
+        "squizlabs/php_codesniffer": "^3.5.6",
+        "yoast/phpunit-polyfills": "^0.2.0"
+      },
+      "suggest": {
+        "ext-mbstring": "Needed to send email in multibyte encoding charset or decode encoded addresses",
+        "hayageek/oauth2-yahoo": "Needed for Yahoo XOAUTH2 authentication",
+        "league/oauth2-google": "Needed for Google XOAUTH2 authentication",
+        "psr/log": "For optional PSR-3 debug logging",
+        "stevenmaguire/oauth2-microsoft": "Needed for Microsoft XOAUTH2 authentication",
+        "symfony/polyfill-mbstring": "To support UTF-8 if the Mbstring PHP extension is not enabled (^1.2)"
+      },
+      "type": "library",
+      "autoload": {
+        "psr-4": {
+          "PHPMailer\\PHPMailer\\": "src/"
+        }
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "LGPL-2.1-only"
+      ],
+      "authors": [
+        {
+          "name": "Marcus Bointon",
+          "email": "phpmailer@synchromedia.co.uk"
+        },
+        {
+          "name": "Jim Jagielski",
+          "email": "jimjag@gmail.com"
+        },
+        {
+          "name": "Andy Prevost",
+          "email": "codeworxtech@users.sourceforge.net"
+        },
+        {
+          "name": "Brent R. Matzelle"
+        }
+      ],
+      "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
+      "support": {
+        "issues": "https://github.com/PHPMailer/PHPMailer/issues",
+        "source": "https://github.com/PHPMailer/PHPMailer/tree/v6.4.1"
+      },
+      "funding": [
+        {
+          "url": "https://github.com/Synchro",
+          "type": "github"
+        }
+      ],
+      "time": "2021-04-29T12:25:04+00:00"
+    },
+    {
+      "name": "psr/http-client",
+      "version": "1.0.1",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/php-fig/http-client.git",
+        "reference": "2dfb5f6c5eff0e91e20e913f8c5452ed95b86621"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/php-fig/http-client/zipball/2dfb5f6c5eff0e91e20e913f8c5452ed95b86621",
+        "reference": "2dfb5f6c5eff0e91e20e913f8c5452ed95b86621",
+        "shasum": ""
+      },
+      "require": {
+        "php": "^7.0 || ^8.0",
+        "psr/http-message": "^1.0"
+      },
+      "type": "library",
+      "extra": {
+        "branch-alias": {
+          "dev-master": "1.0.x-dev"
+        }
+      },
+      "autoload": {
+        "psr-4": {
+          "Psr\\Http\\Client\\": "src/"
+        }
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "MIT"
+      ],
+      "authors": [
+        {
+          "name": "PHP-FIG",
+          "homepage": "https://www.php-fig.org/"
+        }
+      ],
+      "description": "Common interface for HTTP clients",
+      "homepage": "https://github.com/php-fig/http-client",
+      "keywords": [
+        "http",
+        "http-client",
+        "psr",
+        "psr-18"
+      ],
+      "support": {
+        "source": "https://github.com/php-fig/http-client/tree/master"
+      },
+      "time": "2020-06-29T06:28:15+00:00"
+    },
+    {
+      "name": "psr/http-message",
+      "version": "1.0.1",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/php-fig/http-message.git",
+        "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/php-fig/http-message/zipball/f6561bf28d520154e4b0ec72be95418abe6d9363",
+        "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363",
+        "shasum": ""
+      },
+      "require": {
+        "php": ">=5.3.0"
+      },
+      "type": "library",
+      "extra": {
+        "branch-alias": {
+          "dev-master": "1.0.x-dev"
+        }
+      },
+      "autoload": {
+        "psr-4": {
+          "Psr\\Http\\Message\\": "src/"
+        }
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "MIT"
+      ],
+      "authors": [
+        {
+          "name": "PHP-FIG",
+          "homepage": "https://www.php-fig.org/"
+        }
+      ],
+      "description": "Common interface for HTTP messages",
+      "homepage": "https://github.com/php-fig/http-message",
+      "keywords": [
+        "http",
+        "http-message",
+        "psr",
+        "psr-7",
+        "request",
+        "response"
+      ],
+      "support": {
+        "source": "https://github.com/php-fig/http-message/tree/master"
+      },
+      "time": "2016-08-06T14:39:51+00:00"
+    },
+    {
+      "name": "ralouphie/getallheaders",
+      "version": "3.0.3",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/ralouphie/getallheaders.git",
+        "reference": "120b605dfeb996808c31b6477290a714d356e822"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/ralouphie/getallheaders/zipball/120b605dfeb996808c31b6477290a714d356e822",
+        "reference": "120b605dfeb996808c31b6477290a714d356e822",
+        "shasum": ""
+      },
+      "require": {
+        "php": ">=5.6"
+      },
+      "require-dev": {
+        "php-coveralls/php-coveralls": "^2.1",
+        "phpunit/phpunit": "^5 || ^6.5"
+      },
+      "type": "library",
+      "autoload": {
+        "files": [
+          "src/getallheaders.php"
+        ]
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "MIT"
+      ],
+      "authors": [
+        {
+          "name": "Ralph Khattar",
+          "email": "ralph.khattar@gmail.com"
+        }
+      ],
+      "description": "A polyfill for getallheaders.",
+      "support": {
+        "issues": "https://github.com/ralouphie/getallheaders/issues",
+        "source": "https://github.com/ralouphie/getallheaders/tree/develop"
+      },
+      "time": "2019-03-08T08:55:37+00:00"
+    },
+    {
+      "name": "symfony/polyfill-mbstring",
+      "version": "v1.22.1",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/symfony/polyfill-mbstring.git",
+        "reference": "5232de97ee3b75b0360528dae24e73db49566ab1"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/5232de97ee3b75b0360528dae24e73db49566ab1",
+        "reference": "5232de97ee3b75b0360528dae24e73db49566ab1",
+        "shasum": ""
+      },
+      "require": {
+        "php": ">=7.1"
+      },
+      "suggest": {
+        "ext-mbstring": "For best performance"
+      },
+      "type": "library",
+      "extra": {
+        "branch-alias": {
+          "dev-main": "1.22-dev"
+        },
+        "thanks": {
+          "name": "symfony/polyfill",
+          "url": "https://github.com/symfony/polyfill"
+        }
+      },
+      "autoload": {
+        "psr-4": {
+          "Symfony\\Polyfill\\Mbstring\\": ""
+        },
+        "files": [
+          "bootstrap.php"
+        ]
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "MIT"
+      ],
+      "authors": [
+        {
+          "name": "Nicolas Grekas",
+          "email": "p@tchwork.com"
+        },
+        {
+          "name": "Symfony Community",
+          "homepage": "https://symfony.com/contributors"
+        }
+      ],
+      "description": "Symfony polyfill for the Mbstring extension",
+      "homepage": "https://symfony.com",
+      "keywords": [
+        "compatibility",
+        "mbstring",
+        "polyfill",
+        "portable",
+        "shim"
+      ],
+      "support": {
+        "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.22.1"
+      },
+      "funding": [
+        {
+          "url": "https://symfony.com/sponsor",
+          "type": "custom"
+        },
+        {
+          "url": "https://github.com/fabpot",
+          "type": "github"
+        },
+        {
+          "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+          "type": "tidelift"
+        }
+      ],
+      "time": "2021-01-22T09:19:47+00:00"
+    }
+  ],
+  "packages-dev": [
+    {
+      "name": "doctrine/instantiator",
+      "version": "1.4.0",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/doctrine/instantiator.git",
+        "reference": "d56bf6102915de5702778fe20f2de3b2fe570b5b"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/doctrine/instantiator/zipball/d56bf6102915de5702778fe20f2de3b2fe570b5b",
+        "reference": "d56bf6102915de5702778fe20f2de3b2fe570b5b",
+        "shasum": ""
+      },
+      "require": {
+        "php": "^7.1 || ^8.0"
+      },
+      "require-dev": {
+        "doctrine/coding-standard": "^8.0",
+        "ext-pdo": "*",
+        "ext-phar": "*",
+        "phpbench/phpbench": "^0.13 || 1.0.0-alpha2",
+        "phpstan/phpstan": "^0.12",
+        "phpstan/phpstan-phpunit": "^0.12",
+        "phpunit/phpunit": "^7.0 || ^8.0 || ^9.0"
+      },
+      "type": "library",
+      "autoload": {
+        "psr-4": {
+          "Doctrine\\Instantiator\\": "src/Doctrine/Instantiator/"
+        }
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "MIT"
+      ],
+      "authors": [
+        {
+          "name": "Marco Pivetta",
+          "email": "ocramius@gmail.com",
+          "homepage": "https://ocramius.github.io/"
+        }
+      ],
+      "description": "A small, lightweight utility to instantiate objects in PHP without invoking their constructors",
+      "homepage": "https://www.doctrine-project.org/projects/instantiator.html",
+      "keywords": [
+        "constructor",
+        "instantiate"
+      ],
+      "support": {
+        "issues": "https://github.com/doctrine/instantiator/issues",
+        "source": "https://github.com/doctrine/instantiator/tree/1.4.0"
+      },
+      "funding": [
+        {
+          "url": "https://www.doctrine-project.org/sponsorship.html",
+          "type": "custom"
+        },
+        {
+          "url": "https://www.patreon.com/phpdoctrine",
+          "type": "patreon"
+        },
+        {
+          "url": "https://tidelift.com/funding/github/packagist/doctrine%2Finstantiator",
+          "type": "tidelift"
+        }
+      ],
+      "time": "2020-11-10T18:47:58+00:00"
+    },
+    {
       "name": "myclabs/deep-copy",
       "version": "1.10.2",
       "source": {
@@ -637,53 +991,6 @@
       "time": "2021-02-23T14:00:09+00:00"
     },
     {
-      "name": "phpauth/phpauth",
-      "version": "1.2.1",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/PHPAuth/PHPAuth.git",
-        "reference": "8728c57315b1f923d2cdcbb01a7bce561847b23b"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/PHPAuth/PHPAuth/zipball/8728c57315b1f923d2cdcbb01a7bce561847b23b",
-        "reference": "8728c57315b1f923d2cdcbb01a7bce561847b23b",
-        "shasum": ""
-      },
-      "require": {
-        "bjeavons/zxcvbn-php": "^1.0",
-        "ext-pdo": "*",
-        "google/recaptcha": "^1.2",
-        "php": ">=7.0.0",
-        "phpmailer/phpmailer": "^6.0"
-      },
-      "require-dev": {
-        "phpunit/phpunit": "6.*"
-      },
-      "type": "library",
-      "autoload": {
-        "psr-4": {
-          "PHPAuth\\": "/"
-        }
-      },
-      "notification-url": "https://packagist.org/downloads/",
-      "license": [
-        "MIT"
-      ],
-      "description": "A secure user authentication class for PHP websites, using a powerful password hashing system and attack blocking to keep your website and users secure.",
-      "homepage": "https://phpauth.github.io/PHPAuth/",
-      "keywords": [
-        "Authentication",
-        "class",
-        "secure"
-      ],
-      "support": {
-        "issues": "https://github.com/PHPAuth/PHPAuth/issues",
-        "source": "https://github.com/PHPAuth/PHPAuth/tree/1.2.1"
-      },
-      "time": "2020-12-03T07:47:50+00:00"
-    },
-    {
       "name": "phpdocumentor/reflection-common",
       "version": "2.2.0",
       "source": {
@@ -840,82 +1147,6 @@
         "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.4.0"
       },
       "time": "2020-09-17T18:55:26+00:00"
-    },
-    {
-      "name": "phpmailer/phpmailer",
-      "version": "v6.4.1",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/PHPMailer/PHPMailer.git",
-        "reference": "9256f12d8fb0cd0500f93b19e18c356906cbed3d"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/9256f12d8fb0cd0500f93b19e18c356906cbed3d",
-        "reference": "9256f12d8fb0cd0500f93b19e18c356906cbed3d",
-        "shasum": ""
-      },
-      "require": {
-        "ext-ctype": "*",
-        "ext-filter": "*",
-        "ext-hash": "*",
-        "php": ">=5.5.0"
-      },
-      "require-dev": {
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
-        "doctrine/annotations": "^1.2",
-        "phpcompatibility/php-compatibility": "^9.3.5",
-        "roave/security-advisories": "dev-latest",
-        "squizlabs/php_codesniffer": "^3.5.6",
-        "yoast/phpunit-polyfills": "^0.2.0"
-      },
-      "suggest": {
-        "ext-mbstring": "Needed to send email in multibyte encoding charset or decode encoded addresses",
-        "hayageek/oauth2-yahoo": "Needed for Yahoo XOAUTH2 authentication",
-        "league/oauth2-google": "Needed for Google XOAUTH2 authentication",
-        "psr/log": "For optional PSR-3 debug logging",
-        "stevenmaguire/oauth2-microsoft": "Needed for Microsoft XOAUTH2 authentication",
-        "symfony/polyfill-mbstring": "To support UTF-8 if the Mbstring PHP extension is not enabled (^1.2)"
-      },
-      "type": "library",
-      "autoload": {
-        "psr-4": {
-          "PHPMailer\\PHPMailer\\": "src/"
-        }
-      },
-      "notification-url": "https://packagist.org/downloads/",
-      "license": [
-        "LGPL-2.1-only"
-      ],
-      "authors": [
-        {
-          "name": "Marcus Bointon",
-          "email": "phpmailer@synchromedia.co.uk"
-        },
-        {
-          "name": "Jim Jagielski",
-          "email": "jimjag@gmail.com"
-        },
-        {
-          "name": "Andy Prevost",
-          "email": "codeworxtech@users.sourceforge.net"
-        },
-        {
-          "name": "Brent R. Matzelle"
-        }
-      ],
-      "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
-      "support": {
-        "issues": "https://github.com/PHPMailer/PHPMailer/issues",
-        "source": "https://github.com/PHPMailer/PHPMailer/tree/v6.4.1"
-      },
-      "funding": [
-        {
-          "url": "https://github.com/Synchro",
-          "type": "github"
-        }
-      ],
-      "time": "2021-04-29T12:25:04+00:00"
     },
     {
       "name": "phpspec/prophecy",
@@ -1404,155 +1635,6 @@
         }
       ],
       "time": "2021-03-23T07:16:29+00:00"
-    },
-    {
-      "name": "psr/http-client",
-      "version": "1.0.1",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/php-fig/http-client.git",
-        "reference": "2dfb5f6c5eff0e91e20e913f8c5452ed95b86621"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/php-fig/http-client/zipball/2dfb5f6c5eff0e91e20e913f8c5452ed95b86621",
-        "reference": "2dfb5f6c5eff0e91e20e913f8c5452ed95b86621",
-        "shasum": ""
-      },
-      "require": {
-        "php": "^7.0 || ^8.0",
-        "psr/http-message": "^1.0"
-      },
-      "type": "library",
-      "extra": {
-        "branch-alias": {
-          "dev-master": "1.0.x-dev"
-        }
-      },
-      "autoload": {
-        "psr-4": {
-          "Psr\\Http\\Client\\": "src/"
-        }
-      },
-      "notification-url": "https://packagist.org/downloads/",
-      "license": [
-        "MIT"
-      ],
-      "authors": [
-        {
-          "name": "PHP-FIG",
-          "homepage": "https://www.php-fig.org/"
-        }
-      ],
-      "description": "Common interface for HTTP clients",
-      "homepage": "https://github.com/php-fig/http-client",
-      "keywords": [
-        "http",
-        "http-client",
-        "psr",
-        "psr-18"
-      ],
-      "support": {
-        "source": "https://github.com/php-fig/http-client/tree/master"
-      },
-      "time": "2020-06-29T06:28:15+00:00"
-    },
-    {
-      "name": "psr/http-message",
-      "version": "1.0.1",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/php-fig/http-message.git",
-        "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/php-fig/http-message/zipball/f6561bf28d520154e4b0ec72be95418abe6d9363",
-        "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363",
-        "shasum": ""
-      },
-      "require": {
-        "php": ">=5.3.0"
-      },
-      "type": "library",
-      "extra": {
-        "branch-alias": {
-          "dev-master": "1.0.x-dev"
-        }
-      },
-      "autoload": {
-        "psr-4": {
-          "Psr\\Http\\Message\\": "src/"
-        }
-      },
-      "notification-url": "https://packagist.org/downloads/",
-      "license": [
-        "MIT"
-      ],
-      "authors": [
-        {
-          "name": "PHP-FIG",
-          "homepage": "https://www.php-fig.org/"
-        }
-      ],
-      "description": "Common interface for HTTP messages",
-      "homepage": "https://github.com/php-fig/http-message",
-      "keywords": [
-        "http",
-        "http-message",
-        "psr",
-        "psr-7",
-        "request",
-        "response"
-      ],
-      "support": {
-        "source": "https://github.com/php-fig/http-message/tree/master"
-      },
-      "time": "2016-08-06T14:39:51+00:00"
-    },
-    {
-      "name": "ralouphie/getallheaders",
-      "version": "3.0.3",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/ralouphie/getallheaders.git",
-        "reference": "120b605dfeb996808c31b6477290a714d356e822"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/ralouphie/getallheaders/zipball/120b605dfeb996808c31b6477290a714d356e822",
-        "reference": "120b605dfeb996808c31b6477290a714d356e822",
-        "shasum": ""
-      },
-      "require": {
-        "php": ">=5.6"
-      },
-      "require-dev": {
-        "php-coveralls/php-coveralls": "^2.1",
-        "phpunit/phpunit": "^5 || ^6.5"
-      },
-      "type": "library",
-      "autoload": {
-        "files": [
-          "src/getallheaders.php"
-        ]
-      },
-      "notification-url": "https://packagist.org/downloads/",
-      "license": [
-        "MIT"
-      ],
-      "authors": [
-        {
-          "name": "Ralph Khattar",
-          "email": "ralph.khattar@gmail.com"
-        }
-      ],
-      "description": "A polyfill for getallheaders.",
-      "support": {
-        "issues": "https://github.com/ralouphie/getallheaders/issues",
-        "source": "https://github.com/ralouphie/getallheaders/tree/develop"
-      },
-      "time": "2019-03-08T08:55:37+00:00"
     },
     {
       "name": "sebastian/cli-parser",
@@ -2598,86 +2680,6 @@
       "time": "2021-01-07T16:49:33+00:00"
     },
     {
-      "name": "symfony/polyfill-mbstring",
-      "version": "v1.22.1",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/symfony/polyfill-mbstring.git",
-        "reference": "5232de97ee3b75b0360528dae24e73db49566ab1"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/5232de97ee3b75b0360528dae24e73db49566ab1",
-        "reference": "5232de97ee3b75b0360528dae24e73db49566ab1",
-        "shasum": ""
-      },
-      "require": {
-        "php": ">=7.1"
-      },
-      "suggest": {
-        "ext-mbstring": "For best performance"
-      },
-      "type": "library",
-      "extra": {
-        "branch-alias": {
-          "dev-main": "1.22-dev"
-        },
-        "thanks": {
-          "name": "symfony/polyfill",
-          "url": "https://github.com/symfony/polyfill"
-        }
-      },
-      "autoload": {
-        "psr-4": {
-          "Symfony\\Polyfill\\Mbstring\\": ""
-        },
-        "files": [
-          "bootstrap.php"
-        ]
-      },
-      "notification-url": "https://packagist.org/downloads/",
-      "license": [
-        "MIT"
-      ],
-      "authors": [
-        {
-          "name": "Nicolas Grekas",
-          "email": "p@tchwork.com"
-        },
-        {
-          "name": "Symfony Community",
-          "homepage": "https://symfony.com/contributors"
-        }
-      ],
-      "description": "Symfony polyfill for the Mbstring extension",
-      "homepage": "https://symfony.com",
-      "keywords": [
-        "compatibility",
-        "mbstring",
-        "polyfill",
-        "portable",
-        "shim"
-      ],
-      "support": {
-        "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.22.1"
-      },
-      "funding": [
-        {
-          "url": "https://symfony.com/sponsor",
-          "type": "custom"
-        },
-        {
-          "url": "https://github.com/fabpot",
-          "type": "github"
-        },
-        {
-          "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-          "type": "tidelift"
-        }
-      ],
-      "time": "2021-01-22T09:19:47+00:00"
-    },
-    {
       "name": "theseer/tokenizer",
       "version": "1.2.0",
       "source": {
@@ -2786,7 +2788,6 @@
       "time": "2021-03-09T10:59:23+00:00"
     }
   ],
-  "packages-dev": [],
   "aliases": [],
   "minimum-stability": "stable",
   "stability-flags": [],
@@ -2800,5 +2801,5 @@
     "ext-pdo": "*"
   },
   "platform-dev": [],
-  "plugin-api-version": "2.1.0"
+  "plugin-api-version": "1.1.0"
 }
