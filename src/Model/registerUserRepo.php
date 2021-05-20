@@ -4,11 +4,9 @@ declare(strict_types=1);
 namespace ImageRepository\Model\UserManagement;
 
 use ImageRepository\Exception\{DebugPDOException, EncryptionFailureException, PDOWriteException};
-use ImageRepository\Model\User;
-use PDO;
+use ImageRepository\Model\{Database, EncryptionKeyReader, User};
+use ImageRepository\Model\Encryption\{Encrypter, UserAttributeGenerator};
 
-use function ImageRepository\Model\{getSystemKeys, safeWriteQueries};
-use function ImageRepository\Model\Encryption\{createUserAttributes, keygen};
 use function ImageRepository\Utils\registerUser;
 
 /**
@@ -16,17 +14,17 @@ use function ImageRepository\Utils\registerUser;
  * @throws DebugPDOException
  * @throws PDOWriteException
  */
-function insertUser(User $user, PDO $conn, bool $debug = false): array {
-    $conn->beginTransaction();
-    $output = registerUser($conn, $user);
+function insertUser(User $user, Database $db, bool $debug = false): array {
+    $db->beginTransaction();
+    $output = registerUser($db, $user);
     if ($output['error']) {
         return $output;
     }
     /* Store the user's login info */
     $user->id = $output['id'];
     /* store user info in member table */
-    storeUserKeys($user, $conn, $debug);
-    $conn->commit();
+    storeUserKeys($user, $db, $debug);
+    $db->commit();
 
     return $output;
 }
@@ -34,14 +32,14 @@ function insertUser(User $user, PDO $conn, bool $debug = false): array {
 /**
  * @throws EncryptionFailureException
  */
-function getUserPrivateKey(User $user, PDO $conn): string {
-    $userAttributes = createUserAttributes($user);
+function generateUserPrivateKey(User $user, Database $db): string {
+    $userAttributes = UserAttributeGenerator::generate($user);
     /* Get public and private key */
-    $systemKeys = getSystemKeys($conn);
+    $systemKeys = EncryptionKeyReader::systemKeys($db);
     $publicKey = $systemKeys['publicKey'];
     $masterKey = $systemKeys['masterKey'];
 
-    return keygen($publicKey, $masterKey, $userAttributes);
+    return Encrypter::keyGeneration($publicKey, $masterKey, $userAttributes);
 }
 
 /**
@@ -49,15 +47,12 @@ function getUserPrivateKey(User $user, PDO $conn): string {
  * @throws DebugPDOException
  * @throws PDOWriteException
  */
-function storeUserKeys(User $user, PDO $conn, bool $debug = false): bool {
-    $stmt = $conn->prepare(
-        'INSERT INTO `userKeys` (memberID, privateKey) VALUES (:id, :privateKey)'
-    );
-    $stmt->bindValue(':id', $user->id, PDO::PARAM_INT);
-    $privateKey = getUserPrivateKey($user, $conn);
-    $stmt->bindValue(':privateKey', $privateKey);
+function storeUserKeys(User $user, Database $db, bool $debug = false): bool {
+    $sql = 'INSERT INTO `userKeys` (memberID, privateKey) VALUES (:id, :privateKey)';
+    $privateKey = generateUserPrivateKey($user, $db);
+    $params = [':id' => $user->id, ':privateKey' => $privateKey];
 
-    return safeWriteQueries($stmt, $conn, $debug);
+    return $db->write($sql, $params, $debug);
 }
 
 

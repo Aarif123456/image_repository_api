@@ -8,27 +8,8 @@ use ImageRepository\Exception\{DebugPDOException,
     EncryptionFailureException,
     InvalidAccessException,
     PDOWriteException};
-use ImageRepository\Model\{File, User};
-use PDO;
-
-use function ImageRepository\Model\Encryption\{encryptFile, getPrivatePolicy, getPublicPolicy};
-use function ImageRepository\Model\safeWriteQueries;
-
-use const ImageRepository\Model\{PRIVATE_ACCESS, PUBLIC_ACCESS};
-
-/**
- * @throws InvalidAccessException
- */
-function getPolicy(int $fileAccess, User $user): string {
-    switch ($fileAccess) {
-        case PRIVATE_ACCESS:
-            return getPrivatePolicy($user);
-        case PUBLIC_ACCESS:
-            return getPublicPolicy($user);
-        default:
-            throw new InvalidAccessException();
-    }
-}
+use ImageRepository\Model\{Database, EncryptionKeyReader, File, User};
+use ImageRepository\Model\Encryption\FileEncrypter;
 
 /**
  * @throws DebugPDOException
@@ -37,19 +18,21 @@ function getPolicy(int $fileAccess, User $user): string {
  * @throws EncryptionFailureException
  * @throws PDOWriteException
  */
-function insertFile(File $file, User $user, PDO $conn, bool $debug = false): bool {
-    $file->access ??= PRIVATE_ACCESS;
-    $stmt = $conn->prepare(
-        'INSERT INTO files (memberID, filePath, fileName, fileSize, accessID, mime) VALUES (:memberID, :filePath, :fileName, :fileSize, :accessID, :mime)'
-    );
-    $stmt->bindValue(':memberID', $user->id, PDO::PARAM_INT);
-    $stmt->bindValue(':filePath', $file->path, PDO::PARAM_STR);
-    $stmt->bindValue(':fileName', $file->name, PDO::PARAM_STR);
-    $stmt->bindValue(':fileSize', $file->size, PDO::PARAM_INT);
-    $stmt->bindValue(':accessID', $file->access, PDO::PARAM_INT);
-    $stmt->bindValue(':mime', $file->type, PDO::PARAM_STR);
-    $policy = getPolicy($file->access, $user);
-    encryptFile($file, $policy, $conn);
+function insertFile(File $file, User $user, Database $db, bool $debug = false): bool {
+    /* TODO: Move this to the worker class */
+    $file->access ??= PolicySelector::PRIVATE_ACCESS;
+    $sql = 'INSERT INTO files (memberID, filePath, fileName, fileSize, accessID, mime) VALUES (:memberID, :filePath, :fileName, :fileSize, :accessID, :mime)';
+    $params = [
+        ':memberID' => $user->id,
+        ':filePath' => $file->path,
+        ':fileName' => $file->name,
+        ':fileSize' => $file->size,
+        ':accessID' => $file->access,
+        ':mime' => $file->type
+    ];
+    $policy = PolicySelector::getPolicy($file->access, $user);
+    $publicKey = EncryptionKeyReader::publicKey($db);
+    FileEncrypter::run($file, $policy, $publicKey);
 
-    return safeWriteQueries($stmt, $conn, $debug);
+    return $db->write($sql, $params, $debug);
 }

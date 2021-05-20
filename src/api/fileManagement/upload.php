@@ -15,8 +15,7 @@ use ImageRepository\Exception\{DebugPDOException,
     PDOWriteException,
     SqlCommandFailedException,
     UnknownErrorException};
-use ImageRepository\Model\{File, User};
-use PDO;
+use ImageRepository\Model\{Database, File, User};
 
 use function ImageRepository\Api\{isValidFileVar, missingParameterExit};
 use function ImageRepository\Utils\getCurrentUserInfo;
@@ -38,9 +37,9 @@ use const ImageRepository\Utils\AUTHORIZED_USER;
  * @throws PDOWriteException
  * @throws MissingParameterException
  */
-function upload(PDO $conn, bool $debug) {
+function upload(Database $db, bool $debug) {
     /* Set variables */
-    $user = new User(getCurrentUserInfo($conn));
+    $user = new User(getCurrentUserInfo($db));
     $fileAccess = $_REQUEST['fileAccess'] ?? null;
     $filePath = $_REQUEST['filePath'] ?? '';
     $fileNames = $_REQUEST['fileNames'] ?? 'images';
@@ -72,7 +71,7 @@ function upload(PDO $conn, bool $debug) {
             'access' => $fileAccess,
             'ownerId' => $user->id
         ]);
-        $uploadSuccess[$file->name] = processFile($file, $user, $conn);
+        $uploadSuccess[$file->name] = processFile($file, $user, $db);
     }
     echo createQueryJSON($uploadSuccess);
 }

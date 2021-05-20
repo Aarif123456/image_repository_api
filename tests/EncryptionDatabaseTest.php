@@ -7,13 +7,9 @@ use ImageRepository\Exception\{EncryptedFileNotCreatedException,
     EncryptionFailureException,
     InvalidAccessException,
     NoSuchFileException};
-use ImageRepository\Model\{File, User};
+use ImageRepository\Model\{File, FileManagement\PolicySelector, User};
+use ImageRepository\Model\Encryption\{Encrypter, FileDecrypter, FileEncrypter, UserAttributeGenerator};
 use PHPUnit\Framework\TestCase;
-
-use function ImageRepository\Model\{FileManagement\getPolicy, isFilePrivate};
-use function ImageRepository\Model\Encryption\{createUserAttributes, encryptFile, getFileDecrypted, keygen, setup};
-
-use const ImageRepository\Model\{PRIVATE_ACCESS, PUBLIC_ACCESS};
 
 require_once __DIR__ . '/helper.php';
 require_once __DIR__ . '/dataProviders.php';
@@ -37,7 +33,7 @@ final class EncryptionDatabaseTest extends TestCase
      * email validated during registration.
      */
     public function userAccessProvider(): array {
-        $validAccess = [PRIVATE_ACCESS, PUBLIC_ACCESS];
+        $validAccess = [PolicySelector::PRIVATE_ACCESS, PolicySelector::PUBLIC_ACCESS];
         $users = $this->userProvider();
 
         return cartesian([
@@ -72,12 +68,12 @@ final class EncryptionDatabaseTest extends TestCase
 
     /**
      * @testdox Make sure we can generate the keys needed for the encryption decryption process
-     * @covers ::setup
+     * @covers Encrypter::setup
      * @throws EncryptionFailureException
      */
     public function testSystemKeyGeneration(): array {
         /* Make sure program uses system properties */
-        $setupReturn = setup();
+        $setupReturn = Encrypter::setup();
         $this->assertNotEmpty($setupReturn);
         $this->assertArrayHasKey('publicKey', $setupReturn);
         $this->assertArrayHasKey('masterKey', $setupReturn);
@@ -94,24 +90,25 @@ final class EncryptionDatabaseTest extends TestCase
     /**
      * @testdox Make sure appropriate exception is thrown for wrong incorrect arguments!
      * @dataProvider notWorkingAccessProvider
-     * @covers ::getPolicy
+     * @covers ::PolicySelector::getPolicy
      */
     public function testInvalidPolicy(User $user, int $accessId): string {
         $this->expectException(InvalidAccessException::class);
 
-        return getPolicy($accessId, $user);
+        return PolicySelector::getPolicy($accessId, $user);
     }
 
     /**
      * @testdox Make sure we can generate keys if we pass in attributes with the correct format
      * @dataProvider userAccessProvider
      * @depends      testSystemKeyGeneration
-     * @covers ::keygen
+     * @covers       Encrypter::keyGeneration
      * @throws EncryptionFailureException
      */
     public function testValidUserKeyGeneration(User $user): void {
         $userAttributes = $this->testUserAttributes($user);
-        $privateKey = keygen(self::$mockedSQL->publicKey, self::$mockedSQL->masterKey, $userAttributes);
+        $privateKey = Encrypter::keyGeneration(self::$mockedSQL->publicKey, self::$mockedSQL->masterKey,
+            $userAttributes);
         self::$mockedSQL->userKeys[$user->id] = $privateKey;
         $this->assertNotEmpty($privateKey);
         self::$mockedSQL->lastUserId = $user->id;
@@ -121,10 +118,10 @@ final class EncryptionDatabaseTest extends TestCase
      * @testdox Create attributes for different users
      * @dataProvider userAccessProvider
      * @depends      testSystemKeyGeneration
-     * @covers ::createUserAttributes
+     * @covers       UserAttributeGenerator::generate
      */
     public function testUserAttributes(User $user): string {
-        $userAttributes = createUserAttributes($user);
+        $userAttributes = UserAttributeGenerator::generate($user);
         $this->assertStringNotContainsString('$', $userAttributes);
         $this->assertStringContainsString((string)($user->id), $userAttributes);
 
@@ -134,19 +131,19 @@ final class EncryptionDatabaseTest extends TestCase
     /**
      * @testdox Make sure we cannot generate keys if we pass in attributes with the
      * incorrect format and we get back and appropriate response
-     * @covers ::keygen
+     * @covers  Encrypter::keyGeneration
      */
     public function testInvalidUserKeyGeneration(): void {
         $this->expectException(EncryptionFailureException::class);
-        keygen(self::$mockedSQL->publicKey, self::$mockedSQL->masterKey, 'This is an invalid attribute...');
+        Encrypter::keyGeneration(self::$mockedSQL->publicKey, self::$mockedSQL->masterKey,
+            'This is an invalid attribute...');
     }
 
     /**
      * @dataProvider userAccessProvider
      * @depends      testValidUserKeyGeneration
      * @depends      testValidPolicy
-     * @covers ::encryptFile
-     * @covers ::getFileEncrypted
+     * @covers       FileEncrypter::run
      * @throws EncryptedFileNotCreatedException
      * @throws InvalidAccessException
      * @throws EncryptionFailureException
@@ -155,8 +152,7 @@ final class EncryptionDatabaseTest extends TestCase
         $policy = $this->testValidPolicy($user, $accessId);
         $encryptedFile = $this->encryptedFileLocationCreator($accessId, $user->id);
         $file = FileMockProvider::getMockFile($this->inputFile, $encryptedFile);
-        $conn = self::$mockedSQL->getMockedPDO();
-        encryptFile($file, $policy, $conn);
+        FileEncrypter::run($file, $policy, self::$mockedSQL->publicKey);
         $encryptedFileBytes = file_get_contents($encryptedFile);
         $this->assertNotEmpty($encryptedFileBytes);
         $this->assertNotEquals(file_get_contents($this->inputFile), $encryptedFileBytes);
@@ -167,11 +163,11 @@ final class EncryptionDatabaseTest extends TestCase
     /**
      * @testdox Make sure the correct policy are generated for different users
      * @dataProvider userAccessProvider
-     * @covers ::getPolicy
+     * @covers ::PolicySelector::getPolicy
      * @throws InvalidAccessException
      */
     public function testValidPolicy(User $user, int $accessId): string {
-        $policy = getPolicy($accessId, $user);
+        $policy = PolicySelector::getPolicy($accessId, $user);
         /* We don't want accidentally read in a variable name instead of evaluating */
         $this->assertStringNotContainsString('$', $policy);
         $this->assertNotEmpty($policy);
@@ -189,7 +185,7 @@ final class EncryptionDatabaseTest extends TestCase
      * @depends      testFileEncrypted
      * @depends      testValidUserKeyGeneration
      * @throws NoSuchFileException
-     * @covers ::getFileDecrypted
+     * @covers ::FileDecrypter::run
      */
     public function testFileValidDecrypted(User $user, int $accessId): void {
         $encryptedFile = $this->encryptedFileLocationCreator($accessId, $user->id);
@@ -197,11 +193,11 @@ final class EncryptionDatabaseTest extends TestCase
         /* Go through all users and check if we can decrypt if we have access and vice-versa*/
         foreach (self::$mockedSQL->userKeys as $curUserId => $privateKey) {
             /* If file is private only people with access can expect */
-            if (isFilePrivate($accessId) && $user->id !== $curUserId) {
+            if (PolicySelector::isFilePrivate($accessId) && $user->id !== $curUserId) {
                 $this->expectException(EncryptionFailureException::class);
             }
             /* Check if we can decrypt */
-            $decryptedFileBytes = getFileDecrypted($file, $privateKey, self::$mockedSQL->publicKey);
+            $decryptedFileBytes = FileDecrypter::run($file, $privateKey, self::$mockedSQL->publicKey);
             $this->assertTrue(strcmp(file_get_contents($this->inputFile), $decryptedFileBytes) === 0);
         }
     }

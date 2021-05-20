@@ -8,8 +8,7 @@ use ImageRepository\Exception\{DebugPDOException,
     EncryptionFailureException,
     MissingParameterException,
     PDOWriteException};
-use ImageRepository\Model\User;
-use PDO;
+use ImageRepository\Model\{Database, User};
 
 use function ImageRepository\Api\checkMissingPostVars;
 use function ImageRepository\Model\UserManagement\insertUser;
@@ -23,7 +22,7 @@ use const ImageRepository\Utils\UNAUTHENTICATED;
  * @throws PDOWriteException
  * @throws MissingParameterException
  */
-function register(PDO $conn, bool $debug) {
+function register(Database $db, bool $debug) {
     /* Make sure we have a valid request */
     checkMissingPostVars(['firstName', 'lastName', 'email', 'password']);
     /* Get user info into user object */
@@ -34,7 +33,7 @@ function register(PDO $conn, bool $debug) {
         'email' => $_POST['email'],
         'password' => $_POST['password'],
     ]);
-    $result = insertUser($user, $conn, $debug);
+    $result = insertUser($user, $db, $debug);
     echo createQueryJSON($result);
 }
 

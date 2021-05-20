@@ -4,9 +4,8 @@ declare(strict_types=1);
 namespace ImageRepository\Tests;
 
 use ImageRepository\Exception\EncryptionFailureException;
+use ImageRepository\Model\Encryption\{Encrypter};
 use PHPUnit\Framework\TestCase;
-
-use function ImageRepository\Model\Encryption\{decrypt, encrypt, generateProperties, keygen, setup};
 
 /* This class tests the encryption endpoint
  * the point of this class is to ensure that we can securely generate encrypted files that can 
@@ -19,13 +18,12 @@ final class EncryptionTest extends TestCase
 
     /**
      * @testdox Make sure we can generate new system properties if we ever want to in the future
-     * @covers ::generateProperties
-     * @covers ::callApi
+     * @covers Encrypter::generateProperties
      * @throws EncryptionFailureException
      */
     public function testSystemPropertiesGeneration(): string {
         $type = 'a';
-        $properties = generateProperties($type);
+        $properties = Encrypter::generateProperties($type);
         $this->assertNotEmpty($properties);
         $this->assertArrayHasKey('properties', $properties);
         /* Make sure we actually get back the properties */
@@ -41,12 +39,12 @@ final class EncryptionTest extends TestCase
     /**
      * @testdox Make sure we can generate the keys needed for the encryption decryption process
      * @depends testSystemPropertiesGeneration
-     * @covers ::setup
+     * @covers  Encrypter::setup
      * @throws EncryptionFailureException
      */
     public function testSystemKeyGeneration(string $properties): array {
         /* Make sure program uses system properties */
-        $setupReturn = setup($properties);
+        $setupReturn = Encrypter::setup($properties);
         $this->assertNotEmpty($setupReturn);
         $this->assertArrayHasKey('publicKey', $setupReturn);
         $this->assertArrayHasKey('masterKey', $setupReturn);
@@ -58,13 +56,13 @@ final class EncryptionTest extends TestCase
      * @testdox Make sure we can generate keys if we pass in attributes with the correct format
      * @depends testSystemPropertiesGeneration
      * @depends testSystemKeyGeneration
-     * @covers ::keygen
+     * @covers  Encrypter::keyGeneration
      * @throws EncryptionFailureException
      */
     public function testValidUserKeyGeneration(string $properties, array $setupReturn): string {
         $masterKey = $setupReturn['masterKey'] ?? '';
         $publicKey = $setupReturn['publicKey'] ?? '';
-        $privateKey = keygen($publicKey, $masterKey, 'userId:1 public:true', $properties);
+        $privateKey = Encrypter::keyGeneration($publicKey, $masterKey, 'userId:1 public:true', $properties);
         $this->assertNotEmpty($privateKey);
 
         return $privateKey;
@@ -74,13 +72,13 @@ final class EncryptionTest extends TestCase
      * @testdox Make another valid keys with attributes we expect to fail on decryption
      * @depends testSystemPropertiesGeneration
      * @depends testSystemKeyGeneration
-     * @covers ::keygen
+     * @covers  Encrypter::keyGeneration
      * @throws EncryptionFailureException
      */
     public function testAlternateUserKeyGeneration(string $properties, array $setupReturn): string {
         $masterKey = $setupReturn['masterKey'] ?? '';
         $publicKey = $setupReturn['publicKey'] ?? '';
-        $privateKey = keygen($publicKey, $masterKey, 'userId:2 public:true', $properties);
+        $privateKey = Encrypter::keyGeneration($publicKey, $masterKey, 'userId:2 public:true', $properties);
         $this->assertNotEmpty($privateKey);
 
         return $privateKey;
@@ -91,25 +89,25 @@ final class EncryptionTest extends TestCase
      * incorrect format and we get back and appropriate response
      * @depends testSystemPropertiesGeneration
      * @depends testSystemKeyGeneration
-     * @covers ::keygen
+     * @covers  Encrypter::keyGeneration
      */
     public function testInvalidUserKeyGeneration(string $properties, array $setupReturn): void {
         $this->expectException(EncryptionFailureException::class);
         $masterKey = $setupReturn['masterKey'] ?? '';
         $publicKey = $setupReturn['publicKey'] ?? '';
-        keygen($publicKey, $masterKey, 'This is an invalid attribute...', $properties);
+        Encrypter::keyGeneration($publicKey, $masterKey, 'This is an invalid attribute...', $properties);
     }
 
     /**
      * @depends testSystemPropertiesGeneration
      * @depends testSystemKeyGeneration
-     * @covers ::encrypt
+     * @covers  Encrypter::encrypt
      * @throws EncryptionFailureException
      */
     public function testFileEncrypted(string $properties, array $setupReturn): string {
         $publicKey = $setupReturn['publicKey'] ?? '';
         $policy = 'userId:1 public:true 2of2';
-        $encryptedFileBytes = encrypt($publicKey, $policy, $this->inputFile, $properties);
+        $encryptedFileBytes = Encrypter::encrypt($publicKey, $policy, $this->inputFile, $properties);
         $encryptedFile = $this->inputFile . '.ENCRYPTED';
         $filesize = file_put_contents($encryptedFile, $encryptedFileBytes);
         $this->assertNotEmpty($filesize);
@@ -122,13 +120,13 @@ final class EncryptionTest extends TestCase
      * @testdox Make sure we have get a proper response for passing back invalid policy
      * @depends testSystemPropertiesGeneration
      * @depends testSystemKeyGeneration
-     * @covers ::encrypt
+     * @covers  Encrypter::encrypt
      */
     public function testInvalidPolicyFileEncrypted(string $properties, array $setupReturn): void {
         $this->expectException(EncryptionFailureException::class);
         $publicKey = $setupReturn['publicKey'] ?? '';
         $policy = 'This is an invalid policy....';
-        encrypt($publicKey, $policy, $this->inputFile, $properties);
+        Encrypter::encrypt($publicKey, $policy, $this->inputFile, $properties);
     }
 
     /**
@@ -136,7 +134,7 @@ final class EncryptionTest extends TestCase
      * @depends testSystemKeyGeneration
      * @depends testValidUserKeyGeneration
      * @depends testFileEncrypted
-     * @covers ::decrypt
+     * @covers  Encrypter::decrypt
      * @throws EncryptionFailureException
      */
     public function testFileValidDecrypted(
@@ -146,7 +144,7 @@ final class EncryptionTest extends TestCase
         string $encryptedFile
     ): string {
         $publicKey = $setupReturn['publicKey'] ?? '';
-        $decryptedFile = decrypt($publicKey, $privateKey, $encryptedFile, $properties);
+        $decryptedFile = Encrypter::decrypt($publicKey, $privateKey, $encryptedFile, $properties);
         $this->assertTrue(strcmp(file_get_contents($this->inputFile), $decryptedFile) === 0);
 
         return $decryptedFile;
@@ -158,7 +156,7 @@ final class EncryptionTest extends TestCase
      * @depends testSystemKeyGeneration
      * @depends testAlternateUserKeyGeneration
      * @depends testFileEncrypted
-     * @covers ::decrypt
+     * @covers  Encrypter::decrypt
      */
     public function testFileInvalidDecrypted(
         string $properties,
@@ -168,6 +166,6 @@ final class EncryptionTest extends TestCase
     ): void {
         $this->expectException(EncryptionFailureException::class);
         $publicKey = $setupReturn['publicKey'] ?? '';
-        decrypt($publicKey, $privateKey, $encryptedFile, $properties);
+        Encrypter::decrypt($publicKey, $privateKey, $encryptedFile, $properties);
     }
 }

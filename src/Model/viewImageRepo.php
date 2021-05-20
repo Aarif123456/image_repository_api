@@ -5,21 +5,19 @@ namespace ImageRepository\Model\FileManagement;
 
 /* Get information about the image */
 use ImageRepository\Exception\{EncryptionFailureException, NoSuchFileException};
-use ImageRepository\Model\{FileLocationInfo, User};
-use PDO;
+use ImageRepository\Model\{Database, EncryptionKeyReader, FileLocationInfo, User};
+use ImageRepository\Model\Encryption\FileDecrypter;
 
-use function ImageRepository\Model\{getExecutedResult, getSystemKeys, getUserKey};
-use function ImageRepository\Model\Encryption\getFileDecrypted;
+function viewImageDetail(FileLocationInfo $file, User $user, Database $db): array {
+    $sql =
+        'SELECT * FROM files WHERE fileName=:fileName AND filePath=:filePath AND memberID=:id';
+    $params = [
+        ':fileName' => $file->name,
+        ':filePath' => $file->path,
+        ':id' => $user->id
+    ];
 
-function viewImageDetail(FileLocationInfo $file, User $user, PDO $conn): array {
-    $stmt = $conn->prepare(
-        'SELECT * FROM files WHERE fileName=:fileName AND filePath=:filePath AND memberID=:id'
-    );
-    $stmt->bindValue(':fileName', $file->name);
-    $stmt->bindValue(':filePath', $file->path);
-    $stmt->bindValue(':id', $user->id);
-
-    return getExecutedResult($stmt);
+    return $db->read($sql, $params);
 }
 
 /**
@@ -27,13 +25,14 @@ function viewImageDetail(FileLocationInfo $file, User $user, PDO $conn): array {
  *
  * @throws NoSuchFileException
  */
-function getImageDetailWithId(int $fileId, User $user, PDO $conn): FileLocationInfo {
-    $stmt = $conn->prepare(
-        'SELECT fileName as \'name\', filePath as \'path\', memberID as \'ownerId\' FROM files WHERE fileID=:fileId AND memberID=:id'
-    );
-    $stmt->bindValue(':fileId', $fileId, PDO::PARAM_INT);
-    $stmt->bindValue(':id', $user->id, PDO::PARAM_INT);
-    $rows = getExecutedResult($stmt);
+function getImageDetailWithId(int $fileId, User $user, Database $db): FileLocationInfo {
+    $sql =
+        'SELECT fileName as \'name\', filePath as \'path\', memberID as \'ownerId\' FROM files WHERE fileID=:fileId AND memberID=:id';
+    $params = [
+        ':fileId' => $fileId,
+        ':id' => $user->id
+    ];
+    $rows = $db->read($sql, $params);
     if (empty($rows)) {
         throw new NoSuchFileException();
     }
@@ -42,8 +41,8 @@ function getImageDetailWithId(int $fileId, User $user, PDO $conn): FileLocationI
 }
 
 /* Helper function to get the mime type of the file */
-function getFileMimeType(FileLocationInfo $file, User $user, PDO $conn) {
-    return viewImageDetail($file, $user, $conn)[0]['mime'];
+function getFileMimeType(FileLocationInfo $file, User $user, Database $db) {
+    return viewImageDetail($file, $user, $db)[0]['mime'];
 }
 
 /**
@@ -52,13 +51,12 @@ function getFileMimeType(FileLocationInfo $file, User $user, PDO $conn) {
  * @throws EncryptionFailureException
  * @throws NoSuchFileException
  */
-function getImage(FileLocationInfo $file, User $user, PDO $conn): array {
-    $privateKey = getUserKey($user, $conn);
-    $systemKeys = getSystemKeys($conn);
-    $publicKey = $systemKeys['publicKey'];
+function getImage(FileLocationInfo $file, User $user, Database $db): array {
+    $privateKey = EncryptionKeyReader::userKey($user, $db);
+    $publicKey = EncryptionKeyReader::publicKey($db);
 
     return [
-        'data' => getFileDecrypted($file, $privateKey, $publicKey),
-        'mime' => getFileMimeType($file, $user, $conn)
+        'data' => FileDecrypter::run($file, $privateKey, $publicKey),
+        'mime' => getFileMimeType($file, $user, $db)
     ];
 }

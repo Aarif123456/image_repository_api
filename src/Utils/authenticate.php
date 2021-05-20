@@ -4,63 +4,62 @@ declare(strict_types=1);
 namespace ImageRepository\Utils;
 
 use ImageRepository\Exception\UnauthorizedUserException;
-use ImageRepository\Model\User;
-use PDO;
+use ImageRepository\Model\{Database, User};
 use PHPAuth\{Auth as PHPAuth, Config as PHPAuthConfig};
 
-function getAuth(PDO $conn): PHPAuth {
-    $config = new PHPAuthConfig($conn);
+function getAuth(Database $db): PHPAuth {
+    $config = new PHPAuthConfig($db->conn);
 
-    return new PHPAuth($conn, $config);
+    return new PHPAuth($db->conn, $config);
 }
 
-function isUserAuthorized(PDO $conn, int $authorizationLevel): bool {
+function isUserAuthorized(Database $db, int $authorizationLevel): bool {
     switch ($authorizationLevel) {
         /* If endpoint is authenticated anyone can use it */
         case UNAUTHENTICATED:
             return true;
         case AUTHORIZED_USER:
-            return isUserLoggedIn($conn);
+            return isUserLoggedIn($db);
         case AUTHORIZED_ADMIN:
-            return isUserLoggedIn($conn) && isUserAnAdmin($conn);
+            return isUserLoggedIn($db) && isUserAnAdmin($db);
         default:
             return false;
     }
 }
 
 /*Make sure user is validated */
-function isUserLoggedIn(PDO $conn): bool {
-    $auth = getAuth($conn);
+function isUserLoggedIn(Database $db): bool {
+    $auth = getAuth($db);
 
     return $auth->isLogged();
 }
 
-function getUserID(PDO $conn) {
-    $auth = getAuth($conn);
+function getUserID(Database $db) {
+    $auth = getAuth($db);
 
     return $auth->getCurrentUID();
 }
 
-function getUser(PDO $conn, int $userId): array {
-    $auth = getAuth($conn);
+function getUser(Database $db, int $userId): array {
+    $auth = getAuth($db);
 
     return $auth->getUser($userId);
 }
 
-function getCurrentUserInfo(PDO $conn): array {
-    $auth = getAuth($conn);
+function getCurrentUserInfo(Database $db): array {
+    $auth = getAuth($db);
 
     return $auth->getCurrentUser();
 }
 
-function isUserAnAdmin(PDO $conn): bool {
-    return getCurrentUserInfo($conn)['isAdmin'];
+function isUserAnAdmin(Database $db): bool {
+    return getCurrentUserInfo($db)['isAdmin'];
 }
 
 /* Login function a bit ugly because we have multiple domains*/
-function login($loginInfo, PDO $conn): array {
-    $config = new PHPAuthConfig($conn);
-    $auth = new PHPAuth($conn, $config);
+function login($loginInfo, Database $db): array {
+    $config = new PHPAuthConfig($db->conn);
+    $auth = new PHPAuth($db->conn, $config);
     $loginInfo = $auth->login($loginInfo->email, $loginInfo->password, $loginInfo->remember);
     $arrCookieOptions = [
         'expires' => $loginInfo['expire'],
@@ -77,8 +76,8 @@ function login($loginInfo, PDO $conn): array {
     return $loginInfo;
 }
 
-function registerUser(PDO $conn, User $user): array {
-    $auth = getAuth($conn);
+function registerUser(Database $db, User $user): array {
+    $auth = getAuth($db);
     $params = [
         'firstName' => $user->firstName,
         'lastName' => $user->lastName,
@@ -88,14 +87,14 @@ function registerUser(PDO $conn, User $user): array {
     return $auth->register($user->email, $user->password, $user->password, $params);
 }
 
-function logout(PDO $conn): bool {
-    $auth = getAuth($conn);
+function logout(Database $db): bool {
+    $auth = getAuth($db);
 
     return $auth->logout($auth->getCurrentSessionHash());
 }
 
-function resetPassword(string $email, PDO $conn): array {
-    $auth = getAuth($conn);
+function resetPassword(string $email, Database $db): array {
+    $auth = getAuth($db);
 
     return $auth->requestReset($email, true);
 }

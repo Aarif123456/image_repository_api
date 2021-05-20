@@ -3,8 +3,7 @@
 declare(strict_types=1);
 namespace ImageRepository\Tests;
 
-use ImageRepository\Model\File;
-use PDO;
+use ImageRepository\Model\{File};
 use PDOStatement;
 use PHPUnit\Framework\TestCase;
 
@@ -78,10 +77,11 @@ final class SQLMockProvider extends TestCase
     /**
      * @testdox One function to make it easy to change as we change the SQL
      */
-    public static function getMockedPDO() {
-        $conn = self::$singleton->createMock(PDO::class);
-        $conn->method('prepare')->will(self::$singleton->returnCallback('SQLMockProvider::handleSqlQuery'));
-
-        return $conn;
-    }
+//    public static function getMockedPDO() {
+//        /* TODO: fix up to work with new class using map */
+//        $db = self::$singleton->createMock(PDO::class);
+//        $db->method('prepare')->will(self::$singleton->returnCallback('SQLMockProvider::handleSqlQuery'));
+//
+//        return $db;
+//    }
 }

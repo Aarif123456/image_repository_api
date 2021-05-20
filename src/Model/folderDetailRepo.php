@@ -3,17 +3,11 @@
 declare(strict_types=1);
 namespace ImageRepository\Model\FileManagement;
 
-use ImageRepository\Model\User;
-use PDO;
+use ImageRepository\Model\{Database, User};
 
-use function ImageRepository\Model\getExecutedResult;
+function getFolderDetail(string $filePath, User $user, Database $db): array {
+    $sql = 'SELECT * FROM files WHERE filePath=:filePath AND memberID=:id';
+    $params = [':filePath' => $filePath, ':id' => $user->id];
 
-function getFolderDetail(string $filePath, User $user, PDO $conn): array {
-    $stmt = $conn->prepare(
-        'SELECT * FROM files WHERE filePath=:filePath AND memberID=:id'
-    );
-    $stmt->bindValue(':filePath', $filePath);
-    $stmt->bindValue(':id', $user->id);
-
-    return getExecutedResult($stmt);
+    return $db->read($sql, $params);
 }

@@ -14,8 +14,7 @@ use ImageRepository\Exception\{DebugPDOException,
     PDOWriteException,
     SqlCommandFailedException,
     UnknownErrorException};
-use ImageRepository\Model\{File, User};
-use PDO;
+use ImageRepository\Model\{Database, File, User};
 
 use function ImageRepository\Model\FileManagement\insertFile;
 
@@ -49,9 +48,9 @@ function createFiles(string $fileNames): array {
  * @throws EncryptionFailureException
  * @throws PDOWriteException
  */
-function processFile(File $file, User $user, PDO $conn, bool $debug = DEBUG): array {
+function processFile(File $file, User $user, Database $db, bool $debug = DEBUG): array {
     checkFile($file);
-    $output = ['error' => empty(insertFile($file, $user, $conn, $debug))];
+    $output = ['error' => empty(insertFile($file, $user, $db, $debug))];
     if ($output['error']) {
         throw new SqlCommandFailedException();
     }
