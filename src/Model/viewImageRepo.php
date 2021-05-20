@@ -1,15 +1,15 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Model\FileManagement;
+namespace ImageRepository\Model\FileManagement;
 
 /* Get information about the image */
-use App\Model\{FileLocationInfo, User};
-use App\Model\Encryption\{EncryptionFailureException, NoSuchFileException};
+use ImageRepository\Exception\{EncryptionFailureException, NoSuchFileException};
+use ImageRepository\Model\{FileLocationInfo, User};
 use PDO;
 
-use function App\Model\{getExecutedResult, getSystemKeys, getUserKey};
-use function App\Model\Encryption\getFileDecrypted;
+use function ImageRepository\Model\{getExecutedResult, getSystemKeys, getUserKey};
+use function ImageRepository\Model\Encryption\getFileDecrypted;
 
 function viewImageDetail(FileLocationInfo $file, User $user, PDO $conn): array {
     $stmt = $conn->prepare(

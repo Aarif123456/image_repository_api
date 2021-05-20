@@ -1,7 +1,9 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Model;
+namespace ImageRepository\Model;
+
+use ImageRepository\Exception\InvalidPropertyException;
 
 class User
 {

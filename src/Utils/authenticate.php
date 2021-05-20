@@ -1,10 +1,10 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Utils;
+namespace ImageRepository\Utils;
 
-use App\Model\User;
-use App\Views\UnauthorizedUserException;
+use ImageRepository\Exception\UnauthorizedUserException;
+use ImageRepository\Model\User;
 use PDO;
 use PHPAuth\{Auth as PHPAuth, Config as PHPAuthConfig};
 

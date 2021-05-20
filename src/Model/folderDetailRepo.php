@@ -1,12 +1,12 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Model\FileManagement;
+namespace ImageRepository\Model\FileManagement;
 
-use App\Model\User;
+use ImageRepository\Model\User;
 use PDO;
 
-use function App\Model\getExecutedResult;
+use function ImageRepository\Model\getExecutedResult;
 
 function getFolderDetail(string $filePath, User $user, PDO $conn): array {
     $stmt = $conn->prepare(

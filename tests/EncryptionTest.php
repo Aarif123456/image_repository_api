@@ -1,12 +1,12 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Tests;
+namespace ImageRepository\Tests;
 
-use App\Model\Encryption\EncryptionFailureException;
+use ImageRepository\Exception\EncryptionFailureException;
 use PHPUnit\Framework\TestCase;
 
-use function App\Model\Encryption\{decrypt, encrypt, generateProperties, keygen, setup};
+use function ImageRepository\Model\Encryption\{decrypt, encrypt, generateProperties, keygen, setup};
 
 /* This class tests the encryption endpoint
  * the point of this class is to ensure that we can securely generate encrypted files that can 

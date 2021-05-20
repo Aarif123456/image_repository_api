@@ -2,19 +2,31 @@
 
 /* Define the error handlers  */
 declare(strict_types=1);
-namespace App\Views;
+namespace ImageRepository\Views;
 
-use App\Model\{DebugPDOException, InvalidAccessException, InvalidPropertyException, PDOWriteException};
-use App\Model\Encryption\{EncryptedFileNotCreatedException, EncryptionFailureException, NoSuchFileException};
-use App\Utils\CustomException;
 use Exception;
+use ImageRepository\Exception\{DebugPDOException,
+    EncryptedFileNotCreatedException,
+    EncryptionFailureException,
+    FileAlreadyExistsException,
+    FileLimitExceededException,
+    FileNotSentException,
+    InvalidAccessException,
+    InvalidFileFormatException,
+    InvalidPropertyException,
+    MissingParameterException,
+    NoSuchFileException,
+    PDOWriteException,
+    SqlCommandFailedException,
+    UnauthorizedAdminException,
+    UnauthorizedUserException};
 use PDOException;
 use Throwable;
 
-use function App\Model\getConnection;
-use function App\Utils\{isUserAuthorized, unauthorizedExit};
+use function ImageRepository\Model\getConnection;
+use function ImageRepository\Utils\{isUserAuthorized, unauthorizedExit};
 
-use const App\Utils\DEBUG;
+use const ImageRepository\Utils\DEBUG;
 
 function createErrorJson(string $message): string {
     return createQueryJSON([
@@ -99,33 +111,3 @@ function safeApiRun(int $authorizationLevel, callable $callback, array $args = [
         $conn = null;
     }
 }
-
-/* TODO: move exception to separate file or maybe their own name space */
-class FileAlreadyExistsException extends CustomException
-{
-}
-class FileLimitExceededException extends CustomException
-{
-}
-class FileNotSentException extends CustomException
-{
-}
-class InvalidFileFormatException extends CustomException
-{
-}
-class MissingParameterException extends CustomException
-{
-}
-class SqlCommandFailedException extends CustomException
-{
-}
-class UnauthorizedUserException extends CustomException
-{
-}
-class UnknownErrorException extends CustomException
-{
-}
-class UnauthorizedAdminException extends CustomException
-{
-}
-

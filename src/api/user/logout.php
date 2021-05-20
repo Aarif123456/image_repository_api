@@ -1,14 +1,14 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Api\User;
+namespace ImageRepository\Api\User;
 
 use PDO;
 
-use function App\Utils\logout;
-use function App\Views\{createQueryJSON, safeApiRun};
+use function ImageRepository\Utils\logout;
+use function ImageRepository\Views\{createQueryJSON, safeApiRun};
 
-use const App\Utils\AUTHORIZED_USER;
+use const ImageRepository\Utils\AUTHORIZED_USER;
 
 function logoutApi(PDO $conn, bool $debug) {
     echo createQueryJSON(['error' => !logout($conn)]);

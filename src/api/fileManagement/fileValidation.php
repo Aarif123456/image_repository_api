@@ -1,14 +1,14 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Api\FileManagement;
+namespace ImageRepository\Api\FileManagement;
 
-use App\Model\{File, FileLocationInfo};
-use App\Views\{FileAlreadyExistsException,
+use ImageRepository\Exception\{FileAlreadyExistsException,
     FileLimitExceededException,
     FileNotSentException,
     InvalidFileFormatException,
     UnknownErrorException};
+use ImageRepository\Model\{File, FileLocationInfo};
 
 /**
  * @throws FileNotSentException

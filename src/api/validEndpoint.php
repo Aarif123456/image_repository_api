@@ -1,10 +1,10 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Api;
+namespace ImageRepository\Api;
 
 /* Define the strings the API will return  */
-use App\Views\MissingParameterException;
+use ImageRepository\Exception\MissingParameterException;
 
 function isValidFileVar(string $fileName): bool {
     return $_FILES[$fileName]['error'] ?? false;

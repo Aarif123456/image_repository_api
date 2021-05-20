@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Model;
+namespace ImageRepository\Model;
 
 const PRIVATE_ACCESS = 1;
 const PUBLIC_ACCESS = 2;

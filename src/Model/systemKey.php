@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Model;
+namespace ImageRepository\Model;
 
 /* Function to get key the public key (used to encrypt) and master key(used to generate decryption keys)*/
 use PDO;

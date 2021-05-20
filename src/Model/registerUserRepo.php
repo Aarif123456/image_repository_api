@@ -1,15 +1,15 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Model\UserManagement;
+namespace ImageRepository\Model\UserManagement;
 
-use App\Model\{DebugPDOException, PDOWriteException, User};
-use App\Model\Encryption\EncryptionFailureException;
+use ImageRepository\Exception\{DebugPDOException, EncryptionFailureException, PDOWriteException};
+use ImageRepository\Model\User;
 use PDO;
 
-use function App\Model\{getSystemKeys, safeWriteQueries};
-use function App\Model\Encryption\{createUserAttributes, keygen};
-use function App\Utils\registerUser;
+use function ImageRepository\Model\{getSystemKeys, safeWriteQueries};
+use function ImageRepository\Model\Encryption\{createUserAttributes, keygen};
+use function ImageRepository\Utils\registerUser;
 
 /**
  * @throws EncryptionFailureException

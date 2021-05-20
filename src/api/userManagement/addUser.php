@@ -1,19 +1,21 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Api\UserManagement;
+namespace ImageRepository\Api\UserManagement;
 
 /* TODO: rename to register and update read me*/
-use App\Model\{DebugPDOException, PDOWriteException, User};
-use App\Model\Encryption\EncryptionFailureException;
-use App\Views\MissingParameterException;
+use ImageRepository\Exception\{DebugPDOException,
+    EncryptionFailureException,
+    MissingParameterException,
+    PDOWriteException};
+use ImageRepository\Model\User;
 use PDO;
 
-use function App\Api\checkMissingPostVars;
-use function App\Model\UserManagement\insertUser;
-use function App\Views\{createQueryJSON, safeApiRun};
+use function ImageRepository\Api\checkMissingPostVars;
+use function ImageRepository\Model\UserManagement\insertUser;
+use function ImageRepository\Views\{createQueryJSON, safeApiRun};
 
-use const App\Utils\UNAUTHENTICATED;
+use const ImageRepository\Utils\UNAUTHENTICATED;
 
 /**
  * @throws EncryptionFailureException

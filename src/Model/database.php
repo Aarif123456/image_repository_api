@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Model;
+namespace ImageRepository\Model;
 
 use PDO;
 use PDOException;

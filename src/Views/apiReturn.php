@@ -1,10 +1,10 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Views;
+namespace ImageRepository\Views;
 
 /* Report errors depending on if we are in production mode */
-use const App\Utils\DEBUG;
+use const ImageRepository\Utils\DEBUG;
 
 if (DEBUG) {
     ini_set('display_errors', 'stderr');

@@ -1,12 +1,13 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Model\Encryption;
+namespace ImageRepository\Model\Encryption;
 
-use App\Model\File;
+use ImageRepository\Exception\{EncryptedFileNotCreatedException, EncryptionFailureException};
+use ImageRepository\Model\File;
 use PDO;
 
-use function App\Model\getSystemKeys;
+use function ImageRepository\Model\getSystemKeys;
 
 /**
  * We encrypt the file and delete the temporary file that holds the unencrypted version

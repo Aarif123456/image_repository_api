@@ -1,17 +1,17 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Api\UserManagement;
+namespace ImageRepository\Api\UserManagement;
 
 /* TODO: rename file to login and update read me */
-use App\Views\{MissingParameterException, UnauthorizedAdminException};
+use ImageRepository\Exception\{MissingParameterException, UnauthorizedAdminException};
 use PDO;
 
-use function App\Api\checkMissingPostVars;
-use function App\Utils\{isUserAnAdmin, isUserLoggedIn, login, logout};
-use function App\Views\{createQueryJSON, safeApiRun};
+use function ImageRepository\Api\checkMissingPostVars;
+use function ImageRepository\Utils\{isUserAnAdmin, isUserLoggedIn, login, logout};
+use function ImageRepository\Views\{createQueryJSON, safeApiRun};
 
-use const App\Utils\UNAUTHENTICATED;
+use const ImageRepository\Utils\UNAUTHENTICATED;
 
 const LOGIN_API_OUTPUT_VAR = ['error' => null, 'message' => null, 'loggedIn' => null];
 /**

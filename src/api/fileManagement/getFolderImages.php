@@ -1,17 +1,17 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Api\FileManagement;
+namespace ImageRepository\Api\FileManagement;
 
 /* TODO: remove "get" from file name */
-use App\Model\User;
+use ImageRepository\Model\User;
 use PDO;
 
-use function App\Model\FileManagement\getFolderDetail;
-use function App\Utils\getCurrentUserInfo;
-use function App\Views\{createQueryJSON, safeApiRun};
+use function ImageRepository\Model\FileManagement\getFolderDetail;
+use function ImageRepository\Utils\getCurrentUserInfo;
+use function ImageRepository\Views\{createQueryJSON, safeApiRun};
 
-use const App\Utils\{AUTHORIZED_USER};
+use const ImageRepository\Utils\{AUTHORIZED_USER};
 
 function folderDetail(PDO $conn, bool $debug) {
     $user = new User(getCurrentUserInfo($conn));

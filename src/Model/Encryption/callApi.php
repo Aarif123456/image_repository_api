@@ -1,7 +1,9 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Model\Encryption;
+namespace ImageRepository\Model\Encryption;
+
+use ImageRepository\Exception\EncryptionFailureException;
 
 require_once __DIR__ . '/encryptionConstants.php';
 /**

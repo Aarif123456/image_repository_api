@@ -1,12 +1,13 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Api\FileManagement;
+namespace ImageRepository\Api\FileManagement;
 
-use App\Model\{Encryption\NoSuchFileException, FileLocationInfo, User};
+use ImageRepository\Exception\{NoSuchFileException};
+use ImageRepository\Model\{FileLocationInfo, User};
 use PDO;
 
-use function App\Model\FileManagement\getImageDetailWithId;
+use function ImageRepository\Model\FileManagement\getImageDetailWithId;
 
 /**
  * Helper class to get file info from request

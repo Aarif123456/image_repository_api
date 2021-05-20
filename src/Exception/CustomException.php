@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Utils;
+namespace ImageRepository\Exception;
 
 /* Reference: https://www.php.net/manual/en/language.exceptions.php */
 use Exception;

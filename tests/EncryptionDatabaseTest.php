@@ -1,18 +1,19 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Tests;
+namespace ImageRepository\Tests;
 
-use App\Model\Encryption\{EncryptedFileNotCreatedException, EncryptionFailureException, NoSuchFileException};
-use App\Model\File;
-use App\Model\InvalidAccessException;
-use App\Model\User;
+use ImageRepository\Exception\{EncryptedFileNotCreatedException,
+    EncryptionFailureException,
+    InvalidAccessException,
+    NoSuchFileException};
+use ImageRepository\Model\{File, User};
 use PHPUnit\Framework\TestCase;
 
-use function App\Model\{FileManagement\getPolicy, isFilePrivate};
-use function App\Model\Encryption\{createUserAttributes, encryptFile, getFileDecrypted, keygen, setup};
+use function ImageRepository\Model\{FileManagement\getPolicy, isFilePrivate};
+use function ImageRepository\Model\Encryption\{createUserAttributes, encryptFile, getFileDecrypted, keygen, setup};
 
-use const App\Model\{PRIVATE_ACCESS, PUBLIC_ACCESS};
+use const ImageRepository\Model\{PRIVATE_ACCESS, PUBLIC_ACCESS};
 
 require_once __DIR__ . '/helper.php';
 require_once __DIR__ . '/dataProviders.php';

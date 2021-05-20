@@ -1,18 +1,18 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Model\FileManagement;
+namespace ImageRepository\Model\FileManagement;
 
-use App\Model\{DebugPDOException, FileLocationInfo, PDOWriteException, User};
+use ImageRepository\Exception\{DebugPDOException, PDOWriteException};
+use ImageRepository\Model\{FileLocationInfo, User};
 use PDO;
 
-use function App\Model\safeWriteQueries;
+use function ImageRepository\Model\safeWriteQueries;
 
 /**
  * Function to delete file
  *
  * @throws DebugPDOException
- * @throws PDOWriteException
  * @throws PDOWriteException
  */
 function deleteImage(FileLocationInfo $file, User $user, PDO $conn, bool $debug = false): bool {

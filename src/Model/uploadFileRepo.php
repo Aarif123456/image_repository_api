@@ -1,16 +1,20 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Model\FileManagement;
+namespace ImageRepository\Model\FileManagement;
 
-use App\Model\{DebugPDOException, File, InvalidAccessException, PDOWriteException, User};
-use App\Model\Encryption\{EncryptedFileNotCreatedException, EncryptionFailureException};
+use ImageRepository\Exception\{DebugPDOException,
+    EncryptedFileNotCreatedException,
+    EncryptionFailureException,
+    InvalidAccessException,
+    PDOWriteException};
+use ImageRepository\Model\{File, User};
 use PDO;
 
-use function App\Model\Encryption\{encryptFile, getPrivatePolicy, getPublicPolicy};
-use function App\Model\safeWriteQueries;
+use function ImageRepository\Model\Encryption\{encryptFile, getPrivatePolicy, getPublicPolicy};
+use function ImageRepository\Model\safeWriteQueries;
 
-use const App\Model\{PRIVATE_ACCESS, PUBLIC_ACCESS};
+use const ImageRepository\Model\{PRIVATE_ACCESS, PUBLIC_ACCESS};
 
 /**
  * @throws InvalidAccessException

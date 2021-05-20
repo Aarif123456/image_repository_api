@@ -1,9 +1,10 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Model\Encryption;
+namespace ImageRepository\Model\Encryption;
 
-use App\Model\FileLocationInfo;
+use ImageRepository\Exception\{EncryptionFailureException, NoSuchFileException};
+use ImageRepository\Model\FileLocationInfo;
 
 /**
  * @param FileLocationInfo $file

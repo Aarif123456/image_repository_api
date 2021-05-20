@@ -2,10 +2,10 @@
 
 /* Error handling for calls to the database */
 declare(strict_types=1);
-namespace App\Model;
+namespace ImageRepository\Model;
 
 /* Getting back the result of query as a JSON file */
-use App\Utils\CustomException;
+use ImageRepository\Exception\{DebugPDOException, PDOWriteException};
 use PDO;
 use PDOException;
 
@@ -37,17 +37,4 @@ function safeWriteQueries($stmt, $conn, $debug): bool {
         }
     }
     throw new PDOWriteException();
-}
-
-class InvalidAccessException extends CustomException
-{
-}
-class InvalidPropertyException extends CustomException
-{
-}
-class DebugPDOException extends CustomException
-{
-}
-class PDOWriteException extends CustomException
-{
 }

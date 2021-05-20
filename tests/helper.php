@@ -1,9 +1,9 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Tests;
+namespace ImageRepository\Tests;
 
-use App\Model\File;
+use ImageRepository\Model\File;
 use PDO;
 use PDOStatement;
 use PHPUnit\Framework\TestCase;

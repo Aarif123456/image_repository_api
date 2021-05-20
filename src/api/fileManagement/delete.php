@@ -1,20 +1,18 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Api\FileManagement;
+namespace ImageRepository\Api\FileManagement;
 
-/* Imports */
-use App\Model\{DebugPDOException, PDOWriteException, User};
-use App\Model\Encryption\NoSuchFileException;
-use App\Views\MissingParameterException;
+use ImageRepository\Exception\{DebugPDOException, MissingParameterException, NoSuchFileException, PDOWriteException};
+use ImageRepository\Model\User;
 use PDO;
 
-use function App\Api\{isValidRequestVar, missingParameterExit};
-use function App\Model\FileManagement\deleteImage;
-use function App\Utils\getCurrentUserInfo;
-use function App\Views\{createQueryJSON, safeApiRun};
+use function ImageRepository\Api\{isValidRequestVar, missingParameterExit};
+use function ImageRepository\Model\FileManagement\deleteImage;
+use function ImageRepository\Utils\getCurrentUserInfo;
+use function ImageRepository\Views\{createQueryJSON, safeApiRun};
 
-use const App\Utils\{AUTHORIZED_USER};
+use const ImageRepository\Utils\{AUTHORIZED_USER};
 
 /**
  * @throws DebugPDOException

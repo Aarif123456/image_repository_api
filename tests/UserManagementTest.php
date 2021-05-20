@@ -1,9 +1,10 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Tests;
+namespace ImageRepository\Tests;
 
-use App\Model\{InvalidPropertyException, User};
+use ImageRepository\Exception\InvalidPropertyException;
+use ImageRepository\Model\User;
 use PHPUnit\Framework\TestCase;
 
 /* https://devqa.io/user-registration-test-cases-scenarios/

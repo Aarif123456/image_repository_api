@@ -1,9 +1,9 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Model\Encryption;
+namespace ImageRepository\Model\Encryption;
 
-use App\Model\User;
+use ImageRepository\Model\User;
 
 function getPrivatePolicy(User $user): string {
     return "userId:$user->id public:true 2of2";

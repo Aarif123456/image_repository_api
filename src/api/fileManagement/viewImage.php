@@ -1,19 +1,18 @@
 <?php
 
 declare(strict_types=1);
-namespace App\Api\FileManagement;
+namespace ImageRepository\Api\FileManagement;
 
-use App\Model\Encryption\{EncryptionFailureException, NoSuchFileException};
-use App\Model\User;
-use App\Views\MissingParameterException;
+use ImageRepository\Exception\{EncryptionFailureException, MissingParameterException, NoSuchFileException};
+use ImageRepository\Model\User;
 use PDO;
 
-use function App\Api\{isValidRequestVar, missingParameterExit};
-use function App\Model\FileManagement\getImage;
-use function App\Utils\{getCurrentUserInfo, getUser};
-use function App\Views\safeApiRun;
+use function ImageRepository\Api\{isValidRequestVar, missingParameterExit};
+use function ImageRepository\Model\FileManagement\getImage;
+use function ImageRepository\Utils\{getCurrentUserInfo, getUser};
+use function ImageRepository\Views\safeApiRun;
 
-use const App\Utils\AUTHORIZED_USER;
+use const ImageRepository\Utils\AUTHORIZED_USER;
 
 /**
  * @throws NoSuchFileException
