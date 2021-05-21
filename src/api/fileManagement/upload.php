@@ -15,7 +15,7 @@ use ImageRepository\Exception\{DebugPDOException,
     PDOWriteException,
     SqlCommandFailedException,
     UnknownErrorException};
-use ImageRepository\Model\{Database, File, User};
+use ImageRepository\Model\{Database, File, FileManagement\PolicySelector, User};
 
 use function ImageRepository\Api\{isValidFileVar, missingParameterExit};
 use function ImageRepository\Utils\getCurrentUserInfo;
@@ -40,7 +40,7 @@ use const ImageRepository\Utils\AUTHORIZED_USER;
 function upload(Database $db, bool $debug) {
     /* Set variables */
     $user = new User(getCurrentUserInfo($db));
-    $fileAccess = $_REQUEST['fileAccess'] ?? null;
+    $fileAccess = $_REQUEST['fileAccess'] ?? PolicySelector::defaultAccess();
     $filePath = $_REQUEST['filePath'] ?? '';
     $fileNames = $_REQUEST['fileNames'] ?? 'images';
     /* Make sure user uploaded a file*/

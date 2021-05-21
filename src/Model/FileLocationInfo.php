@@ -3,6 +3,8 @@
 declare(strict_types=1);
 namespace ImageRepository\Model;
 
+use ImageRepository\Exception\NoSuchFileException;
+
 class FileLocationInfo
 {
     public string $name;
@@ -23,7 +25,26 @@ class FileLocationInfo
         return "userFiles/$ownerId/" . str_replace('..', '', $filePath);
     }
 
+
+    /**
+     * @throws NoSuchFileException
+     */
+    public static function createFromId(int $fileId, User $user, Database $db): FileLocationInfo {
+        $sql = 'SELECT fileName as \'name\', filePath as \'path\', memberID as \'ownerId\' FROM files WHERE fileID=:fileId AND memberID=:id';
+        $params = [
+            ':fileId' => $fileId,
+            ':id' => $user->id
+        ];
+        $rows = $db->read($sql, $params);
+        if (empty($rows)) {
+            throw new NoSuchFileException();
+        }
+
+        return new FileLocationInfo($rows[0]);
+    }
+
     public function getEncryptedFilePath(): string {
         return "$this->realPath.Encrypted";
     }
+
 }

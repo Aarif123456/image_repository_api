@@ -5,9 +5,9 @@ namespace ImageRepository\Api\FileManagement;
 
 use ImageRepository\Exception\{EncryptionFailureException, MissingParameterException, NoSuchFileException};
 use ImageRepository\Model\{Database, User};
+use ImageRepository\Model\FileManagement\FileReader;
 
 use function ImageRepository\Api\{isValidRequestVar, missingParameterExit};
-use function ImageRepository\Model\FileManagement\getImage;
 use function ImageRepository\Utils\{getCurrentUserInfo, getUser};
 use function ImageRepository\Views\safeApiRun;
 
@@ -29,10 +29,9 @@ function viewImage(Database $db, bool $debug) {
     $ownerId = $_REQUEST['ownerId'] ?? $user->id;
     $targetUser = new User(getUser($db, $ownerId));
     $file = getFileInformation($targetUser, $db);
-    $fileData = getImage($file, $targetUser, $db);
-    $fileBinary = $fileData['data'];
+    $fileBinary = FileReader::getFileBytes($file, $targetUser, $db);
     /* TODO: maybe remove mime */
-    $mime = $fileData['mime'];
+    $mime = FileReader::getFileMime($file, $targetUser, $db);
     echo '<img src="' . dataUri($fileBinary, $mime) . '" alt="your image"/>';
 }
 

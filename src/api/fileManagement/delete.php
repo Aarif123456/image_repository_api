@@ -5,9 +5,9 @@ namespace ImageRepository\Api\FileManagement;
 
 use ImageRepository\Exception\{DebugPDOException, MissingParameterException, NoSuchFileException, PDOWriteException};
 use ImageRepository\Model\{Database, User};
+use ImageRepository\Model\FileManagement\FileManager;
 
 use function ImageRepository\Api\{isValidRequestVar, missingParameterExit};
-use function ImageRepository\Model\FileManagement\deleteImage;
 use function ImageRepository\Utils\getCurrentUserInfo;
 use function ImageRepository\Views\{createQueryJSON, safeApiRun};
 
@@ -27,7 +27,7 @@ function deleteFile(Database $db, bool $debug) {
     $user = new User(getCurrentUserInfo($db));
     $output = [];
     $file = getFileInformation($user, $db);
-    if ($file !== null) $output['error'] = !deleteImage($file, $user, $db, $debug);
+    if ($file !== null) $output['error'] = !FileManager::deleteFile($file, $user, $db, $debug);
     echo createQueryJSON($output);
 }
 

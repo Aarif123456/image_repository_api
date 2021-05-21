@@ -14,9 +14,9 @@ use ImageRepository\Exception\{DebugPDOException,
     PDOWriteException,
     SqlCommandFailedException,
     UnknownErrorException};
-use ImageRepository\Model\{Database, File, User};
-
-use function ImageRepository\Model\FileManagement\insertFile;
+use ImageRepository\Model\{Database, EncryptionKeyReader, File, User};
+use ImageRepository\Model\Encryption\FileEncrypter;
+use ImageRepository\Model\FileManagement\{FileManager, PolicySelector};
 
 use const ImageRepository\Utils\DEBUG;
 
@@ -50,7 +50,12 @@ function createFiles(string $fileNames): array {
  */
 function processFile(File $file, User $user, Database $db, bool $debug = DEBUG): array {
     checkFile($file);
-    $output = ['error' => empty(insertFile($file, $user, $db, $debug))];
+    /* Encrypt the file*/
+    $policy = PolicySelector::getPolicy($file->access, $user);
+    $publicKey = EncryptionKeyReader::publicKey($db);
+    FileEncrypter::run($file, $policy, $publicKey);
+    /* Add a reference to the file in our database */
+    $output = ['error' => empty(FileManager::addFile($file, $user, $db, $debug))];
     if ($output['error']) {
         throw new SqlCommandFailedException();
     }
