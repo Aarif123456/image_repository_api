@@ -84,11 +84,11 @@ final class Database
     }
 
     public function errorCode(): ?string {
-        return  $this->conn->errorCode();
+        return $this->conn->errorCode();
     }
 
-    public function errorInfo(): array{
-        return  $this->conn->errorInfo();
+    public function errorInfo(): array {
+        return $this->conn->errorInfo();
     }
 
 }

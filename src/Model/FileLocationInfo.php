@@ -25,7 +25,6 @@ class FileLocationInfo
         return "userFiles/$ownerId/" . str_replace('..', '', $filePath);
     }
 
-
     /**
      * @throws NoSuchFileException
      */

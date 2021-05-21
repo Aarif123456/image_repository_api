@@ -28,3 +28,4 @@ function getFileInformation(User $user, Database $db): FileLocationInfo {
 
     return $file;
 }
+
