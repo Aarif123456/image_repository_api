@@ -5,7 +5,6 @@ namespace ImageRepository\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-require_once __DIR__ . '/helper.php';
 require_once __DIR__ . '/dataProviders.php';
 
 /* The point of this class is to make sure we are able to properly manage the files we own securely

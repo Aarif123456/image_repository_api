@@ -11,7 +11,6 @@ use ImageRepository\Model\{File, FileManagement\PolicySelector, User};
 use ImageRepository\Model\Encryption\{Encrypter, FileDecrypter, FileEncrypter, UserAttributeGenerator};
 use PHPUnit\Framework\TestCase;
 
-require_once __DIR__ . '/helper.php';
 require_once __DIR__ . '/dataProviders.php';
 
 /* This class make sure that the encryption system works using the information that we
