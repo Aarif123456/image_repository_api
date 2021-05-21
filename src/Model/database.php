@@ -8,9 +8,8 @@ use PDO;
 use PDOException;
 use PDOStatement;
 
-/* Used to get mysql database connection */
 require_once __DIR__ . '/loginConstants.php';
-
+/* A proxy class for PDO that lets us control access */
 final class Database
 {
     public PDO $conn;
@@ -76,12 +75,20 @@ final class Database
         throw new PDOWriteException();
     }
 
-    public function beginTransaction() {
-        $this->conn->beginTransaction();
+    public function beginTransaction(): bool {
+        return $this->conn->beginTransaction();
     }
 
-    public function commit() {
-        $this->conn->commit();
+    public function commit(): bool {
+        return $this->conn->commit();
+    }
+
+    public function errorCode(): ?string {
+        return  $this->conn->errorCode();
+    }
+
+    public function errorInfo(): array{
+        return  $this->conn->errorInfo();
     }
 
 }

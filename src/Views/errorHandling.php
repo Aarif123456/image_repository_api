@@ -89,8 +89,8 @@ function safeApiRun(int $authorizationLevel, callable $callback, array $args = [
     } catch (SqlCommandFailedException $e) {
         printErrorJson($translator->COMMAND_FAILED);
     } catch (DebugPDOException $e) {
-        if (!empty($db ?? null) && !empty($db->conn->errorCode())) {
-            printErrorJson(sprintf('%s%s', $translator->SQL_ERROR, json_encode($db->conn->errorInfo())));
+        if (!empty($db ?? null) && !empty($db->errorCode())) {
+            printErrorJson(sprintf('%s%s', $translator->SQL_ERROR, json_encode($db->errorInfo())));
         } else {
             throw new PDOException('Expected PDO object', 1);
         }
