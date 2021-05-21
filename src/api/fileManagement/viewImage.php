@@ -7,9 +7,9 @@ use ImageRepository\Exception\{EncryptionFailureException, MissingParameterExcep
 use ImageRepository\Model\{Database, User};
 use ImageRepository\Model\FileManagement\FileReader;
 use ImageRepository\Utils\Auth;
+use ImageRepository\Views\ErrorHandler;
 
 use function ImageRepository\Api\{isValidRequestVar, missingParameterExit};
-use function ImageRepository\Views\safeApiRun;
 
 use const ImageRepository\Utils\AUTHORIZED_USER;
 
@@ -39,5 +39,5 @@ function dataUri($fileBinary, $mime): string {
     return 'data:' . $mime . ';base64,' . base64_encode($fileBinary);
 }
 
-safeApiRun(AUTHORIZED_USER, '/viewImage');
+ErrorHandler::safeApiRun(AUTHORIZED_USER, '/viewImage');
 

@@ -5,13 +5,12 @@ namespace ImageRepository\Api\User;
 
 use ImageRepository\Model\Database;
 use ImageRepository\Utils\Auth;
-
-use function ImageRepository\Views\{createQueryJSON, safeApiRun};
+use ImageRepository\Views\{ErrorHandler, JsonFormatter};
 
 use const ImageRepository\Utils\AUTHORIZED_USER;
 
 function logoutApi(Database $_db, Auth $auth, bool $debug) {
-    echo createQueryJSON(['error' => !$auth->logout()]);
+    JsonFormatter::printArray(['error' => !$auth->logout()]);
 }
 
-safeApiRun(AUTHORIZED_USER, '/logoutApi');
+ErrorHandler::safeApiRun(AUTHORIZED_USER, '/logoutApi');

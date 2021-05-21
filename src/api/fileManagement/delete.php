@@ -7,9 +7,9 @@ use ImageRepository\Exception\{DebugPDOException, MissingParameterException, NoS
 use ImageRepository\Model\{Database, User};
 use ImageRepository\Model\FileManagement\FileManager;
 use ImageRepository\Utils\Auth;
+use ImageRepository\Views\{ErrorHandler, JsonFormatter};
 
 use function ImageRepository\Api\{isValidRequestVar, missingParameterExit};
-use function ImageRepository\Views\{createQueryJSON, safeApiRun};
 
 use const ImageRepository\Utils\{AUTHORIZED_USER};
 
@@ -28,7 +28,7 @@ function deleteFile(Database $db, Auth $auth, bool $debug) {
     $output = [];
     $file = getFileInformation($user, $db);
     if ($file !== null) $output['error'] = !FileManager::deleteFile($file, $user, $db, $debug);
-    echo createQueryJSON($output);
+    JsonFormatter::printArray($output);
 }
 
-safeApiRun(AUTHORIZED_USER, '/deleteFile');
+ErrorHandler::safeApiRun(AUTHORIZED_USER, '/deleteFile');

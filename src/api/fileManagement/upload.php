@@ -17,9 +17,9 @@ use ImageRepository\Exception\{DebugPDOException,
     UnknownErrorException};
 use ImageRepository\Model\{Database, File, FileManagement\PolicySelector, User};
 use ImageRepository\Utils\Auth;
+use ImageRepository\Views\{ErrorHandler, JsonFormatter};
 
 use function ImageRepository\Api\{isValidFileVar, missingParameterExit};
-use function ImageRepository\Views\{createQueryJSON, safeApiRun};
 
 use const ImageRepository\Utils\AUTHORIZED_USER;
 
@@ -73,8 +73,8 @@ function upload(Database $db, Auth $auth, bool $debug) {
         ]);
         $uploadSuccess[$file->name] = processFile($file, $user, $db);
     }
-    echo createQueryJSON($uploadSuccess);
+    JsonFormatter::printArray($uploadSuccess);
 }
 
-safeApiRun(AUTHORIZED_USER, '/upload');
+ErrorHandler::safeApiRun(AUTHORIZED_USER, '/upload');
 

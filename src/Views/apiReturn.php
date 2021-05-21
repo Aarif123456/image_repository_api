@@ -16,11 +16,6 @@ if (DEBUG) {
     ini_set('display_startup_errors', '0');
     error_reporting(E_ERROR);
 }
-/* constants */
-function createQueryJSON(array $arr) {
-    return json_encode($arr ?? []);
-}
-
 /* Required header */
 function getHeader() {
     header('Access-Control-Allow-Origin: https://abdullaharif.tech');

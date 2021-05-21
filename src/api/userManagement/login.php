@@ -6,9 +6,9 @@ namespace ImageRepository\Api\UserManagement;
 use ImageRepository\Exception\{MissingParameterException, UnauthorizedAdminException};
 use ImageRepository\Model\Database;
 use ImageRepository\Utils\Auth;
+use ImageRepository\Views\{ErrorHandler, JsonFormatter};
 
 use function ImageRepository\Api\checkMissingPostVars;
-use function ImageRepository\Views\{createQueryJSON, safeApiRun};
 
 use const ImageRepository\Utils\UNAUTHENTICATED;
 
@@ -18,7 +18,6 @@ const LOGIN_API_OUTPUT_VAR = ['error' => null, 'message' => null, 'loggedIn' => 
  * @throws MissingParameterException
  */
 function loginApi(Database $db, Auth $auth, bool $debug) {
-    $auth = new Auth($db->conn);
     /* Logout any account they are logged in */
     if ($auth->isUserLoggedIn()) $auth->logout();
     /* Make sure request has all the required attributes*/
@@ -45,7 +44,7 @@ function loginApi(Database $db, Auth $auth, bool $debug) {
         /* Exit and tell the client that their user type is they are not admin */
         throw new UnauthorizedAdminException();
     }
-    echo createQueryJSON($output);
+    JsonFormatter::printArray($output);
 }
 
-safeApiRun(UNAUTHENTICATED, '/loginApi');
+ErrorHandler::safeApiRun(UNAUTHENTICATED, '/loginApi');

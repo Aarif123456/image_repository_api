@@ -9,9 +9,9 @@ use ImageRepository\Exception\{DebugPDOException,
     PDOWriteException};
 use ImageRepository\Model\{Database, User, UserManagement\UserGenerator};
 use ImageRepository\Utils\Auth;
+use ImageRepository\Views\{ErrorHandler, JsonFormatter};
 
 use function ImageRepository\Api\checkMissingPostVars;
-use function ImageRepository\Views\{createQueryJSON, safeApiRun};
 
 use const ImageRepository\Utils\UNAUTHENTICATED;
 
@@ -33,7 +33,7 @@ function register(Database $db, Auth $auth, bool $debug) {
         'password' => $_POST['password'],
     ]);
     $result = UserGenerator::createUser($user, $db, $debug);
-    echo createQueryJSON($result);
+    JsonFormatter::printArray($result);
 }
 
-safeApiRun(UNAUTHENTICATED, '/register');
+ErrorHandler::safeApiRun(UNAUTHENTICATED, '/register');
