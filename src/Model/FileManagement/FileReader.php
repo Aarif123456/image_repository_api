@@ -13,7 +13,7 @@ use ImageRepository\Model\Encryption\FileDecrypter;
  */
 final class FileReader
 {
-    function __construct() {
+    private function __construct() {
         throw new StaticClassAssertionError();
     }
 

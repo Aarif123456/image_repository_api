@@ -35,7 +35,7 @@ require_once __DIR__ . '/apiReturn.php';
  */
 final class ErrorHandler
 {
-    function __construct() {
+    private function __construct() {
         throw new StaticClassAssertionError();
     }
 

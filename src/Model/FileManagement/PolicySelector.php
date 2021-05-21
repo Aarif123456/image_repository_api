@@ -15,7 +15,7 @@ final class PolicySelector
     const PRIVATE_ACCESS = 1;
     const PUBLIC_ACCESS = 2;
 
-    function __construct() {
+    private function __construct() {
         throw new StaticClassAssertionError();
     }
 

@@ -12,7 +12,7 @@ use PDO;
  */
 final class EncryptionKeyReader
 {
-    function __construct() {
+    private function __construct() {
         throw new StaticClassAssertionError();
     }
 

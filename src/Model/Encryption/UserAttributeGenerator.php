@@ -11,7 +11,7 @@ use ImageRepository\Model\User;
  */
 final class UserAttributeGenerator
 {
-    function __construct() {
+    private function __construct() {
         throw new StaticClassAssertionError();
     }
 

@@ -11,7 +11,7 @@ use ImageRepository\Exception\StaticClassAssertionError;
  */
 final class JsonFormatter
 {
-    function __construct() {
+    private function __construct() {
         throw new StaticClassAssertionError();
     }
 

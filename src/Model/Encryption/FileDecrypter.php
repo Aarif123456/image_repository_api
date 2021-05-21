@@ -11,7 +11,7 @@ use ImageRepository\Model\FileLocationInfo;
  */
 final class FileDecrypter
 {
-    function __construct() {
+    private function __construct() {
         throw new StaticClassAssertionError();
     }
 

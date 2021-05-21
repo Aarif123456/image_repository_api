@@ -11,7 +11,7 @@ use ImageRepository\Model\{Database, File, FileLocationInfo, User};
  */
 final class FileManager
 {
-    function __construct() {
+    private function __construct() {
         throw new StaticClassAssertionError();
     }
 

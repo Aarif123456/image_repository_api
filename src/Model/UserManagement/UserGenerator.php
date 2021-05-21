@@ -16,7 +16,7 @@ use ImageRepository\Utils\Auth;
  */
 final class UserGenerator
 {
-    function __construct() {
+    private function __construct() {
         throw new StaticClassAssertionError();
     }
 

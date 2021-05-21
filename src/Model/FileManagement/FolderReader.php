@@ -11,7 +11,7 @@ use ImageRepository\Model\{Database, User};
  */
 final class FolderReader
 {
-    function __construct() {
+    private function __construct() {
         throw new StaticClassAssertionError();
     }
 

@@ -11,7 +11,7 @@ use ImageRepository\Model\{File};
  */
 final class FileEncrypter
 {
-    function __construct() {
+    private function __construct() {
         throw new StaticClassAssertionError();
     }
 
