@@ -3,7 +3,6 @@
 declare(strict_types=1);
 namespace ImageRepository\Api\UserManagement;
 
-/* TODO: rename to register and update read me*/
 use ImageRepository\Exception\{DebugPDOException,
     EncryptionFailureException,
     MissingParameterException,

@@ -3,7 +3,6 @@
 declare(strict_types=1);
 namespace ImageRepository\Api\UserManagement;
 
-/* TODO: rename file to login and update read me */
 use ImageRepository\Exception\{MissingParameterException, UnauthorizedAdminException};
 use ImageRepository\Model\Database;
 

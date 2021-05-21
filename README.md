@@ -25,6 +25,7 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
     1. Description: 
     2. fileName.php --> /api/fileName
     3. Parameter list:
+    4. return 
 
 </details>
 
@@ -58,7 +59,7 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 <summary>Get images in folder</summary>
 
     1. Description: A logged in user should be able to view the files in their folder
-    2. fileManagement/getFolderImages.php --> /api/fileManagement/getFolderImages
+    2. fileManagement/folderImages.php --> /api/fileManagement/folderImages
     3. Parameter list: filePath(Optional)
         If no filePath is passed in, we will assume the fill will be in the users roots directory 
 
@@ -68,9 +69,9 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 <summary>View image</summary>
 
     1. Description: A user should be able to view images that are open to them
-    2. fileManagement/viewImage.php --> /api/fileManagement/viewImage
-    3. Parameter list: filePath(Optional), fileName
-        If no filePath is passed in, we will assume the fill will be in the users roots directory 
+    2. fileManagement/image.php --> /api/fileManagement/image
+    3. Parameter list: ownerId(Optional), filePath(Optional), fileName, 
+        If no filePath is passed in, we will assume the fill will be in the users roots directory. The ownerId will be assumed to be the user by default. But, you can pass in another user and get back a file on their account assuming you have access.
 
 </details>
 
@@ -89,7 +90,7 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 <summary> Verify users: </summary>
 
     1. Description: Log the user in and then store the cookie
-    2. userManagement/loginUser.php  --> /api/userManagement/loginUser
+    2. userManagement/login.php  --> /api/userManagement/login
     3. Parameter list:
         Accepts POST variable:  email, password, remember
 
@@ -99,7 +100,7 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 <summary> Registering user </summary>
 
     1. Description: Users can register for their own account
-    2. userManagement/addUser.php --> /api/userManagement/addUsers
+    2. userManagement/register.php --> /api/userManagement/register
     3. Parameter list:
         Accepts POST variable: firstName, lastName, email, password, admin(optional)  
 
@@ -135,7 +136,7 @@ Tests can be found in the "tests" folder.
 <summary>Search file </summary>
 
     1. Description: Allow the user to search for files by different attributes such as image tags, file name or uploader. Can be used to show the user their own files as well
-    2. search/searchImage.php -> /api/search/searchImage
+    2. search/file.php -> /api/search/file
     3. Parameter list: searchType, keyword
 
 </details>
@@ -144,8 +145,8 @@ Tests can be found in the "tests" folder.
 <summary>Change file permission </summary>
 
     1. Description: Allow the user to choose what files to share with the public and what to keep private
-    2. fileManagement/setFilePermission.php -> /api/fileManagement/setFilePermission
-    3. Parameter list:  
+    2. fileManagement/filePermission.php -> /api/fileManagement/filePermission
+    3. Parameter list: Only allow post request 
 
 </details>
 
