@@ -3,6 +3,7 @@
 declare(strict_types=1);
 namespace ImageRepository\Api\UserManagement;
 
+use ImageRepository\Api\EndpointValidator;
 use ImageRepository\Exception\{DebugPDOException,
     EncryptionFailureException,
     MissingParameterException,
@@ -10,8 +11,6 @@ use ImageRepository\Exception\{DebugPDOException,
 use ImageRepository\Model\{Database, User, UserManagement\UserGenerator};
 use ImageRepository\Utils\Auth;
 use ImageRepository\Views\{ErrorHandler, JsonFormatter};
-
-use function ImageRepository\Api\checkMissingPostVars;
 
 use const ImageRepository\Utils\UNAUTHENTICATED;
 
@@ -23,7 +22,7 @@ use const ImageRepository\Utils\UNAUTHENTICATED;
  */
 function register(Database $db, Auth $auth, bool $debug) {
     /* Make sure we have a valid request */
-    checkMissingPostVars(['firstName', 'lastName', 'email', 'password']);
+    EndpointValidator::checkMissingPostVars(['firstName', 'lastName', 'email', 'password']);
     /* Get user info into user object */
     $user = new User([
         'firstName' => trim($_POST['firstName']),

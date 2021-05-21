@@ -3,13 +3,12 @@
 declare(strict_types=1);
 namespace ImageRepository\Api\FileManagement;
 
+use ImageRepository\Api\EndpointValidator;
 use ImageRepository\Exception\{EncryptionFailureException, MissingParameterException, NoSuchFileException};
 use ImageRepository\Model\{Database, User};
 use ImageRepository\Model\FileManagement\FileReader;
 use ImageRepository\Utils\Auth;
 use ImageRepository\Views\ErrorHandler;
-
-use function ImageRepository\Api\{isValidRequestVar, missingParameterExit};
 
 use const ImageRepository\Utils\AUTHORIZED_USER;
 
@@ -21,8 +20,8 @@ use const ImageRepository\Utils\AUTHORIZED_USER;
 function viewImage(Database $db, Auth $auth, bool $debug) {
     header('Content-Type: text/html; charset=UTF-8');
     /* Make sure request is valid*/
-    if (!(isValidRequestVar('fileName') || isValidRequestVar('fileId'))) {
-        missingParameterExit();
+    if (!(EndpointValidator::isValidRequestVar('fileName') || EndpointValidator::isValidRequestVar('fileId'))) {
+        EndpointValidator::missingParameterExit();
     }
     /* Set variables */
     $user = new User($auth->getCurrentUserInfo());

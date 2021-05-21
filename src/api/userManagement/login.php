@@ -3,12 +3,11 @@
 declare(strict_types=1);
 namespace ImageRepository\Api\UserManagement;
 
+use ImageRepository\Api\EndpointValidator;
 use ImageRepository\Exception\{MissingParameterException, UnauthorizedAdminException};
 use ImageRepository\Model\Database;
 use ImageRepository\Utils\Auth;
 use ImageRepository\Views\{ErrorHandler, JsonFormatter};
-
-use function ImageRepository\Api\checkMissingPostVars;
 
 use const ImageRepository\Utils\UNAUTHENTICATED;
 
@@ -21,7 +20,7 @@ function loginApi(Database $db, Auth $auth, bool $debug) {
     /* Logout any account they are logged in */
     if ($auth->isUserLoggedIn()) $auth->logout();
     /* Make sure request has all the required attributes*/
-    checkMissingPostVars(['email', 'password']);
+    EndpointValidator::checkMissingPostVars(['email', 'password']);
     /* TODO: remove loggedIn return value and just use error */
     $admin = $_POST['admin'] ?? false;
     $email = $_POST['email'] ?? '';

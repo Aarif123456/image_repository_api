@@ -3,6 +3,7 @@
 declare(strict_types=1);
 namespace ImageRepository\Api\FileManagement;
 
+use ImageRepository\Api\EndpointValidator;
 use ImageRepository\Exception\{DebugPDOException,
     EncryptedFileNotCreatedException,
     EncryptionFailureException,
@@ -18,8 +19,6 @@ use ImageRepository\Exception\{DebugPDOException,
 use ImageRepository\Model\{Database, File, FileManagement\PolicySelector, User};
 use ImageRepository\Utils\Auth;
 use ImageRepository\Views\{ErrorHandler, JsonFormatter};
-
-use function ImageRepository\Api\{isValidFileVar, missingParameterExit};
 
 use const ImageRepository\Utils\AUTHORIZED_USER;
 
@@ -44,8 +43,8 @@ function upload(Database $db, Auth $auth, bool $debug) {
     $filePath = $_REQUEST['filePath'] ?? '';
     $fileNames = $_REQUEST['fileNames'] ?? 'images';
     /* Make sure user uploaded a file*/
-    if (!isValidFileVar($fileNames)) {
-        missingParameterExit();
+    if (!EndpointValidator::isValidFileVar($fileNames)) {
+        EndpointValidator::missingParameterExit();
     }
     /* Create folder where user files will be stored */
     $userFolder = File::getUserFolder($filePath, $user->id);

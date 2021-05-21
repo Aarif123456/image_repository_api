@@ -3,15 +3,16 @@
   "autoload": {
     "psr-4": {
       "ImageRepository\\": "src/"
-    }
+    },
+      "classmap": ["src/Api/"],
+    "files": [
+      "src/Utils/constants"
+    ]
   },
   "autoload-dev": {
     "psr-4": {
       "ImageRepository\\Tests\\": "tests/"
-    },
-    "files": [
-      "src/Utils/constants"
-    ]
+    }
   },
   "keywords": [
     "pdo",
