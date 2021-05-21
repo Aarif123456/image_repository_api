@@ -6,9 +6,9 @@ namespace ImageRepository\Api\FileManagement;
 use ImageRepository\Exception\{EncryptionFailureException, MissingParameterException, NoSuchFileException};
 use ImageRepository\Model\{Database, User};
 use ImageRepository\Model\FileManagement\FileReader;
+use ImageRepository\Utils\Auth;
 
 use function ImageRepository\Api\{isValidRequestVar, missingParameterExit};
-use function ImageRepository\Utils\{getCurrentUserInfo, getUser};
 use function ImageRepository\Views\safeApiRun;
 
 use const ImageRepository\Utils\AUTHORIZED_USER;
@@ -18,16 +18,16 @@ use const ImageRepository\Utils\AUTHORIZED_USER;
  * @throws EncryptionFailureException
  * @throws MissingParameterException
  */
-function viewImage(Database $db, bool $debug) {
+function viewImage(Database $db, Auth $auth, bool $debug) {
     header('Content-Type: text/html; charset=UTF-8');
     /* Make sure request is valid*/
     if (!(isValidRequestVar('fileName') || isValidRequestVar('fileId'))) {
         missingParameterExit();
     }
     /* Set variables */
-    $user = new User(getCurrentUserInfo($db));
+    $user = new User($auth->getCurrentUserInfo());
     $ownerId = $_REQUEST['ownerId'] ?? $user->id;
-    $targetUser = new User(getUser($db, $ownerId));
+    $targetUser = new User($auth->getUser($ownerId));
     $file = getFileInformation($targetUser, $db);
     $fileBinary = FileReader::getFileBytes($file, $targetUser, $db);
     /* TODO: maybe remove mime */

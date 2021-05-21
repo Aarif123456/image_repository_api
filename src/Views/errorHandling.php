@@ -21,10 +21,9 @@ use ImageRepository\Exception\{DebugPDOException,
     UnauthorizedAdminException,
     UnauthorizedUserException};
 use ImageRepository\Model\Database;
+use ImageRepository\Utils\Auth;
 use PDOException;
 use Throwable;
-
-use function ImageRepository\Utils\{isUserAuthorized, unauthorizedExit};
 
 use const ImageRepository\Utils\DEBUG;
 
@@ -47,25 +46,26 @@ function errorJsonHandler(Throwable $e) {
     exitWithErrorJson((string)$e);
 }
 
-/* During production we want a semi nice back-up in case we fail */
-if (!DEBUG) {
-    set_exception_handler('/errorJsonHandler');
-    set_error_handler('/errorJsonHandler');
-}
 function safeApiRun(int $authorizationLevel, callable $callback, array $args = []) {
+    /* During production we want a semi nice back-up in case we fail */
+    if (!DEBUG) {
+        set_exception_handler('/errorJsonHandler');
+        set_error_handler('/errorJsonHandler');
+    }
     $translator = null;
     $db = null;
     try {
         /* Set required header and session start */
-        requiredHeaderAndSessionStart();
+        setHeaders();
         /* Connect to database */
         $db = new Database();
         $translator = new Translator($db->conn);
-        if (!isUserAuthorized($db, $authorizationLevel)) {
-            unauthorizedExit();
+        $auth = new Auth($db->conn);
+        if (!$auth->isUserAuthorized($authorizationLevel)) {
+            Auth::unauthorizedExit();
         }
         $debug = DEBUG;
-        call_user_func_array($callback, array_merge([$db, $debug], $args));
+        call_user_func_array($callback, array_merge([$db, $auth, $debug], $args));
     } catch (EncryptedFileNotCreatedException $e) {
         printErrorJson($translator->ENCRYPTED_FILE_NOT_CREATED);
     } catch (FileAlreadyExistsException $e) {

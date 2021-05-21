@@ -8,6 +8,7 @@ use ImageRepository\Exception\{DebugPDOException,
     MissingParameterException,
     PDOWriteException};
 use ImageRepository\Model\{Database, User, UserManagement\UserGenerator};
+use ImageRepository\Utils\Auth;
 
 use function ImageRepository\Api\checkMissingPostVars;
 use function ImageRepository\Views\{createQueryJSON, safeApiRun};
@@ -20,7 +21,7 @@ use const ImageRepository\Utils\UNAUTHENTICATED;
  * @throws PDOWriteException
  * @throws MissingParameterException
  */
-function register(Database $db, bool $debug) {
+function register(Database $db, Auth $auth, bool $debug) {
     /* Make sure we have a valid request */
     checkMissingPostVars(['firstName', 'lastName', 'email', 'password']);
     /* Get user info into user object */

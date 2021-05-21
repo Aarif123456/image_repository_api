@@ -31,7 +31,7 @@ function getHeader() {
     // header('Access-Control-Max-Age: 86400');    // cache for 1 day
 }
 
-function requiredHeaderAndSessionStart() {
+function setHeaders() {
     getHeader();
     if (empty($_REQUEST)) {
         $_REQUEST = json_decode(file_get_contents('php://input'), true);

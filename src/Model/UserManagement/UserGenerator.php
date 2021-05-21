@@ -9,8 +9,7 @@ use ImageRepository\Exception\{DebugPDOException,
     StaticClassAssertionError};
 use ImageRepository\Model\{Database, EncryptionKeyReader, User};
 use ImageRepository\Model\Encryption\{Encrypter, UserAttributeGenerator};
-
-use function ImageRepository\Utils\registerUser;
+use ImageRepository\Utils\Auth;
 
 /**
  * Class to create users
@@ -28,7 +27,8 @@ final class UserGenerator
      */
     public static function createUser(User $user, Database $db, bool $debug = false): array {
         $db->beginTransaction();
-        $output = registerUser($db, $user);
+        $auth = new Auth($db->conn);
+        $output = $auth->registerUser($user);
         if ($output['error']) {
             return $output;
         }
