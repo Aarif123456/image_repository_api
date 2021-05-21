@@ -1,9 +1,9 @@
 <?php
 
 declare(strict_types=1);
-namespace ImageRepository\Api\FileManagement;
+namespace ImageRepository\api\UserManagement;
 
-use ImageRepository\Api\EndpointValidator;
+use ImageRepository\api\EndpointValidator;
 use ImageRepository\Exception\{MissingParameterException, StaticClassAssertionError, UnauthorizedAdminException};
 use ImageRepository\Model\Database;
 use ImageRepository\Utils\Auth;
@@ -11,7 +11,7 @@ use ImageRepository\Views\JsonFormatter;
 
 const LOGIN_API_OUTPUT_VAR = ['error' => null, 'message' => null, 'loggedIn' => null];
 /**
- *
+ *CLass that handles logic of logging in user
  */
 final class LoginWorker
 {

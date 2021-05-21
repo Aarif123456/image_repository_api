@@ -1,11 +1,10 @@
 <?php
 
 declare(strict_types=1);
-namespace ImageRepository\Api;
+namespace ImageRepository\api;
 
 /* Define the strings the API will return  */
-use ImageRepository\Exception\MissingParameterException;
-use ImageRepository\Exception\StaticClassAssertionError;
+use ImageRepository\Exception\{MissingParameterException, StaticClassAssertionError};
 
 /**
  * Class to make sure requests have the required arguments

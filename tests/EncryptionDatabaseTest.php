@@ -6,7 +6,8 @@ namespace ImageRepository\Tests;
 use ImageRepository\Exception\{EncryptedFileNotCreatedException,
     EncryptionFailureException,
     InvalidAccessException,
-    NoSuchFileException};
+    NoSuchFileException
+};
 use ImageRepository\Model\{File, FileManagement\PolicySelector, User};
 use ImageRepository\Model\Encryption\{Encrypter, FileDecrypter, FileEncrypter, UserAttributeGenerator};
 use PHPUnit\Framework\TestCase;

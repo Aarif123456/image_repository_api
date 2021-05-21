@@ -39,7 +39,7 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 <summary>Upload file </summary>
 
     1. Description: A logged in user should be able to upload a file securely. The policy will allows the user to control who can see their file. 
-    2. fileManagement/upload.php --> /api/fileManagement/upload
+    2. FileManagement/upload.php --> /api/FileManagement/upload
     3. Parameter list: filePath(Optional), fileName, file, policy
         If no filePath is passed in, we will assume the fill will be in the users roots directory 
 
@@ -49,7 +49,7 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 <summary>Delete file </summary>
 
     1. Description: A logged in user should be able to delete any files they uploaded.
-    2. fileManagement/delete.php --> /api/fileManagement/delete
+    2. FileManagement/delete.php --> /api/FileManagement/delete
     3. Parameter list: filePath(Optional), fileName
         If no filePath is passed in, we will assume the fill will be in the users roots directory 
 
@@ -59,7 +59,7 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 <summary>Get images in folder</summary>
 
     1. Description: A logged in user should be able to view the files in their folder
-    2. fileManagement/folderImages.php --> /api/fileManagement/folderImages
+    2. FileManagement/folderImages.php --> /api/FileManagement/folderImages
     3. Parameter list: filePath(Optional)
         If no filePath is passed in, we will assume the fill will be in the users roots directory 
 
@@ -69,7 +69,7 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 <summary>View image</summary>
 
     1. Description: A user should be able to view images that are open to them
-    2. fileManagement/image.php --> /api/fileManagement/image
+    2. FileManagement/image.php --> /api/FileManagement/image
     3. Parameter list: ownerId(Optional), filePath(Optional), fileName, 
         If no filePath is passed in, we will assume the fill will be in the users roots directory. The ownerId will be assumed to be the user by default. But, you can pass in another user and get back a file on their account assuming you have access.
 
@@ -87,10 +87,10 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 </details>
 
 <details>
-<summary> Verify users: </summary>
+<summary> Login: </summary>
 
     1. Description: Log the user in and then store the cookie
-    2. userManagement/login.php  --> /api/userManagement/login
+    2. UserManagement/login.php  --> /api/UserManagement/login
     3. Parameter list:
         Accepts POST variable:  email, password, remember
 
@@ -100,7 +100,7 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 <summary> Registering user </summary>
 
     1. Description: Users can register for their own account
-    2. userManagement/register.php --> /api/userManagement/register
+    2. UserManagement/register.php --> /api/UserManagement/register
     3. Parameter list:
         Accepts POST variable: firstName, lastName, email, password, admin(optional)  
 
@@ -127,7 +127,7 @@ Tests can be found in the "tests" folder.
 <summary>List sub-folders </summary>
 
     1. Description: Return a list of all folders in the selected folder
-    2. fileManagement/listSubfolder.php -> /api/fileManagement/listSubfolder
+    2. FileManagement/listSubfolder.php -> /api/FileManagement/listSubfolder
     3. Parameter list: folderPath
 
 </details>
@@ -136,7 +136,7 @@ Tests can be found in the "tests" folder.
 <summary>Search file </summary>
 
     1. Description: Allow the user to search for files by different attributes such as image tags, file name or uploader. Can be used to show the user their own files as well
-    2. search/file.php -> /api/search/file
+    2. Search/file.php -> /api/Search/file
     3. Parameter list: searchType, keyword
 
 </details>
@@ -145,7 +145,7 @@ Tests can be found in the "tests" folder.
 <summary>Change file permission </summary>
 
     1. Description: Allow the user to choose what files to share with the public and what to keep private
-    2. fileManagement/filePermission.php -> /api/fileManagement/filePermission
+    2. FileManagement/filePermission.php -> /api/FileManagement/filePermission
     3. Parameter list: Only allow post request 
 
 </details>
@@ -154,9 +154,15 @@ Tests can be found in the "tests" folder.
 <summary>Reset Password </summary>
 
     1. Description: Email the user a link so they can reset their password.
-    2. userManagement/resetPassword.php -> /api/userManagement/resetPassword
+    2. UserManagement/resetPassword.php -> /api/UserManagement/resetPassword
     3. Parameter list: email
 
 </details>
 
-<!-- Figure out how to use name space -->
+<!--  
+turn everything into a function to make it testable
+Figure out how to throw errors and control what message is sent back
+
+Philosophy use static function where possible - benefit of auto loading classes 
+but don't really on class variables 
+-->

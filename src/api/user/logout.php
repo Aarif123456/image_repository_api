@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-namespace ImageRepository\Api\User;
+namespace ImageRepository\api\User;
 
 use ImageRepository\Views\ErrorHandler;
 

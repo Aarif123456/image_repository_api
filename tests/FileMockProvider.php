@@ -3,7 +3,7 @@
 declare(strict_types=1);
 namespace ImageRepository\Tests;
 
-use ImageRepository\Model\{File};
+use ImageRepository\Model\File;
 use PHPUnit\Framework\TestCase;
 
 final class FileMockProvider extends TestCase

@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-namespace ImageRepository\Api\FileManagement;
+namespace ImageRepository\api\FileManagement;
 
 use ImageRepository\Exception\StaticClassAssertionError;
 use ImageRepository\Model\{Database, FileManagement\FolderReader, User};
@@ -9,7 +9,7 @@ use ImageRepository\Utils\Auth;
 use ImageRepository\Views\JsonFormatter;
 
 /**
- *
+ * Class that handles logic to get images in folder
  */
 final class FolderImagesWorker
 {

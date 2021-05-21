@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-namespace ImageRepository\Api\FileManagement;
+namespace ImageRepository\api\User;
 
 use ImageRepository\Exception\StaticClassAssertionError;
 use ImageRepository\Model\Database;
@@ -9,7 +9,7 @@ use ImageRepository\Utils\Auth;
 use ImageRepository\Views\JsonFormatter;
 
 /**
- *
+ * Handles logic to logout user
  */
 final class LogoutWorker
 {

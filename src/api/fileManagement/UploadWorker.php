@@ -1,9 +1,9 @@
 <?php
 
 declare(strict_types=1);
-namespace ImageRepository\Api\FileManagement;
+namespace ImageRepository\api\FileManagement;
 
-use ImageRepository\Api\EndpointValidator;
+use ImageRepository\api\EndpointValidator;
 use ImageRepository\Exception\{DebugPDOException,
     EncryptedFileNotCreatedException,
     EncryptionFailureException,

@@ -1,9 +1,9 @@
 <?php
 
 declare(strict_types=1);
-namespace ImageRepository\Api\FileManagement;
+namespace ImageRepository\api\FileManagement;
 
-use ImageRepository\Api\EndpointValidator;
+use ImageRepository\api\EndpointValidator;
 use ImageRepository\Exception\{EncryptionFailureException, MissingParameterException, NoSuchFileException};
 use ImageRepository\Model\{Database, User};
 use ImageRepository\Model\FileManagement\FileReader;
@@ -12,6 +12,7 @@ use ImageRepository\Views\ErrorHandler;
 
 use const ImageRepository\Utils\AUTHORIZED_USER;
 
+/* TODO: move logic to worker class */
 /**
  * @throws NoSuchFileException
  * @throws EncryptionFailureException

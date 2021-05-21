@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ImageRepository\Model\Encryption;
 
 use ImageRepository\Exception\{EncryptedFileNotCreatedException, EncryptionFailureException, StaticClassAssertionError};
-use ImageRepository\Model\{File};
+use ImageRepository\Model\File;
 
 /**
  * Class to encrypt files

@@ -1,9 +1,9 @@
 <?php
 
 declare(strict_types=1);
-namespace ImageRepository\Api\FileManagement;
+namespace ImageRepository\api\FileManagement;
 
-use ImageRepository\Exception\{NoSuchFileException};
+use ImageRepository\Exception\NoSuchFileException;
 use ImageRepository\Model\{Database, FileLocationInfo, User};
 
 /**

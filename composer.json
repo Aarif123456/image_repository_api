@@ -5,7 +5,7 @@
       "ImageRepository\\": "src/"
     },
     "classmap": [
-      "src/Api/"
+      "src/api/"
     ],
     "files": [
       "src/Utils/constants.php"
