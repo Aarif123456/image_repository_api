@@ -8,7 +8,7 @@ use ImageRepository\Exception\MissingParameterException;
 use ImageRepository\Exception\StaticClassAssertionError;
 
 /**
- * Class to make sure requests have the required arguments 
+ * Class to make sure requests have the required arguments
  */
 final class EndpointValidator
 {
@@ -28,14 +28,6 @@ final class EndpointValidator
         return $_REQUEST[$varName] ?? false;
     }
 
-    public static function areValidPostVars(array $keys): bool {
-        return self::validateArray($keys, $_POST);
-    }
-
-    public static function areValidRequestVars(array $keys): bool {
-        return self::validateArray($keys, $_REQUEST);
-    }
-
     /**
      * Make sure all required post variable is there
      *
@@ -47,15 +39,8 @@ final class EndpointValidator
         }
     }
 
-    /**
-     * Make sure all required request variable is there
-     *
-     * @throws MissingParameterException
-     */
-    public static function checkMissingRequestVars(array $keys) {
-        if (!self::areValidRequestVars($keys)) {
-            self::missingParameterExit();
-        }
+    public static function areValidPostVars(array $keys): bool {
+        return self::validateArray($keys, $_POST);
     }
 
     public static function validateArray(array $keyList, array $targetArray): bool {
@@ -77,6 +62,21 @@ final class EndpointValidator
      */
     public static function missingParameterExit() {
         throw new MissingParameterException();
+    }
+
+    /**
+     * Make sure all required request variable is there
+     *
+     * @throws MissingParameterException
+     */
+    public static function checkMissingRequestVars(array $keys) {
+        if (!self::areValidRequestVars($keys)) {
+            self::missingParameterExit();
+        }
+    }
+
+    public static function areValidRequestVars(array $keys): bool {
+        return self::validateArray($keys, $_REQUEST);
     }
 
 }

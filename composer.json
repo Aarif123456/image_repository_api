@@ -4,9 +4,11 @@
     "psr-4": {
       "ImageRepository\\": "src/"
     },
-      "classmap": ["src/Api/"],
+    "classmap": [
+      "src/Api/"
+    ],
     "files": [
-      "src/Utils/constants"
+      "src/Utils/constants.php"
     ]
   },
   "autoload-dev": {
