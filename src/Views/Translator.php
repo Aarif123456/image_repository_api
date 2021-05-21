@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ImageRepository\Views;
 
 use PDO;
-use PDOException;
 
 /**
  * Class to return translated string
@@ -42,8 +41,9 @@ class Translator
             $query = "SELECT `translation_key`, `$siteLanguage` as `lang` FROM $this->translationTable";
             $queryDictionary = $conn->query($query)->fetchAll(PDO::FETCH_KEY_PAIR);
             $this->dictionary = array_replace($this->dictionary, $queryDictionary);
-        } catch (PDOException $e) {
-            $this->dictionary = $this->getFallbackDictionary();
+        } finally {
+            /* Ignore any errors */
+            assert(!empty($this->dictionary));
         }
     }
 
