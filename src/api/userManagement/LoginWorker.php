@@ -32,7 +32,7 @@ final class LoginWorker
         $admin = $_POST['admin'] ?? false;
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
-        $remember = $_POST['remember'] ?? true;
+        $remember = $_POST['remember'] ?? false;
         $loginInfo = (object)[
             'email' => $email,
             'password' => $password,

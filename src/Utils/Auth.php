@@ -49,11 +49,17 @@ final class Auth
     }
 
     public function isUserAnAdmin(): bool {
-        return $this->getCurrentUserInfo()['isAdmin'];
+        return (bool)$this->getCurrentUserInfo()['isAdmin'];
     }
 
     public function getCurrentUserInfo(): array {
         return $this->auth->getCurrentUser();
+    }
+
+    public function deleteUserForced(int $userId): bool {
+        $info = $this->auth->deleteUserForced($userId);
+
+        return $info['error'] ?? true;
     }
 
     public function getUserID() {

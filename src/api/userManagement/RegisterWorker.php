@@ -39,7 +39,7 @@ final class RegisterWorker
             'email' => $_POST['email'],
             'password' => $_POST['password'],
         ]);
-        $result = UserGenerator::createUser($user, $db, $debug);
+        $result = UserGenerator::createUser($user, $db, $auth, $debug);
         JsonFormatter::printArray($result);
     }
 }

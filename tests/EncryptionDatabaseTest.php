@@ -6,8 +6,7 @@ namespace ImageRepository\Tests;
 use ImageRepository\Exception\{EncryptedFileNotCreatedException,
     EncryptionFailureException,
     InvalidAccessException,
-    NoSuchFileException
-};
+    NoSuchFileException};
 use ImageRepository\Model\{File, FileManagement\PolicySelector, User};
 use ImageRepository\Model\Encryption\{Encrypter, FileDecrypter, FileEncrypter, UserAttributeGenerator};
 use PHPUnit\Framework\TestCase;
@@ -28,6 +27,8 @@ final class EncryptionDatabaseTest extends TestCase
         parent::__construct($name, $data, $dataName);
     }
 
+    /**************************************************************************/
+    /* Data providers: data used to test */
     /**
      * @testdox Uniqueness of id is guaranteed by database and
      * email validated during registration.
@@ -42,8 +43,6 @@ final class EncryptionDatabaseTest extends TestCase
         ]);
     }
 
-    /**************************************************************************/
-    /* Data providers: data used to test */
     /**
      * @testdox Create users for testing
      */
@@ -66,6 +65,8 @@ final class EncryptionDatabaseTest extends TestCase
         ]);
     }
 
+    /**************************************************************************/
+    /* Test cases */
     /**
      * @testdox Make sure we can generate the keys needed for the encryption decryption process
      * @covers Encrypter::setup
@@ -84,9 +85,6 @@ final class EncryptionDatabaseTest extends TestCase
         return $setupReturn;
     }
 
-
-    /**************************************************************************/
-    /* Test cases */
     /**
      * @testdox Make sure appropriate exception is thrown for wrong incorrect arguments!
      * @dataProvider notWorkingAccessProvider

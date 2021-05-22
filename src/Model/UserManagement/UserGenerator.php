@@ -25,15 +25,14 @@ final class UserGenerator
      * @throws DebugPDOException
      * @throws PDOWriteException
      */
-    public static function createUser(User $user, Database $db, bool $debug = false): array {
+    public static function createUser(User $user, Database $db, Auth $auth, bool $debug = false): array {
         $db->beginTransaction();
-        $auth = new Auth($db->conn);
         $output = $auth->registerUser($user);
         if ($output['error']) {
             return $output;
         }
         /* Store the user's login info */
-        $user->id = $output['id'];
+        $user->id = (int)$output['uid'];
         /* store user info in member table */
         self::storeUserKeys($user, $db, $debug);
         $db->commit();
