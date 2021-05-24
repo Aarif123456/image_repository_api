@@ -11,18 +11,31 @@ class FileLocationInfo
     public string $path;
     public string $realPath;
 
-    /* Make sure we have the file location */
     public function __construct(array $properties = []) {
-        $this->name = htmlentities(str_replace(['/', '\\'], '', basename($properties['name'])));
-        $this->path = str_replace('..', '', $properties['path']);
+        $this->name = self::cleanFileName($properties['name']);
+        $this->path = self::cleanfilePath($properties['path']);
         $ownerId = (int)$properties['ownerId'];
         /* Make sure user is contained to their folder */
-        $this->realPath = self::getUserFolder($this->path, $ownerId) . "/$this->name";
+        $this->realPath = self::getUserFolder($this->path, $ownerId) . "$this->name";
+    }
+
+    private static function cleanFileName(string $fileName): string {
+        $weirdCharRemovedName = preg_replace('~[^a-zA-Z0-9_\-.]~', '', basename($fileName));
+        $count = (substr_count($weirdCharRemovedName, '.') - 1);
+
+        /* Remove all the dots except the last one */
+
+        return preg_replace('~\.~', '', $weirdCharRemovedName, $count);
+    }
+
+    /* Make sure we have the file location */
+    private static function cleanfilePath(string $filePath): string {
+        return (string)preg_replace('~[^a-zA-Z0-9_\\\/\-]~', '', $filePath);
     }
 
     /* Handle getting the actual file path for the user */
     public static function getUserFolder(string $filePath, int $ownerId): string {
-        return "userFiles/$ownerId/" . str_replace('..', '', $filePath);
+        return "userFiles/$ownerId" . self::cleanfilePath($filePath);
     }
 
     /**
