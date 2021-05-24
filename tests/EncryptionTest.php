@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class EncryptionTest extends TestCase
 {
-    private string $inputFile = __DIR__ . '/test.png';
+    private string $inputFile = __DIR__ . '/test.jpg';
 
     /**
      * @testdox Make sure we can generate new system properties if we ever want to in the future
@@ -146,6 +146,7 @@ final class EncryptionTest extends TestCase
         $publicKey = $setupReturn['publicKey'] ?? '';
         $decryptedFile = Encrypter::decrypt($publicKey, $privateKey, $encryptedFile, $properties);
         $this->assertTrue(strcmp(file_get_contents($this->inputFile), $decryptedFile) === 0);
+        unlink($encryptedFile);
 
         return $decryptedFile;
     }
@@ -168,4 +169,5 @@ final class EncryptionTest extends TestCase
         $publicKey = $setupReturn['publicKey'] ?? '';
         Encrypter::decrypt($publicKey, $privateKey, $encryptedFile, $properties);
     }
+
 }

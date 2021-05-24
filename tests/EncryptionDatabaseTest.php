@@ -20,21 +20,54 @@ require_once __DIR__ . '/dataProviders.php';
 final class EncryptionDatabaseTest extends TestCase
 {
     public static SQLMockProvider $mockedSQL;
-    private string $inputFile = __DIR__ . '/test.png';
+    private static string $inputFile = __DIR__ . '/test.jpg';
 
     public function __construct($name = null, array $data = [], $dataName = '') {
         self::$mockedSQL = new SQLMockProvider();
         parent::__construct($name, $data, $dataName);
     }
 
+    public static function tearDownAfterClass(): void {
+        $users = self::userProvider();
+        foreach (self::getValidAccess() as $accessId) {
+            foreach ($users as $user) {
+                $encryptedFile = self::encryptedFileLocationCreator($accessId, $user->id);
+                if (file_exists($encryptedFile)) unlink($encryptedFile);
+            }
+        }
+        parent::tearDownAfterClass();
+    }
     /**************************************************************************/
     /* Data providers: data used to test */
+
+    /**
+     * @testdox Create users for testing
+     */
+    public static function userProvider(): array {
+        return array_map(function (array $userInfo) {
+            return new User($userInfo);
+        }, VALID_USER_INFO);
+    }
+
+    private static function getValidAccess(): array {
+        return [PolicySelector::PRIVATE_ACCESS, PolicySelector::PUBLIC_ACCESS];
+    }
+
+    private static function encryptedFileLocationCreator(int $accessId, int $userId): string {
+        $fileLoc = self::$inputFile;
+
+        return "$fileLoc.$userId.$accessId.ENCRYPTED";
+    }
+
+    /**************************************************************************/
+    /* Test cases */
+
     /**
      * @testdox Uniqueness of id is guaranteed by database and
      * email validated during registration.
      */
     public function userAccessProvider(): array {
-        $validAccess = [PolicySelector::PRIVATE_ACCESS, PolicySelector::PUBLIC_ACCESS];
+        $validAccess = self::getValidAccess();
         $users = $this->userProvider();
 
         return cartesian([
@@ -44,20 +77,11 @@ final class EncryptionDatabaseTest extends TestCase
     }
 
     /**
-     * @testdox Create users for testing
-     */
-    public function userProvider(): array {
-        return array_map(function (array $userInfo) {
-            return new User($userInfo);
-        }, VALID_USER_INFO);
-    }
-
-    /**
      * @testdox Make invalid access id are rejected .
      */
     public function notWorkingAccessProvider(): array {
         $invalidAccess = [0, 3, 100, -1];
-        $users = $this->userProvider();
+        $users = self::userProvider();
 
         return cartesian([
             'user' => $users,
@@ -65,8 +89,6 @@ final class EncryptionDatabaseTest extends TestCase
         ]);
     }
 
-    /**************************************************************************/
-    /* Test cases */
     /**
      * @testdox Make sure we can generate the keys needed for the encryption decryption process
      * @covers Encrypter::setup
@@ -149,11 +171,11 @@ final class EncryptionDatabaseTest extends TestCase
     public function testFileEncrypted(User $user, int $accessId): File {
         $policy = $this->testValidPolicy($user, $accessId);
         $encryptedFile = $this->encryptedFileLocationCreator($accessId, $user->id);
-        $file = FileMockProvider::getMockFile($this->inputFile, $encryptedFile);
+        $file = FileMockProvider::getMockFile(self::$inputFile, $encryptedFile);
         FileEncrypter::run($file, $policy, self::$mockedSQL->publicKey);
         $encryptedFileBytes = file_get_contents($encryptedFile);
         $this->assertNotEmpty($encryptedFileBytes);
-        $this->assertNotEquals(file_get_contents($this->inputFile), $encryptedFileBytes);
+        $this->assertNotEquals(file_get_contents(self::$inputFile), $encryptedFileBytes);
 
         return $file;
     }
@@ -173,10 +195,6 @@ final class EncryptionDatabaseTest extends TestCase
         return $policy;
     }
 
-    private function encryptedFileLocationCreator(int $accessId, int $userId): string {
-        return "$this->inputFile.$userId.$accessId.ENCRYPTED";
-    }
-
     /**
      * @testdox Make sure files can only be decrypted by the intended user
      * @dataProvider userAccessProvider
@@ -186,8 +204,8 @@ final class EncryptionDatabaseTest extends TestCase
      * @covers ::FileDecrypter::run
      */
     public function testFileValidDecrypted(User $user, int $accessId): void {
-        $encryptedFile = $this->encryptedFileLocationCreator($accessId, $user->id);
-        $file = FileMockProvider::getMockFile($this->inputFile, $encryptedFile);
+        $encryptedFile = self::encryptedFileLocationCreator($accessId, $user->id);
+        $file = FileMockProvider::getMockFile(self::$inputFile, $encryptedFile);
         /* Go through all users and check if we can decrypt if we have access and vice-versa*/
         foreach (self::$mockedSQL->userKeys as $curUserId => $privateKey) {
             /* If file is private only people with access can expect */
@@ -196,7 +214,7 @@ final class EncryptionDatabaseTest extends TestCase
             }
             /* Check if we can decrypt */
             $decryptedFileBytes = FileDecrypter::run($file, $privateKey, self::$mockedSQL->publicKey);
-            $this->assertTrue(strcmp(file_get_contents($this->inputFile), $decryptedFileBytes) === 0);
+            $this->assertTrue(strcmp(file_get_contents(self::$inputFile), $decryptedFileBytes) === 0);
         }
     }
 
