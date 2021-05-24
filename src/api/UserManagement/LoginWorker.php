@@ -9,6 +9,7 @@ use ImageRepository\Model\Database;
 use ImageRepository\Utils\Auth;
 use ImageRepository\Views\JsonFormatter;
 
+/* TODO: remove loggedIn and just rely on error*/
 const LOGIN_API_OUTPUT_VAR = ['error' => null, 'message' => null, 'loggedIn' => null];
 /**
  *CLass that handles logic of logging in user
