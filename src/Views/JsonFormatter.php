@@ -16,7 +16,7 @@ final class JsonFormatter
     }
 
     public static function printArray(array $arr) {
-        return self::jsonify($arr, []);
+        echo self::jsonify($arr, []);
     }
 
     public static function jsonify($o, $defaultVal = null) {
