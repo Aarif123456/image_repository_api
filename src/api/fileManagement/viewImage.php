@@ -28,7 +28,7 @@ function viewImage(Database $db, Auth $auth, bool $debug) {
     $user = new User($auth->getCurrentUserInfo());
     $ownerId = $_REQUEST['ownerId'] ?? $user->id;
     $targetUser = new User($auth->getUser($ownerId));
-    $file = getFileInformation($targetUser, $db);
+    $file = FileLocationInfoFactory::createFromApiData($targetUser, $db);
     $fileBinary = FileReader::getFileBytes($file, $targetUser, $db);
     /* TODO: maybe remove mime */
     $mime = FileReader::getFileMime($file, $targetUser, $db);
