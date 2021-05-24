@@ -49,11 +49,11 @@ final class Auth
     }
 
     public function isUserAnAdmin(): bool {
-        return (bool)$this->getCurrentUserInfo()['isAdmin'];
+        return (bool)($this->getCurrentUserInfo()['isAdmin'] ?? false);
     }
 
     public function getCurrentUserInfo(): array {
-        return $this->auth->getCurrentUser();
+        return $this->auth->getCurrentUser() ?: [];
     }
 
     public function deleteUserForced(int $userId): bool {
@@ -73,15 +73,15 @@ final class Auth
 
     public function login(object $loginInfo): array {
         $loginInfo = $this->auth->login($loginInfo->email, $loginInfo->password, $loginInfo->remember);
-        $arrCookieOptions = [
-            'expires' => $loginInfo['expire'],
-            'path' => $this->config->cookie_path,
-            'domain' => $this->config->cookie_domain,
-            'secure' => $this->config->cookie_secure,
-            'httponly' => $this->config->cookie_http,
-            'samesite' => $this->config->cookie_samesite
-        ];
         if (!$loginInfo['error']) {
+            $arrCookieOptions = [
+                'expires' => $loginInfo['expire'],
+                'path' => $this->config->cookie_path,
+                'domain' => $this->config->cookie_domain,
+                'secure' => $this->config->cookie_secure,
+                'httponly' => $this->config->cookie_http,
+                'samesite' => $this->config->cookie_samesite
+            ];
             setcookie($loginInfo['cookie_name'], $loginInfo['hash'], $arrCookieOptions);
         }
 
