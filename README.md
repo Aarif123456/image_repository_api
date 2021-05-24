@@ -78,31 +78,40 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 ## User Management
 
 <details>
-<summary> logout user</summary>
+<summary> Logout </summary>
 
     1. Description: Logout the user
     2. user/logout.php --> /api/user/logout
     3. Parameter list:
+    4. Output: {error: boolean}
+        Tells us if we successfully logged out.
 
 </details>
 
 <details>
-<summary> Login: </summary>
+<summary> Login </summary>
 
-    1. Description: Log the user in and then store the cookie
+    1. Description: Log the user in and then store cookie
     2. UserManagement/login.php  --> /api/UserManagement/login
     3. Parameter list:
-        Accepts POST variable:  email, password, remember
+        Accepts POST variable:  email, password, remember, admin(optional)
+            Email and password are the users login info.
+            Remember toggle how long we store the authenticated cookie
+            Admin tells the endpoint if the user is claiming to be an admin. It is false by default 
+    4. Output: {error: boolean, message: string}
+        Error tells us if the login was successful and the message is a user friendly message.
 
 </details>
 
 <details>
-<summary> Registering user </summary>
+<summary> Register </summary>
 
     1. Description: Users can register for their own account
     2. UserManagement/register.php --> /api/UserManagement/register
     3. Parameter list:
         Accepts POST variable: firstName, lastName, email, password, admin(optional)  
+    4. Output: {error: boolean, message: string}
+        Error tells us if the registration  was successful and the message is a user friendly message.
 
 </details>
 
