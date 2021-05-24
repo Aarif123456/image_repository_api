@@ -11,8 +11,10 @@ use ImageRepository\Exception\{FileAlreadyExistsException,
     UnknownErrorException};
 use ImageRepository\Model\{File, FileLocationInfo};
 
+use const ImageRepository\Utils\MAX_FILE_SIZE;
+
 /**
- *
+ * Class to make sure files are valid
  */
 final class FileValidator
 {
@@ -68,9 +70,11 @@ final class FileValidator
         }
     }
 
+    /**
+     * @throws FileLimitExceededException
+     */
     public static function checkFileSize(int $size) {
-        /* Images should be less then 7 mb */
-        if ($size > 7340063) {
+        if ($size > MAX_FILE_SIZE) {
             throw new FileLimitExceededException();
         }
     }

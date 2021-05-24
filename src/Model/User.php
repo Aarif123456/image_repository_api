@@ -4,13 +4,14 @@ declare(strict_types=1);
 namespace ImageRepository\Model;
 
 use ImageRepository\Exception\InvalidPropertyException;
+use ImageRepository\Utils\Auth;
 
 class User
 {
     public string $email;
     public bool $isactive;
     public int $id;
-    /*when the user was created */
+    /* date-time stamp for when the user was created */
     public string $dt;
     public string $firstName;
     public string $lastName;
