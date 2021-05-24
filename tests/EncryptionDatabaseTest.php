@@ -39,7 +39,6 @@ final class EncryptionDatabaseTest extends TestCase
     }
     /**************************************************************************/
     /* Data providers: data used to test */
-
     /**
      * @testdox Create users for testing
      */
@@ -61,7 +60,6 @@ final class EncryptionDatabaseTest extends TestCase
 
     /**************************************************************************/
     /* Test cases */
-
     /**
      * @testdox Uniqueness of id is guaranteed by database and
      * email validated during registration.

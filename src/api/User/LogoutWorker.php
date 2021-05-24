@@ -17,7 +17,7 @@ final class LogoutWorker
         throw new StaticClassAssertionError();
     }
 
-    public static function run(Database $_db, Auth $auth, bool $debug) {
+    public static function run(Database $_db, Auth $auth, bool $_debug) {
         JsonFormatter::printArray(['error' => !$auth->logout()]);
     }
 }
