@@ -5,6 +5,7 @@ namespace ImageRepository\api\FileManagement;
 
 use ImageRepository\api\EndpointValidator;
 use ImageRepository\Exception\{DebugPDOException,
+    DeleteFailedException,
     MissingParameterException,
     NoSuchFileException,
     PDOWriteException,
@@ -25,6 +26,7 @@ final class DeleteWorker
 
     /**
      * @throws DebugPDOException
+     * @throws DeleteFailedException
      * @throws PDOWriteException
      * @throws NoSuchFileException
      * @throws MissingParameterException
@@ -35,10 +37,10 @@ final class DeleteWorker
         }
         /* Set variables */
         $user = new User($auth->getCurrentUserInfo());
-        $output = [];
-        $file = getFileInformation($user, $db);
-        if ($file !== null) $output['error'] = !FileManager::deleteFile($file, $user, $db, $debug);
-        JsonFormatter::printArray($output);
+        $file = FileLocationInfoFactory::createFromApiData($user, $db);
+        /* If we have a file to delete then delete it */
+        if ($file === null || !FileManager::deleteFile($file, $user, $db, $debug)) throw new DeleteFailedException();
+        JsonFormatter::printArray(['error' => false]);
     }
 
 }

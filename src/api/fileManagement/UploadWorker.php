@@ -48,7 +48,7 @@ final class UploadWorker
         /* Set variables */
         $user = new User($auth->getCurrentUserInfo());
         $fileAccess = $_REQUEST['fileAccess'] ?? PolicySelector::defaultAccess();
-        $filePath = $_REQUEST['filePath'] ?? '';
+        $filePath = $_REQUEST['filePath'] ?? '/';
         $fileNames = $_REQUEST['fileNames'] ?? 'images';
         /* Make sure user uploaded a file*/
         if (!EndpointValidator::isValidFileVar($fileNames)) {
@@ -61,7 +61,7 @@ final class UploadWorker
         }
         /*Create array to track if upload was successful */
         $uploadSuccess = [];
-        $files = createFiles($fileNames);
+        $files = FileProcessor::createFiles($fileNames);
         foreach ($files['error'] as $key => $value) {
             $file = new File([
                 /*File names cannot have slashes because it would mess up paths -
@@ -70,15 +70,12 @@ final class UploadWorker
                 'size' => $files['size'][$key],
                 'errorStatus' => $files['error'][$key],
                 'location' => $files['tmp_name'][$key],
-                /* NOTE: getting the type from the file is not always safe as it can be tampered. However, users 
-                * only have access to their own files. So, we choose to ignore it  */
-                /* TODO: try using - maybe set in create files function image_type_to_mime_type(exif_imagetype($file))*/
-                'type' => $files['type'][$key],
+                'type' => image_type_to_mime_type(exif_imagetype($files['tmp_name'][$key])),
                 'path' => $filePath,
                 'access' => $fileAccess,
                 'ownerId' => $user->id
             ]);
-            $uploadSuccess[$file->name] = processFile($file, $user, $db);
+            $uploadSuccess[$file->name] = FileProcessor::processFile($file, $user, $db);
         }
         JsonFormatter::printArray($uploadSuccess);
     }
