@@ -19,7 +19,7 @@ final class FolderImagesWorker
 
     public static function run(Database $db, Auth $auth, bool $debug) {
         $user = new User($auth->getCurrentUserInfo());
-        $filePath = $_REQUEST['filePath'] ?? '';
+        $filePath = $_REQUEST['filePath'] ?? '/';
         $result = FolderReader::listFiles($filePath, $user, $db);
         JsonFormatter::printArray($result);
     }
