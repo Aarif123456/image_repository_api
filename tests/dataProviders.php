@@ -103,7 +103,7 @@ define('VALID_USER_INFO', [
 define('INVALID_USER_INFO', [
     [
         'isactive' => true,
-        'id' => 6,
+        'id' => 100,
         'dt' => (string)date('Y/m/d'),
         'firstName' => 'no email',
         'lastName' => '',
@@ -112,7 +112,7 @@ define('INVALID_USER_INFO', [
     [
         'email' => 'noFirstName@gmail.com',
         'isactive' => true,
-        'id' => 7,
+        'id' => 101,
         'dt' => (string)date('Y/m/d'),
         'lastName' => '',
         'isAdmin' => true,
@@ -120,9 +120,17 @@ define('INVALID_USER_INFO', [
     [
         'email' => 'testUser@hotmail.com',
         'isactive' => true,
-        'id' => 8,
+        'id' => 102,
         'dt' => (string)date('Y/m/d'),
         'firstName' => 'Don\'t have last name',
         'isAdmin' => true,
     ]
 ]);
+/* Create image of size */
+function resizeImageToSize(string $imgLocation, int $desiredSize, string $newImgLocation) {
+    $size = filesize($imgLocation);
+    /* Make a string of ($desiredSize - $size) binary 0s */
+    $zeros = str_pad('', $desiredSize - $size, "\0");
+    $paddedImage = iptcembed($zeros, $imgLocation);
+    file_put_contents($newImgLocation, $paddedImage);
+}
