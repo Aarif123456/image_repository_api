@@ -40,6 +40,11 @@ final class RegisterWorker
             'password' => $_POST['password'],
         ]);
         $result = UserGenerator::createUser($user, $db, $auth, $debug);
-        JsonFormatter::printArray($result);
+        $output = [
+            'error' => $result['error'],
+            'message' => $result['message']
+        ];
+        if (isset($result['uid'])) $output['id'] = $result['uid'];
+        JsonFormatter::printArray($output);
     }
 }

@@ -24,7 +24,7 @@ final class LoginWorker
      * @throws UnauthorizedAdminException
      * @throws MissingParameterException
      */
-    public static function run(Database $db, Auth $auth, bool $debug) {
+    public static function run(Database $_db, Auth $auth, bool $_debug) {
         /* Logout any account they are logged in */
         if ($auth->isUserLoggedIn()) $auth->logout();
         /* Make sure request has all the required attributes*/
@@ -43,7 +43,6 @@ final class LoginWorker
         /* validate login info */
         $result = $auth->login($loginInfo);
         $output = array_intersect_key($result, LOGIN_API_OUTPUT_VAR);
-        $output['loggedIn'] = !$result['error'];
         /* Make sure user is actually an admin*/
         if ($admin && !($auth->isUserAnAdmin())) {
             $auth->logout();
