@@ -8,13 +8,13 @@ An API built to be used by the for the [Image Repository](https://abdullaharif.t
 
 # API for the Image Repository #
 
-API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
+API URL: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 
 ### Information in API description ###
 
 * Endpoint name
 * Description
-* File name - Since, code will always be updated even if the read me isn't
+* File name - Since, the code will always be up to date.
 * Parameter list -including which method to use such as POST, GET or REQUEST(both)
 
 ## Format ##
@@ -31,47 +31,65 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
 
 # Endpoints #
 
-## Pending Testing ##
-
 ### File Management
 
 <details>
 <summary>Upload file </summary>
 
-    1. Description: A logged in user should be able to upload a file securely. The policy will allows the user to control who can see their file. 
+    1. Description: A logged in user should be able to upload a file securely. The policy will allow the user to control who can view their file. 
     2. FileManagement/upload.php --> /api/FileManagement/upload
-    3. Parameter list: filePath(Optional), fileName, file, policy
-        If no filePath is passed in, we will assume the fill will be in the users roots directory 
+    3. Parameter list: filePath(Optional), fileNames(optional), file, policy
+        If no filePath is passed in, we will assume the file will be located in the user's root directory.
+        The fileNames variable refers to name of the variable that holds the submitted files. By default the variable will be called 'images'.
+        You can upload multiple images at once, but you have to make sure every image is less then or equal to 7 MB.
+    4. {['file1Name' => ['error': boolean], 'file2Name' => ['error': boolean]... 'filenName' => ['error': boolean]]}
 
 </details>
 
 <details>
 <summary>Delete file </summary>
 
-    1. Description: A logged in user should be able to delete any files they uploaded.
+    1. Description: A logged in user should be able to delete any files they have uploaded.
     2. FileManagement/delete.php --> /api/FileManagement/delete
-    3. Parameter list: filePath(Optional), fileName
-        If no filePath is passed in, we will assume the fill will be in the users roots directory 
+    3. Parameter list: filePath(Optional), fileName or fileId
+        If no filePath is passed in, we will assume the file will be located in the user's root directory.
+    4. {error: boolean, message?: string}
 
 </details>
 
 <details>
 <summary>Get images in folder</summary>
 
-    1. Description: A logged in user should be able to view the files in their folder
+    1. Description: A logged in user should be able to view the files on their account
     2. FileManagement/folderImages.php --> /api/FileManagement/folderImages
-    3. Parameter list: filePath(Optional)
-        If no filePath is passed in, we will assume the fill will be in the users roots directory 
+    3. Parameter list: folderPath(Optional)
+        If no folderPath is passed in, we will assume the user wants to view the files in the root directory.
+    4. {[fileInfo]}
+        fileInfo = 
+                {
+                    "fileID": number,
+                    "memberID": number,
+                    "fileName": string,
+                    "filePath": string,
+                    "fileSize": number,
+                    "uploaded": string(sql Date-time),
+                    "accessID": number,
+                    "mime": string
+                }
 
 </details>
 
 <details>
-<summary>View image</summary>
+<summary>View/Download image</summary>
 
     1. Description: A user should be able to view images that are open to them
     2. FileManagement/image.php --> /api/FileManagement/image
-    3. Parameter list: ownerId(Optional), filePath(Optional), fileName, 
-        If no filePath is passed in, we will assume the fill will be in the users roots directory. The ownerId will be assumed to be the user by default. But, you can pass in another user and get back a file on their account assuming you have access.
+    3. Parameter list: ownerId(Optional), filePath(Optional), download(optional), fileName or fileId,
+        If no filePath is passed in, we will assume the file will be located in the user's root directory. 
+        The ownerId will be assumed to be the user by default. But, you can pass in another user and get back a file on their account assuming you have access.
+        If you pass in the fileId then ownerId and filePath will be ignored completely.
+        The download option controls whether we want to force a download for the file.
+    4. For view the page will return an image, for download it should prompt a download.
 
 </details>
 
@@ -110,8 +128,8 @@ API url: https://arif115.myweb.cs.uwindsor.ca/imagerepository/api/ENDPOINT_NAME
     2. UserManagement/register.php --> /api/UserManagement/register
     3. Parameter list:
         Accepts POST variable: firstName, lastName, email, password, admin(optional)  
-    4. Output: {error: boolean, message: string}
-        Error tells us if the registration  was successful and the message is a user friendly message.
+    4. Output: {error: boolean, message: string, id?: number }
+        Error tells us if the registration was successful and the message is a user friendly message. If user was created we also return the user's Id
 
 </details>
 
