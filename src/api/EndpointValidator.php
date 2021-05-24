@@ -16,15 +16,15 @@ final class EndpointValidator
     }
 
     public static function isValidFileVar(string $fileName): bool {
-        return $_FILES[$fileName]['error'] ?? false;
+        return isset($_FILES[$fileName]['error']);
     }
 
     public static function isValidPostVar(string $varName): bool {
-        return $_POST[$varName] ?? false;
+        return (bool)($_POST[$varName] ?? false);
     }
 
     public static function isValidRequestVar(string $varName): bool {
-        return $_REQUEST[$varName] ?? false;
+        return (bool)($_REQUEST[$varName] ?? false);
     }
 
     /**
