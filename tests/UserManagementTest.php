@@ -21,10 +21,9 @@ use PHPUnit\Framework\TestCase;
 * these functions heavily. 
 * TODO: forget password
 */
-/* This class tests the encryption endpoint
- * the point of this class is to ensure that we can securely generate encrypted files that can 
- * only be read by the intended group. We will also be testing different components that 
- * make this possible.
+/* This class tests the user management system
+ * the point of this class is to ensure the users can register, login and 
+ * have access to the correct actions
  */
 final class UserManagementTest extends TestCase
 {
