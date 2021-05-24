@@ -6,6 +6,7 @@ namespace ImageRepository\Views;
 
 use Exception;
 use ImageRepository\Exception\{DebugPDOException,
+    DeleteFailedException,
     EncryptedFileNotCreatedException,
     EncryptionFailureException,
     FileAlreadyExistsException,
@@ -73,6 +74,8 @@ final class ErrorHandler
             }
             $debug = DEBUG;
             call_user_func_array($callback, array_merge([$db, $auth, $debug], $args));
+        } catch (DeleteFailedException $e) {
+            self::printErrorJson($translator->FILE_DELETE_FAILED);
         } catch (EncryptedFileNotCreatedException $e) {
             self::printErrorJson($translator->ENCRYPTED_FILE_NOT_CREATED);
         } catch (FileAlreadyExistsException $e) {

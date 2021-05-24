@@ -8,23 +8,24 @@ use PDO;
 /**
  * Class to return translated string
  *
+ * @property string COMMAND_FAILED
  * @property string ENCRYPTED_FILE_NOT_CREATED
+ * @property string FILE_ALREADY_EXISTS
+ * @property string FILE_DELETE_FAILED
+ * @property string FILE_SIZE_LIMIT_EXCEEDED
+ * @property string INTERNAL_ENCRYPTION_FAILURE
  * @property string INTERNAL_SERVER_ERROR
- * @property string WRITE_QUERY_FAILED
- * @property string USER_NOT_ADMIN
- * @property string UNAUTHORIZED_NO_LOGIN
+ * @property string INVALID_ACCESS_TYPE
+ * @property string INVALID_FILE_FORMAT
+ * @property string INVALID_PROPERTY
+ * @property string MISSING_PARAMETERS
+ * @property string NO_FILE_SENT
+ * @property string NO_SUCH_FILE
  * @property string PDO_ERROR
  * @property string SQL_ERROR
- * @property string COMMAND_FAILED
- * @property string NO_SUCH_FILE
- * @property string NO_FILE_SENT
- * @property string MISSING_PARAMETERS
- * @property string INVALID_PROPERTY
- * @property string INVALID_FILE_FORMAT
- * @property string INVALID_ACCESS_TYPE
- * @property string INTERNAL_ENCRYPTION_FAILURE
- * @property string FILE_SIZE_LIMIT_EXCEEDED
- * @property string FILE_ALREADY_EXISTS
+ * @property string UNAUTHORIZED_NO_LOGIN
+ * @property string USER_NOT_ADMIN
+ * @property string WRITE_QUERY_FAILED
  */
 class Translator
 {
@@ -57,6 +58,7 @@ class Translator
         $lang['COMMAND_FAILED'] = 'Query failed to execute';
         $lang['ENCRYPTED_FILE_NOT_CREATED'] = 'Unable to save encrypted file';
         $lang['FILE_ALREADY_EXISTS'] = 'File already exists';
+        $lang['FILE_DELETE_FAILED'] = 'Failed to delete file';
         $lang['FILE_SIZE_LIMIT_EXCEEDED'] = 'Exceeded file size limit';
         $lang['INTERNAL_ENCRYPTION_FAILURE'] = 'Failure in encryption or decryption call';
         $lang['INTERNAL_SERVER_ERROR'] = 'Something went wrong :(';

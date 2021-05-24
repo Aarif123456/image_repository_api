@@ -9,10 +9,10 @@ CREATE TABLE `translations`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
-
 INSERT INTO `translations`(`translation_key`, `translation_group`, `comment`, `en_CA`)
 VALUES ('COMMAND_FAILED', 'Exception', NULL, 'Query failed to execute, ensure you use the correct values'),
        ('ENCRYPTED_FILE_NOT_CREATED', 'Exception', NULL, 'Unable to save encrypted file'),
+       ('FILE_DELETE_FAILED', 'Exception', NULL, 'Failed to delete file'),
        ('FILE_ALREADY_EXISTS', 'Exception', NULL, 'File already exists'),
        ('FILE_SIZE_LIMIT_EXCEEDED', 'Exception', NULL, 'Exceeded file size limit'),
        ('INTERNAL_ENCRYPTION_FAILURE', 'Exception', NULL, 'Failure in encryption or decryption call'),
