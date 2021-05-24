@@ -60,16 +60,17 @@ final class Database
      * @throws PDOWriteException
      */
     public function write(string $sql, array $args = [], bool $debug = false): bool {
-        $stmt = $this->run($sql, $args);
         try {
-            return $stmt->execute() && $stmt->closeCursor();
+            $stmt = $this->run($sql, $args);
+
+            return $stmt->closeCursor();
         } catch (PDOException $e) {
             /* remove all queries from queue if error (undo) */
             if ($this->conn->inTransaction()) {
                 $this->conn->rollBack();
             }
             if ($debug) {
-                throw new DebugPDOException();
+                throw new DebugPDOException($e->getMessage(), (int)$e->getCode());
             }
         }
         throw new PDOWriteException();
