@@ -44,9 +44,9 @@ final class UploadWorker
      * @throws PDOWriteException
      * @throws MissingParameterException
      */
-    public static function run(Database $db, Auth $auth, bool $debug) {
+    public static function run(Database $db, Auth $auth, bool $_debug) {
         /* Set variables */
-        $user = new User($auth->getCurrentUserInfo());
+        $user = User::createFromAuth($auth);
         $fileAccess = $_REQUEST['fileAccess'] ?? PolicySelector::defaultAccess();
         $filePath = $_REQUEST['filePath'] ?? '/';
         $fileNames = $_REQUEST['fileNames'] ?? 'images';

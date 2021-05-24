@@ -28,6 +28,10 @@ class User
         $this->password = $properties['password'] ?? '';
     }
 
+    public static function createFromAuth(Auth $auth): User {
+        return new User($auth->getCurrentUserInfo());
+    }
+
     /**
      * @throws InvalidPropertyException
      */

@@ -36,7 +36,7 @@ final class DeleteWorker
             EndpointValidator::missingParameterExit();
         }
         /* Set variables */
-        $user = new User($auth->getCurrentUserInfo());
+        $user = User::createFromAuth($auth);
         $file = FileLocationInfoFactory::createFromApiData($user, $db);
         /* If we have a file to delete then delete it */
         if ($file === null || !FileManager::deleteFile($file, $user, $db, $debug)) throw new DeleteFailedException();
