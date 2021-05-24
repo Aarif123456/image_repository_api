@@ -95,12 +95,14 @@ final class UserManagementTest extends TestCase
         $_POST['admin'] = $userInfo['isAdmin'] ?? false;
         if (empty($_POST['email']) || empty($_POST['password'] || empty($_POST['firstName']))) {
             $this->expectException(MissingParameterException::class);
-        } else {
-            $this->expectNotToPerformAssertions();
         }
         RegisterWorker::run($this->db, $this->auth, false);
-        /* Empty out post request  */
+        /* Empty out post request */
         $_POST = [];
+        $output = (array)json_decode($this->getActualOutput());
+        $this->assertFalse($output['error'] ?? true);
+        $this->assertNotEmpty($output['message']);
+        $this->assertNotEmpty($output['id']);
     }
 
     /**
@@ -122,33 +124,44 @@ final class UserManagementTest extends TestCase
         } /* We shouldn't have admin access automatically... */
         elseif (empty($userInfo['isAdmin'] ?? false)) {
             $this->expectException(UnauthorizedAdminException::class);
-        } else {
-            $this->expectNotToPerformAssertions();
         }
         LoginWorker::run($this->db, $this->auth, false);
+        $output = (array)json_decode($this->getActualOutput());
+        $this->assertFalse($output['error'] ?? true);
+        $this->assertNotEmpty($output['message']);
         $_POST = [];
     }
 
     /**
      * @testdox Make sure valid users can login
-     * @depends testLogin
+     * @dataProvider getTestUsers
+     * @depends      testLogin
      * @covers ::LogoutWorker
      * @runInSeparateProcess
-     * @doesNotPerformAssertions
      */
-    public function testLogout() {
+    public function testLogout(array $userInfo) {
+        $loginInfo = (object)[
+            'email' => $userInfo['email'] ?? '',
+            'password' => $this->testPassword,
+            'remember' => false,
+            'admin' => $userInfo['isAdmin'] ?? false
+        ];
+        $output = $this->auth->login($loginInfo);
         LogoutWorker::run($this->db, $this->auth, false);
+        $this->assertJsonStringEqualsJsonString(
+            json_encode(['error' => $output['error']]),
+            $this->getActualOutput()
+        );
     }
 
     /**
-     * @testdox Clean up and delete users. Note if you do this yourself, you will have to remove the
-     *  following constraints from the database to allow users to get deleted.
-     * 1. files_ibfk_1
-     * 2. userKeys_ibfk_1
+     * @testdox Clean up and delete users.
      *
      * @dataProvider getTestUsers
      * @depends      testLogout
      * @covers       Auth::deleteUserForced
+     * @throws DebugPDOException
+     * @throws PDOWriteException
      * @runInSeparateProcess
      */
     public function testDeleteUser(array $userInfo) {
@@ -156,7 +169,9 @@ final class UserManagementTest extends TestCase
         $params = [
             ':email' => $userInfo['email'] ?? ''
         ];
-        $idArr = $this->db->read($sql, $params)[0] ?? ['id' => 0];
-        $this->assertFalse($this->auth->deleteUserForced($idArr['id']));
+        $id = ($this->db->read($sql, $params)[0] ?? ['id' => 0])['id'];
+        $deleteSql = 'DELETE FROM userKeys WHERE memberID=:id';
+        $this->db->write($deleteSql, [':id' => $id], true);
+        $this->assertFalse($this->auth->deleteUserForced($id));
     }
 }
