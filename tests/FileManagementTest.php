@@ -3,7 +3,7 @@
 declare(strict_types=1);
 namespace ImageRepository\Tests;
 
-use ImageRepository\api\FileManagement\{DeleteWorker, UploadWorker};
+use ImageRepository\api\FileManagement\{DeleteWorker, FolderImagesWorker, ImageWorker, UploadWorker};
 use ImageRepository\Exception\{DebugPDOException,
     DeleteFailedException,
     EncryptedFileNotCreatedException,
@@ -19,11 +19,13 @@ use ImageRepository\Exception\{DebugPDOException,
     SqlCommandFailedException,
     UnknownErrorException};
 use ImageRepository\Model\Database;
+use ImageRepository\Model\FileLocationInfo;
+use ImageRepository\Model\FileManagement\FileReader;
+use ImageRepository\Model\User;
 use ImageRepository\Utils\Auth;
 use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/dataProviders.php';
-
 /* The point of this class is to make sure we are able to properly manage the files we own securely
 * This means we should be able to do the following
 * 1. Upload a file: which means it should be in our account (database 
@@ -36,7 +38,11 @@ require_once __DIR__ . '/dataProviders.php';
 * The scope of these test is at the API level
 * Make sure errors always set error variable to true
 */
-
+/* TODO: test upload with non image - php and HTML files */
+/* TODO: create class to test access control - like we shouldn't be able to leave our folder
+Upload test cases: go out of folder (using .. or /)
+View image: view files without access
+*/
 final class FileManagementTest extends TestCase
 {
     private static string $imgFile = __DIR__ . '/test.jpg';
@@ -64,8 +70,8 @@ final class FileManagementTest extends TestCase
     }
 
     public static function tearDownAfterClass(): void {
-        unlink(self::$giantFile);
-        unlink(self::$imgFile2);
+        if (file_exists(self::$giantFile)) unlink(self::$giantFile);
+        if (file_exists(self::$imgFile2)) unlink(self::$imgFile2);
         parent::tearDownAfterClass();
     }
 
@@ -101,18 +107,11 @@ final class FileManagementTest extends TestCase
             ],
         ];
     }
-    /* Upload test cases:
-        - category - single, multiple, guest, out of folder (using .. or /)
-            - type - image, non-image(html, php), giant, super small, 
-        - Upload giant file https://en.wikipedia.org/wiki/File:Pieter_Bruegel_the_Elder_-_The_Fall_of_the_Rebel_Angels_-_Google_Art_Project.jpg
 
-        https://www.softwaretestingo.com/file-upload-test-case/'
-    */
     /**
      * @testdox Make sure we can upload a single file
      * @covers ::UploadWorker
      * @runInSeparateProcess
-     * @doesNotPerformAssertions
      * @throws FileAlreadyExistsException
      * @throws EncryptedFileNotCreatedException
      * @throws SqlCommandFailedException
@@ -142,6 +141,10 @@ final class FileManagementTest extends TestCase
         ];
         UploadWorker::run($this->db, $this->auth, false);
         if (copy($backupLocation, self::$imgFile)) unlink($backupLocation);
+        $this->assertJsonStringEqualsJsonString(
+            json_encode([$fileInfo['name'] => ['error' => false]]),
+            $this->getActualOutput()
+        );
 
         return $fileInfo;
     }
@@ -151,7 +154,6 @@ final class FileManagementTest extends TestCase
      * @covers ::DeleteWorker
      * @depends testUploadSingleFile
      * @runInSeparateProcess
-     * @doesNotPerformAssertions
      * @throws DebugPDOException
      * @throws DeleteFailedException
      * @throws PDOWriteException
@@ -161,6 +163,10 @@ final class FileManagementTest extends TestCase
     public function testDeleteSingleFiles(array $fileInfo) {
         $_REQUEST['fileName'] = $fileInfo['name'];
         DeleteWorker::run($this->db, $this->auth, false);
+        $this->assertJsonStringEqualsJsonString(
+            json_encode(['error' => false]),
+            $this->getActualOutput()
+        );
     }
 
     /**
@@ -168,7 +174,6 @@ final class FileManagementTest extends TestCase
      * @dataProvider validFileProvider
      * @covers ::UploadWorker
      * @runInSeparateProcess
-     * @doesNotPerformAssertions
      * @throws FileAlreadyExistsException
      * @throws EncryptedFileNotCreatedException
      * @throws SqlCommandFailedException
@@ -193,8 +198,136 @@ final class FileManagementTest extends TestCase
             self::$fileNames => $inputFiles
         ];
         UploadWorker::run($this->db, $this->auth, false);
+        /* Make sure we print out files with no errors */
+        $output = [];
+        foreach ($inputFiles['name'] as $fileName) {
+            $output[$fileName] = ['error' => false];
+        }
+        $this->assertJsonStringEqualsJsonString(
+            json_encode($output),
+            $this->getActualOutput()
+        );
+        /* restore files the upload automatically deletes for security */
         foreach ($backupLocations as $key => $backupLocation) {
             if (copy($backupLocation, $inputFiles['tmp_name'][$key])) unlink($backupLocation);
+        }
+    }
+
+    /**
+     * @testdox See if we can view the image and it matches our decrypted version
+     * @dataProvider validFileProvider
+     * @covers ::ImageWorker
+     * @depends      testUploadFile
+     * @runInSeparateProcess
+     * @throws NoSuchFileException
+     * @throws EncryptionFailureException
+     * @throws MissingParameterException
+     */
+    public function testImageViewWithName(array $inputFiles) {
+        foreach ($inputFiles['name'] as $key => $value) {
+            $this->expectOutputString(file_get_contents($inputFiles['tmp_name'][$key]));
+            $_REQUEST['fileName'] = $value;
+            ImageWorker::run($this->db, $this->auth, false);
+        }
+    }
+
+    /**
+     * @testdox See if we can download the image and it matches our decrypted version
+     * @dataProvider validFileProvider
+     * @covers ::ImageWorker
+     * @depends      testUploadFile
+     * @runInSeparateProcess
+     * @throws NoSuchFileException
+     * @throws EncryptionFailureException
+     * @throws MissingParameterException
+     */
+    public function testImageDownloadWithName(array $inputFiles) {
+        $_REQUEST['download'] = true;
+        foreach ($inputFiles['name'] as $key => $value) {
+            $this->expectOutputString(file_get_contents($inputFiles['tmp_name'][$key]));
+            $_REQUEST['fileName'] = $value;
+            ImageWorker::run($this->db, $this->auth, false);
+        }
+    }
+
+    /**
+     * @testdox See if we can view the image and it matches our decrypted version
+     * @dataProvider validFileProvider
+     * @covers ::ImageWorker
+     * @depends      testUploadFile
+     * @runInSeparateProcess
+     * @throws NoSuchFileException
+     * @throws EncryptionFailureException
+     * @throws MissingParameterException
+     */
+    public function testImageViewWithId(array $inputFiles) {
+        $user = User::createFromAuth($this->auth);
+        foreach ($inputFiles['name'] as $key => $value) {
+            $file = new FileLocationInfo([
+                'name' => $value,
+                'path' => '',
+                'ownerId' => $user->id
+            ]);
+            $fileInfo = FileReader::getFileMetaData($file, $user, $this->db);
+            $_REQUEST['fileId'] = $fileInfo['fileID'];
+            $this->expectOutputString(file_get_contents($inputFiles['tmp_name'][$key]));
+            ImageWorker::run($this->db, $this->auth, false);
+        }
+    }
+
+    /**
+     * @testdox See if we can download the image and it matches our decrypted version
+     * @dataProvider validFileProvider
+     * @covers ::ImageWorker
+     * @depends      testUploadFile
+     * @runInSeparateProcess
+     * @throws NoSuchFileException
+     * @throws EncryptionFailureException
+     * @throws MissingParameterException
+     */
+    public function testImageDownloadWithId(array $inputFiles) {
+        $_REQUEST['download'] = true;
+        $user = User::createFromAuth($this->auth);
+        foreach ($inputFiles['name'] as $key => $value) {
+            $file = new FileLocationInfo([
+                'name' => $value,
+                'path' => '',
+                'ownerId' => $user->id
+            ]);
+            $fileInfo = FileReader::getFileMetaData($file, $user, $this->db);
+            $_REQUEST['fileId'] = $fileInfo['fileID'];
+            $this->expectOutputString(file_get_contents($inputFiles['tmp_name'][$key]));
+            ImageWorker::run($this->db, $this->auth, false);
+        }
+    }
+
+    /**
+     * @testdox We should be able to view the file in our folder
+     * @dataProvider validFileProvider
+     * @covers ::FolderImagesWorker
+     * @depends      testUploadFile
+     * @runInSeparateProcess
+     */
+    public function testFilesInFolder(array $inputFiles) {
+        /* Be in the root folder*/
+        $_REQUEST['folderPath'] = '/';
+        FolderImagesWorker::run($this->db, $this->auth, false);
+        $output = (array)json_decode($this->getActualOutput());
+        $this->assertNotEmpty($output);
+        foreach ($inputFiles['name'] as $fileName) {
+            $found = false;
+            foreach ($output as $fileInfo) {
+                if ($fileInfo->fileName === $fileName) {
+                    $found = true;
+                    $this->assertEquals($this->auth->getUserID(), $fileInfo->memberID);
+                    $this->assertNotEmpty($fileInfo->fileID);
+                    $this->assertNotEmpty($fileInfo->fileSize);
+                    $this->assertNotEmpty($fileInfo->uploaded);
+                    $this->assertEquals('image/jpeg', $fileInfo->mime);
+                    break;
+                }
+            }
+            $this->assertTrue($found);
         }
     }
 
@@ -202,9 +335,12 @@ final class FileManagementTest extends TestCase
      * @testdox Delete file test - also acts as a cleaner
      * @dataProvider validFileProvider
      * @covers ::DeleteWorker
-     * @depends      testUploadFile
+     * @depends      testImageViewWithName
+     * @depends      testImageDownloadWithName
+     * @depends      testImageViewWithId
+     * @depends      testImageDownloadWithId
+     * @depends      testFilesInFolder
      * @runInSeparateProcess
-     * @doesNotPerformAssertions
      * @throws DebugPDOException
      * @throws DeleteFailedException
      * @throws PDOWriteException
@@ -214,8 +350,30 @@ final class FileManagementTest extends TestCase
     public function testDeleteMultipleFiles(array $inputFiles) {
         foreach ($inputFiles['name'] as $value) {
             $_REQUEST['fileName'] = $value;
+            $this->expectOutputString(json_encode(['error' => false]));
             DeleteWorker::run($this->db, $this->auth, false);
+            $this->assertJsonStringEqualsJsonString(
+                json_encode(['error' => false]),
+                $this->getActualOutput()
+            );
         }
+    }
+
+    /**
+     * @testdox make sure our folder is empty
+     * @dataProvider validFileProvider
+     * @covers ::FolderImagesWorker
+     * @depends      testDeleteMultipleFiles
+     * @runInSeparateProcess
+     */
+    public function testFolderEmptyAfterDelete() {
+        /* Be in the root folder*/
+        $_REQUEST['folderPath'] = '';
+        FolderImagesWorker::run($this->db, $this->auth, false);
+        $this->assertJsonStringEqualsJsonString(
+            json_encode([]),
+            $this->getActualOutput()
+        );
     }
 
 }
