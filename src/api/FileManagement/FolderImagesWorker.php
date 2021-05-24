@@ -17,10 +17,10 @@ final class FolderImagesWorker
         throw new StaticClassAssertionError();
     }
 
-    public static function run(Database $db, Auth $auth, bool $debug) {
-        $user = new User($auth->getCurrentUserInfo());
-        $filePath = $_REQUEST['filePath'] ?? '/';
-        $result = FolderReader::listFiles($filePath, $user, $db);
+    public static function run(Database $db, Auth $auth, bool $_debug) {
+        $user = User::createFromAuth($auth);
+        $folderPath = $_REQUEST['folderPath'] ?? '/';
+        $result = FolderReader::listFiles($folderPath, $user, $db);
         JsonFormatter::printArray($result);
     }
 }

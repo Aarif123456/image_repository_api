@@ -13,7 +13,7 @@ class FileLocationInfo
 
     public function __construct(array $properties = []) {
         $this->name = self::cleanFileName($properties['name']);
-        $this->path = self::cleanfilePath($properties['path']);
+        $this->path = self::cleanFilePath($properties['path']);
         $ownerId = (int)$properties['ownerId'];
         /* Make sure user is contained to their folder */
         $this->realPath = self::getUserFolder($this->path, $ownerId) . "$this->name";
@@ -29,13 +29,17 @@ class FileLocationInfo
     }
 
     /* Make sure we have the file location */
-    private static function cleanfilePath(string $filePath): string {
-        return (string)preg_replace('~[^a-zA-Z0-9_\\\/\-]~', '', $filePath);
+    private static function cleanFilePath(string $filePath): string {
+        $path = (string)preg_replace('~[^a-zA-Z0-9_\\\/\-]~', '', $filePath);
+        /* Make sure path ends with a slash */
+        if (empty($path) || mb_substr($path, -1) !== '/') $path .= '/';
+
+        return $path;
     }
 
     /* Handle getting the actual file path for the user */
     public static function getUserFolder(string $filePath, int $ownerId): string {
-        return "userFiles/$ownerId" . self::cleanfilePath($filePath);
+        return "userFiles/$ownerId" . self::cleanFilePath($filePath);
     }
 
     /**
