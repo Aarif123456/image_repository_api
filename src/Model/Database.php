@@ -15,13 +15,13 @@ final class Database
     public PDO $conn;
 
     public function __construct(
-        string $db = DATABASE_NAME,
-        string $username = DATABASE_USERNAME,
-        string $password = DATABASE_PASSWORD,
-        string $host = DATABASE_HOST,
-        int $port = 3306,
         array $options = []
     ) {
+        $db = DATABASE_NAME;
+        $username = DATABASE_USERNAME;
+        $password = DATABASE_PASSWORD;
+        $host = DATABASE_HOST;
+        $port = 3306;
         $defaultOptions = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,

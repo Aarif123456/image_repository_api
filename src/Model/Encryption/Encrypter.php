@@ -35,7 +35,7 @@ final class Encrypter
      *
      * @throws EncryptionFailureException
      */
-    private static function callApi(array $fields, array $options = [], bool $debug = false): array {
+    private static function callApi(array $fields, array $options = []): array {
         $ch = curl_init();
         //set the url, number of POST vars, POST data
         $defaults = [
@@ -52,19 +52,6 @@ final class Encrypter
         }
         if (array_key_exists('error', $result)) {
             throw new EncryptionFailureException($result['error']);
-        }
-        if ($debug) {
-            echo 'result <br/>';
-            var_dump($result);
-            echo ' <br/>';
-            echo 'Info <br/>';
-            $info = curl_getinfo($ch);
-            var_dump($info);
-            echo ' <br/>';
-            echo 'Error <br/>';
-            $error = curl_error($ch);
-            var_dump($error);
-            echo ' <br/>';
         }
 
         return $result;
