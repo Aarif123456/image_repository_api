@@ -1,6 +1,7 @@
+[![BCH compliance](https://bettercodehub.com/edge/badge/Aarif123456/image_repository_api?branch=main)](https://bettercodehub.com/)
 [![MIT License](https://img.shields.io/github/license/Aarif123456/image_repository_api?style=for-the-badge)](https://lbesson.mit-license.org/)
 ![Lines of code](https://img.shields.io/tokei/lines/github/Aarif123456/image_repository_api?style=for-the-badge)
-[![BCH compliance](https://bettercodehub.com/edge/badge/Aarif123456/image_repository_api?branch=main)](https://bettercodehub.com/)
+![Top Language](https://img.shields.io/github/languages/top/Aarif123456/image_repository_api?style=for-the-badge)
 
 # What is this? 🤔
 
