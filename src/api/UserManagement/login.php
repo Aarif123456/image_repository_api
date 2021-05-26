@@ -3,9 +3,9 @@
 declare(strict_types=1);
 namespace ImageRepository\api\UserManagement;
 
-use ImageRepository\Views\ErrorHandler;
+use ImageRepository\Controller\LoginWorker;
 
 use const ImageRepository\Utils\UNAUTHENTICATED;
 
-require_once __DIR__ . '/LoginWorker.php';
-ErrorHandler::safeApiRun(UNAUTHENTICATED, 'LoginWorker::run');
+$worker = new LoginWorker();
+$worker->safeRun(UNAUTHENTICATED);

@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-namespace ImageRepository\api;
+namespace ImageRepository\Controller;
 
 /* Define the strings the API will return  */
 use ImageRepository\Exception\{MissingParameterException, StaticClassAssertionError};

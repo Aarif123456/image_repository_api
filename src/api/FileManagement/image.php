@@ -3,9 +3,9 @@
 declare(strict_types=1);
 namespace ImageRepository\api\FileManagement;
 
-use ImageRepository\Views\ErrorHandler;
+use ImageRepository\Controller\ImageWorker;
 
 use const ImageRepository\Utils\AUTHORIZED_USER;
 
-ErrorHandler::safeApiRun(AUTHORIZED_USER, 'ImageWorker::run');
-
+$worker = new ImageWorker();
+$worker->safeRun(AUTHORIZED_USER);

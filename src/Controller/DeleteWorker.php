@@ -1,28 +1,22 @@
 <?php
 
 declare(strict_types=1);
-namespace ImageRepository\api\FileManagement;
+namespace ImageRepository\Controller;
 
-use ImageRepository\api\EndpointValidator;
 use ImageRepository\Exception\{DebugPDOException,
     DeleteFailedException,
     MissingParameterException,
     NoSuchFileException,
-    PDOWriteException,
-    StaticClassAssertionError};
-use ImageRepository\Model\{Database, User};
+    PDOWriteException};
 use ImageRepository\Model\FileManagement\FileManager;
-use ImageRepository\Utils\Auth;
+use ImageRepository\Model\User;
 use ImageRepository\Views\JsonFormatter;
 
 /**
  * Class that handles the logic for deleting the file
  */
-final class DeleteWorker
+final class DeleteWorker extends AbstractWorker
 {
-    private function __construct() {
-        throw new StaticClassAssertionError();
-    }
 
     /**
      * @throws DebugPDOException
@@ -31,15 +25,18 @@ final class DeleteWorker
      * @throws NoSuchFileException
      * @throws MissingParameterException
      */
-    public static function run(Database $db, Auth $auth, bool $debug) {
+    public function run() {
         if (!(EndpointValidator::isValidRequestVar('fileName') || EndpointValidator::isValidRequestVar('fileId'))) {
             EndpointValidator::missingParameterExit();
         }
         /* Set variables */
-        $user = User::createFromAuth($auth);
-        $file = FileLocationInfoFactory::createFromApiData($user, $db);
+        $user = User::createFromAuth($this->auth);
+        $file = FileLocationInfoFactory::createFromApiData($user, $this->db);
         /* If we have a file to delete then delete it */
-        if ($file === null || !FileManager::deleteFile($file, $user, $db, $debug)) throw new DeleteFailedException();
+        if ($file === null || !FileManager::deleteFile($file, $user, $this->db,
+                $this->debug)) {
+            throw new DeleteFailedException();
+        }
         JsonFormatter::printArray(['error' => false]);
     }
 

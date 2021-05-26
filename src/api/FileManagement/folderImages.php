@@ -3,9 +3,9 @@
 declare(strict_types=1);
 namespace ImageRepository\api\FileManagement;
 
-use ImageRepository\Views\ErrorHandler;
+use ImageRepository\Controller\FolderImagesWorker;
 
 use const ImageRepository\Utils\AUTHORIZED_USER;
 
-require_once __DIR__ . '/FolderImagesWorker.php';
-ErrorHandler::safeApiRun(AUTHORIZED_USER, 'FolderImagesWorker::run');
+$worker = new FolderImagesWorker();
+$worker->safeRun(AUTHORIZED_USER);

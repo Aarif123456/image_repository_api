@@ -1,35 +1,26 @@
 <?php
 
 declare(strict_types=1);
-namespace ImageRepository\api\UserManagement;
+namespace ImageRepository\Controller;
 
-use ImageRepository\api\EndpointValidator;
-use ImageRepository\Exception\{MissingParameterException, StaticClassAssertionError, UnauthorizedAdminException};
-use ImageRepository\Model\Database;
-use ImageRepository\Utils\Auth;
+use ImageRepository\Exception\{MissingParameterException, UnauthorizedAdminException};
 use ImageRepository\Views\JsonFormatter;
 
-/* TODO: remove loggedIn and just rely on error*/
-const LOGIN_API_OUTPUT_VAR = ['error' => null, 'message' => null, 'loggedIn' => null];
+const LOGIN_API_OUTPUT_VAR = ['error' => null, 'message' => null];
 /**
  *CLass that handles logic of logging in user
  */
-final class LoginWorker
+final class LoginWorker extends AbstractWorker
 {
-    private function __construct() {
-        throw new StaticClassAssertionError();
-    }
-
     /**
      * @throws UnauthorizedAdminException
      * @throws MissingParameterException
      */
-    public static function run(Database $_db, Auth $auth, bool $_debug) {
+    public function run() {
         /* Logout any account they are logged in */
-        if ($auth->isUserLoggedIn()) $auth->logout();
+        if ($this->auth->isUserLoggedIn()) $this->auth->logout();
         /* Make sure request has all the required attributes*/
         EndpointValidator::checkMissingPostVars(['email', 'password']);
-        /* TODO: remove loggedIn return value and just use error */
         $admin = $_POST['admin'] ?? false;
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
@@ -41,11 +32,11 @@ final class LoginWorker
             'admin' => $admin
         ];
         /* validate login info */
-        $result = $auth->login($loginInfo);
+        $result = $this->auth->login($loginInfo);
         $output = array_intersect_key($result, LOGIN_API_OUTPUT_VAR);
         /* Make sure user is actually an admin*/
-        if ($admin && !($auth->isUserAnAdmin())) {
-            $auth->logout();
+        if ($admin && !($this->auth->isUserAnAdmin())) {
+            $this->auth->logout();
             header('HTTP/1.0 403 Forbidden');
             /* Exit and tell the client that their user type is they are not admin */
             throw new UnauthorizedAdminException();

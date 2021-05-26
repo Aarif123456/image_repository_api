@@ -3,8 +3,7 @@
 declare(strict_types=1);
 namespace ImageRepository\Tests;
 
-use ImageRepository\api\User\LogoutWorker;
-use ImageRepository\api\UserManagement\{LoginWorker, RegisterWorker};
+use ImageRepository\Controller\{LoginWorker, LogoutWorker, RegisterWorker};
 use ImageRepository\Exception\{DebugPDOException,
     EncryptionFailureException,
     InvalidPropertyException,
@@ -30,10 +29,16 @@ final class UserManagementTest extends TestCase
     private string $testPassword = '@kSaBZvMg\'h9_b3L;s&>ud+;0=A=WA=Z2Ld;}C+3EsmdpgFN&6c@IDD7`x*tld:Y\IdGh(=f[N4{?R<uH0^2[';
     private Database $db;
     private Auth $auth;
+    private LoginWorker $loginWorker;
+    private LogoutWorker $logoutWorker;
+    private RegisterWorker $registerWorker;
 
     public function __construct($name = null, array $data = [], $dataName = '') {
         $this->db = new Database();
         $this->auth = new Auth($this->db->conn);
+        $this->loginWorker = new LoginWorker($this->db, false);
+        $this->logoutWorker = new LogoutWorker($this->db, false);
+        $this->registerWorker = new RegisterWorker($this->db, false);
         parent::__construct($name, $data, $dataName);
     }
 
@@ -96,7 +101,7 @@ final class UserManagementTest extends TestCase
         if (empty($_POST['email']) || empty($_POST['password'] || empty($_POST['firstName']))) {
             $this->expectException(MissingParameterException::class);
         }
-        RegisterWorker::run($this->db, $this->auth, false);
+        $this->registerWorker->run();
         /* Empty out post request */
         $_POST = [];
         $output = (array)json_decode($this->getActualOutput());
@@ -125,7 +130,7 @@ final class UserManagementTest extends TestCase
         elseif (empty($userInfo['isAdmin'] ?? false)) {
             $this->expectException(UnauthorizedAdminException::class);
         }
-        LoginWorker::run($this->db, $this->auth, false);
+        $this->loginWorker->run();
         $output = (array)json_decode($this->getActualOutput());
         $this->assertFalse($output['error'] ?? true);
         $this->assertNotEmpty($output['message']);
@@ -147,7 +152,7 @@ final class UserManagementTest extends TestCase
             'admin' => $userInfo['isAdmin'] ?? false
         ];
         $output = $this->auth->login($loginInfo);
-        LogoutWorker::run($this->db, $this->auth, false);
+        $this->logoutWorker->run();
         $this->assertJsonStringEqualsJsonString(
             json_encode(['error' => $output['error']]),
             $this->getActualOutput()

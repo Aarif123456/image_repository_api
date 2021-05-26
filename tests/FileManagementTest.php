@@ -3,7 +3,7 @@
 declare(strict_types=1);
 namespace ImageRepository\Tests;
 
-use ImageRepository\api\FileManagement\{DeleteWorker, FolderImagesWorker, ImageWorker, UploadWorker};
+use ImageRepository\Controller\{DeleteWorker, FolderImagesWorker, ImageWorker, UploadWorker};
 use ImageRepository\Exception\{DebugPDOException,
     DeleteFailedException,
     EncryptedFileNotCreatedException,
@@ -52,6 +52,10 @@ final class FileManagementTest extends TestCase
     private object $loginInfo;
     private Database $db;
     private Auth $auth;
+    private DeleteWorker $deleteWorker;
+    private FolderImagesWorker $folderImagesWorker;
+    private ImageWorker $imageWorker;
+    private UploadWorker $uploadWorker;
 
     /**************************************************************************/
     /* Data providers: data used to test */
@@ -66,6 +70,10 @@ final class FileManagementTest extends TestCase
         ];
         resizeImageToSize(self::$imgFile, 1024 * 1024 * 7, self::$giantFile);
         copy(self::$imgFile, self::$imgFile2);
+        $this->deleteWorker = new DeleteWorker($this->db, false);
+        $this->folderImagesWorker = new FolderImagesWorker($this->db, false);
+        $this->imageWorker = new ImageWorker($this->db, false);
+        $this->uploadWorker = new UploadWorker($this->db, false);
         parent::__construct($name, $data, $dataName);
     }
 
@@ -139,7 +147,7 @@ final class FileManagementTest extends TestCase
         $_FILES = [
             self::$fileNames => $fileInfo
         ];
-        UploadWorker::run($this->db, $this->auth, false);
+        $this->uploadWorker->run();
         if (copy($backupLocation, self::$imgFile)) unlink($backupLocation);
         $this->assertJsonStringEqualsJsonString(
             json_encode([$fileInfo['name'] => ['error' => false]]),
@@ -162,7 +170,7 @@ final class FileManagementTest extends TestCase
      */
     public function testDeleteSingleFiles(array $fileInfo) {
         $_REQUEST['fileName'] = $fileInfo['name'];
-        DeleteWorker::run($this->db, $this->auth, false);
+        $this->deleteWorker->run();
         $this->assertJsonStringEqualsJsonString(
             json_encode(['error' => false]),
             $this->getActualOutput()
@@ -197,7 +205,7 @@ final class FileManagementTest extends TestCase
         $_FILES = [
             self::$fileNames => $inputFiles
         ];
-        UploadWorker::run($this->db, $this->auth, false);
+        $this->uploadWorker->run();
         /* Make sure we print out files with no errors */
         $output = [];
         foreach ($inputFiles['name'] as $fileName) {
@@ -227,7 +235,7 @@ final class FileManagementTest extends TestCase
         foreach ($inputFiles['name'] as $key => $value) {
             $this->expectOutputString(file_get_contents($inputFiles['tmp_name'][$key]));
             $_REQUEST['fileName'] = $value;
-            ImageWorker::run($this->db, $this->auth, false);
+            $this->imageWorker->run();
         }
     }
 
@@ -246,7 +254,7 @@ final class FileManagementTest extends TestCase
         foreach ($inputFiles['name'] as $key => $value) {
             $this->expectOutputString(file_get_contents($inputFiles['tmp_name'][$key]));
             $_REQUEST['fileName'] = $value;
-            ImageWorker::run($this->db, $this->auth, false);
+            $this->imageWorker->run();
         }
     }
 
@@ -271,7 +279,7 @@ final class FileManagementTest extends TestCase
             $fileInfo = FileReader::getFileMetaData($file, $user, $this->db);
             $_REQUEST['fileId'] = $fileInfo['fileID'];
             $this->expectOutputString(file_get_contents($inputFiles['tmp_name'][$key]));
-            ImageWorker::run($this->db, $this->auth, false);
+            $this->imageWorker->run();
         }
     }
 
@@ -297,7 +305,7 @@ final class FileManagementTest extends TestCase
             $fileInfo = FileReader::getFileMetaData($file, $user, $this->db);
             $_REQUEST['fileId'] = $fileInfo['fileID'];
             $this->expectOutputString(file_get_contents($inputFiles['tmp_name'][$key]));
-            ImageWorker::run($this->db, $this->auth, false);
+            $this->imageWorker->run();
         }
     }
 
@@ -311,7 +319,7 @@ final class FileManagementTest extends TestCase
     public function testFilesInFolder(array $inputFiles) {
         /* Be in the root folder*/
         $_REQUEST['folderPath'] = '/';
-        FolderImagesWorker::run($this->db, $this->auth, false);
+        $this->folderImagesWorker->run();
         $output = (array)json_decode($this->getActualOutput());
         $this->assertNotEmpty($output);
         foreach ($inputFiles['name'] as $fileName) {
@@ -351,7 +359,7 @@ final class FileManagementTest extends TestCase
         foreach ($inputFiles['name'] as $value) {
             $_REQUEST['fileName'] = $value;
             $this->expectOutputString(json_encode(['error' => false]));
-            DeleteWorker::run($this->db, $this->auth, false);
+            $this->deleteWorker->run();
             $this->assertJsonStringEqualsJsonString(
                 json_encode(['error' => false]),
                 $this->getActualOutput()
@@ -369,7 +377,7 @@ final class FileManagementTest extends TestCase
     public function testFolderEmptyAfterDelete() {
         /* Be in the root folder*/
         $_REQUEST['folderPath'] = '';
-        FolderImagesWorker::run($this->db, $this->auth, false);
+        $this->folderImagesWorker->run();
         $this->assertJsonStringEqualsJsonString(
             json_encode([]),
             $this->getActualOutput()

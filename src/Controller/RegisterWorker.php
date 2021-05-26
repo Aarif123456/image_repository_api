@@ -1,34 +1,28 @@
 <?php
 
 declare(strict_types=1);
-namespace ImageRepository\api\UserManagement;
+namespace ImageRepository\Controller;
 
-use ImageRepository\api\EndpointValidator;
 use ImageRepository\Exception\{DebugPDOException,
     EncryptionFailureException,
     MissingParameterException,
-    PDOWriteException,
-    StaticClassAssertionError};
-use ImageRepository\Model\{Database, User, UserManagement\UserGenerator};
-use ImageRepository\Utils\Auth;
+    PDOWriteException};
+use ImageRepository\Model\User;
+use ImageRepository\Model\UserManagement\UserGenerator;
 use ImageRepository\Views\JsonFormatter;
 
 /**
  * Class to handle registration logic
  */
-final class RegisterWorker
+final class RegisterWorker extends AbstractWorker
 {
-    private function __construct() {
-        throw new StaticClassAssertionError();
-    }
-
     /**
      * @throws EncryptionFailureException
      * @throws DebugPDOException
      * @throws PDOWriteException
      * @throws MissingParameterException
      */
-    public static function run(Database $db, Auth $auth, bool $debug) {
+    public function run() {
         /* Make sure we have a valid request */
         EndpointValidator::checkMissingPostVars(['firstName', 'lastName', 'email', 'password']);
         /* Get user info into user object */
@@ -39,7 +33,7 @@ final class RegisterWorker
             'email' => $_POST['email'],
             'password' => $_POST['password'],
         ]);
-        $result = UserGenerator::createUser($user, $db, $auth, $debug);
+        $result = UserGenerator::createUser($user, $this->db, $this->auth, $this->debug);
         $output = [
             'error' => $result['error'],
             'message' => $result['message']

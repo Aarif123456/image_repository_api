@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-namespace ImageRepository\api\FileManagement;
+namespace ImageRepository\Controller;
 
 use ImageRepository\Exception\{NoSuchFileException, StaticClassAssertionError};
 use ImageRepository\Model\{Database, FileLocationInfo, User};

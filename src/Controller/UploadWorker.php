@@ -1,9 +1,8 @@
 <?php
 
 declare(strict_types=1);
-namespace ImageRepository\api\FileManagement;
+namespace ImageRepository\Controller;
 
-use ImageRepository\api\EndpointValidator;
 use ImageRepository\Exception\{DebugPDOException,
     EncryptedFileNotCreatedException,
     EncryptionFailureException,
@@ -15,21 +14,15 @@ use ImageRepository\Exception\{DebugPDOException,
     MissingParameterException,
     PDOWriteException,
     SqlCommandFailedException,
-    StaticClassAssertionError,
     UnknownErrorException};
-use ImageRepository\Model\{Database, File, FileManagement\PolicySelector, User};
-use ImageRepository\Utils\Auth;
+use ImageRepository\Model\{File, FileManagement\PolicySelector, User};
 use ImageRepository\Views\JsonFormatter;
 
 /**
  * Class to handle the logic of uploading files
  */
-final class UploadWorker
+final class UploadWorker extends AbstractWorker
 {
-    private function __construct() {
-        throw new StaticClassAssertionError();
-    }
-
     /**
      * @throws FileAlreadyExistsException
      * @throws EncryptedFileNotCreatedException
@@ -44,9 +37,9 @@ final class UploadWorker
      * @throws PDOWriteException
      * @throws MissingParameterException
      */
-    public static function run(Database $db, Auth $auth, bool $_debug) {
+    public function run() {
         /* Set variables */
-        $user = User::createFromAuth($auth);
+        $user = User::createFromAuth($this->auth);
         $fileAccess = $_REQUEST['fileAccess'] ?? PolicySelector::defaultAccess();
         $filePath = $_REQUEST['filePath'] ?? '/';
         $fileNames = $_REQUEST['fileNames'] ?? 'images';
@@ -75,7 +68,7 @@ final class UploadWorker
                 'access' => $fileAccess,
                 'ownerId' => $user->id
             ]);
-            $uploadSuccess[$file->name] = FileProcessor::processFile($file, $user, $db);
+            $uploadSuccess[$file->name] = FileProcessor::processFile($file, $user, $this->db);
         }
         JsonFormatter::printArray($uploadSuccess);
     }
