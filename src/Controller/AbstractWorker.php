@@ -51,7 +51,6 @@ abstract class AbstractWorker
     }
 
     /* Required header */
-
     final public function safeRun(int $authorizationLevel) {
         try {
             /* Set required header */
