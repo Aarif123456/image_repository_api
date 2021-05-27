@@ -187,7 +187,14 @@ final class FileManagementTest extends TestCase
      * @throws MissingParameterException
      */
     public function testDeleteSingleFiles(array $fileInfo) {
-        $_REQUEST['fileName'] = $fileInfo['name'];
+        $user = User::createFromAuth($this->auth);
+        $file = new FileLocationInfo([
+            'name' => $fileInfo['name'],
+            'path' => '',
+            'ownerId' => $user->id
+        ]);
+        $fileInfo = FileReader::getFileMetaData($file, $user, $this->db);
+        $_REQUEST['fileId'] = $fileInfo['fileID'];
         $this->deleteWorker->run();
         $this->assertJsonStringEqualsJsonString(
             json_encode(['error' => false]),

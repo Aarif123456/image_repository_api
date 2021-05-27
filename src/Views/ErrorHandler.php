@@ -6,7 +6,10 @@ namespace ImageRepository\Views;
 
 use ImageRepository\Exception\{StaticClassAssertionError};
 use ReflectionClass;
+use ReflectionException;
 use Throwable;
+
+use const ImageRepository\Utils\DEBUG;
 
 /**
  * Class to manage all the exception's response
@@ -62,14 +65,20 @@ final class ErrorHandler
     }
 
     public static function createLocalizedErrorJson(Translator $translator, Throwable $e): string {
-        return self::createErrorJson(self::createLocalizedErrorJson($translator, $e));
+        return self::createErrorJson(self::createLocalizedError($translator, $e));
     }
 
     public static function createLocalizedError(Translator $translator, Throwable $e): string {
-        $re = new ReflectionClass(get_class($e));
-        $messageKey = self::$customExceptionMapper[$re->getShortName()] ?? 'INTERNAL_SERVER_ERROR';
+        $messageKey = 'INTERNAL_SERVER_ERROR';
+        try {
+            $re = new ReflectionClass(get_class($e));
+            $messageKey = self::$customExceptionMapper[$re->getShortName()] ?? 'INTERNAL_SERVER_ERROR';
+        } catch (ReflectionException $ignored) {
+        }
+        $message = $translator->dictionary[$messageKey] ?? 'Something went really wrong :(';
+        if (DEBUG) $message .= '\n ' . $e;
 
-        return $translator->dictionary[$messageKey] ?? 'Something went really wrong :(';
+        return $message;
     }
 
 }

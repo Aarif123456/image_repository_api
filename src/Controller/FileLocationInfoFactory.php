@@ -21,7 +21,7 @@ final class FileLocationInfoFactory
         $fileId = $_REQUEST['fileId'] ?? null;
         $file = null;
         if (!empty($fileId)) {
-            $file = FileLocationInfo::createFromId($fileId, $user, $db);
+            $file = FileLocationInfo::createFromId((int)$fileId, $user, $db);
         } elseif (!empty($fileName)) {
             $file = new FileLocationInfo([
                 'name' => $fileName,

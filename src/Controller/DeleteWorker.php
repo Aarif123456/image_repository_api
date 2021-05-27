@@ -33,7 +33,7 @@ final class DeleteWorker extends AbstractWorker
         $user = User::createFromAuth($this->auth);
         $file = FileLocationInfoFactory::createFromApiData($user, $this->db);
         /* If we have a file to delete then delete it */
-        if ($file === null || !FileManager::deleteFile($file, $user, $this->db,
+        if ($file == null || !FileManager::deleteFile($file, $user, $this->db,
                 $this->debug)) {
             throw new DeleteFailedException();
         }

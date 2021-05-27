@@ -29,6 +29,7 @@ final class ImageWorker extends AbstractWorker
         /* Create user object using the id of the image's owner */
         $targetUser = new User($this->auth->getUser($ownerId));
         $file = FileLocationInfoFactory::createFromApiData($targetUser, $this->db);
+        if ($file == null) throw new NoSuchFileException();
         $fileBinary = FileReader::getFileBytes($file, $targetUser, $this->db);
         $fileSize = strlen($fileBinary);
         $mime = FileReader::getFileMime($file, $targetUser, $this->db);
