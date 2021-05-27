@@ -21,14 +21,14 @@ final class Database
         $username = DATABASE_USERNAME;
         $password = DATABASE_PASSWORD;
         $host = DATABASE_HOST;
-        $port = 3306;
+        $charset = 'utf8mb4';
         $defaultOptions = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES => false,
         ];
         $options = array_replace($defaultOptions, $options);
-        $dsn = "mysql:host=$host;dbname=$db;port=$port;charset=utf8mb4";
+        $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
         try {
             $this->conn = new PDO($dsn, $username, $password, $options);
         } catch (PDOException $e) {
