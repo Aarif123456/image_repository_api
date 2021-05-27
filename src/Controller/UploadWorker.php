@@ -13,9 +13,9 @@ use ImageRepository\Exception\{DebugPDOException,
     InvalidFileFormatException,
     MissingParameterException,
     PDOWriteException,
-    SqlCommandFailedException,
     UnknownErrorException};
 use ImageRepository\Model\{File, FileManagement\PolicySelector, User};
+use ImageRepository\Views\ErrorHandler;
 use ImageRepository\Views\JsonFormatter;
 
 /**
@@ -24,17 +24,6 @@ use ImageRepository\Views\JsonFormatter;
 final class UploadWorker extends AbstractWorker
 {
     /**
-     * @throws FileAlreadyExistsException
-     * @throws EncryptedFileNotCreatedException
-     * @throws SqlCommandFailedException
-     * @throws DebugPDOException
-     * @throws FileNotSentException
-     * @throws InvalidFileFormatException
-     * @throws InvalidAccessException
-     * @throws UnknownErrorException
-     * @throws FileLimitExceededException
-     * @throws EncryptionFailureException
-     * @throws PDOWriteException
      * @throws MissingParameterException
      */
     public function run() {
@@ -68,7 +57,23 @@ final class UploadWorker extends AbstractWorker
                 'access' => $fileAccess,
                 'ownerId' => $user->id
             ]);
-            $uploadSuccess[$file->name] = FileProcessor::processFile($file, $user, $this->db);
+            try {
+                $uploadSuccess[$file->name] = ['error' => FileProcessor::processFile($file, $user, $this->db)];
+            } catch (FileAlreadyExistsException |
+            EncryptedFileNotCreatedException |
+            DebugPDOException |
+            FileNotSentException |
+            InvalidFileFormatException |
+            InvalidAccessException |
+            UnknownErrorException |
+            FileLimitExceededException |
+            EncryptionFailureException |
+            PDOWriteException $e) {
+                $uploadSuccess[$file->name] = [
+                    'error' => true,
+                    'message' => ErrorHandler::createLocalizedError($this->translator, $e)
+                ];
+            }
         }
         JsonFormatter::printArray($uploadSuccess);
     }

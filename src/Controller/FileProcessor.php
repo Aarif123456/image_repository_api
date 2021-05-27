@@ -12,7 +12,6 @@ use ImageRepository\Exception\{DebugPDOException,
     InvalidAccessException,
     InvalidFileFormatException,
     PDOWriteException,
-    SqlCommandFailedException,
     StaticClassAssertionError,
     UnknownErrorException};
 use ImageRepository\Model\{Database, EncryptionKeyReader, File, User};
@@ -48,7 +47,6 @@ final class FileProcessor
     /**
      * @throws FileAlreadyExistsException
      * @throws EncryptedFileNotCreatedException
-     * @throws SqlCommandFailedException
      * @throws DebugPDOException
      * @throws FileNotSentException
      * @throws InvalidFileFormatException
@@ -58,21 +56,21 @@ final class FileProcessor
      * @throws EncryptionFailureException
      * @throws PDOWriteException
      */
-    public static function processFile(File $file, User $user, Database $db, bool $debug = DEBUG): array {
+    public static function processFile(File $file, User $user, Database $db, bool $debug = DEBUG): bool {
         FileValidator::checkFile($file);
         /* Encrypt the file*/
         $policy = PolicySelector::getPolicy($file->access, $user);
         $publicKey = EncryptionKeyReader::publicKey($db);
         FileEncrypter::run($file, $policy, $publicKey);
         /* Add a reference to the file in our database */
-        $output = ['error' => empty(FileManager::addFile($file, $user, $db, $debug))];
-        if ($output['error']) {
-            throw new SqlCommandFailedException();
+        $error = empty(FileManager::addFile($file, $user, $db, $debug));
+        if (!$error) {
+            unlink($file->location);
         }
-        /*if we have successfully encrypted our file then remove them temporary non encrypted version */
-        unlink($file->location);
 
-        return $output;
+        /*if we have successfully encrypted our file then remove them temporary non encrypted version */
+
+        return $error;
     }
 }
 

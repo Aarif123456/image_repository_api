@@ -4,22 +4,7 @@ declare(strict_types=1);
 namespace ImageRepository\Controller;
 
 use Exception;
-use ImageRepository\Exception\{DebugPDOException,
-    DeleteFailedException,
-    EncryptedFileNotCreatedException,
-    EncryptionFailureException,
-    FileAlreadyExistsException,
-    FileLimitExceededException,
-    FileNotSentException,
-    InvalidAccessException,
-    InvalidFileFormatException,
-    InvalidPropertyException,
-    MissingParameterException,
-    NoSuchFileException,
-    PDOWriteException,
-    SqlCommandFailedException,
-    UnauthorizedAdminException,
-    UnauthorizedUserException};
+use ImageRepository\Exception\DebugPDOException;
 use ImageRepository\Model\Database;
 use ImageRepository\Utils\Auth;
 use ImageRepository\Views\ErrorHandler;
@@ -46,7 +31,7 @@ abstract class AbstractWorker
             $this->auth = new Auth($this->db->conn);
         } catch (PDOException $e) {
             header('Content-Type: application/json; charset=UTF-8');
-            ErrorHandler::printErrorJson('Failed to setup database');
+            ErrorHandler::exitWithErrorJson('Failed to setup database');
         }
     }
 
@@ -61,47 +46,13 @@ abstract class AbstractWorker
                 Auth::unauthorizedExit();
             }
             $this->run();
-        } catch (DeleteFailedException $e) {
-            ErrorHandler::printErrorJson($this->translator->FILE_DELETE_FAILED);
-        } catch (EncryptedFileNotCreatedException $e) {
-            ErrorHandler::printErrorJson($this->translator->ENCRYPTED_FILE_NOT_CREATED);
-        } catch (FileAlreadyExistsException $e) {
-            ErrorHandler::printErrorJson($this->translator->FILE_ALREADY_EXISTS);
-        } catch (FileLimitExceededException $e) {
-            ErrorHandler::printErrorJson($this->translator->FILE_SIZE_LIMIT_EXCEEDED);
-        } catch (EncryptionFailureException $e) {
-            ErrorHandler::printErrorJson($this->translator->INTERNAL_ENCRYPTION_FAILURE);
-        } catch (InvalidAccessException $e) {
-            ErrorHandler::printErrorJson($this->translator->INVALID_ACCESS_TYPE);
-        } catch (InvalidFileFormatException $e) {
-            ErrorHandler::printErrorJson($this->translator->INVALID_FILE_FORMAT);
-        } catch (InvalidPropertyException $e) {
-            ErrorHandler::printErrorJson($this->translator->INVALID_PROPERTY);
-        } catch (MissingParameterException $e) {
-            ErrorHandler::printErrorJson($this->translator->MISSING_PARAMETERS);
-        } catch (FileNotSentException $e) {
-            ErrorHandler::printErrorJson($this->translator->NO_FILE_SENT);
-        } catch (NoSuchFileException $e) {
-            ErrorHandler::printErrorJson($this->translator->NO_SUCH_FILE);
-        } catch (SqlCommandFailedException $e) {
-            ErrorHandler::printErrorJson($this->translator->COMMAND_FAILED);
         } catch (DebugPDOException $e) {
             if (!empty($this->db ?? null) && !empty($this->db->errorCode())) {
-                ErrorHandler::printErrorJson(sprintf('%s%s', $this->translator->SQL_ERROR,
+                ErrorHandler::exitWithErrorJson(sprintf('%s%s', $this->translator->SQL_ERROR,
                     json_encode($this->db->errorInfo())));
-            } else {
-                throw new PDOException('Expected PDO object', 1);
             }
-        } catch (PDOException $e) {
-            ErrorHandler::printErrorJson($this->translator->PDO_ERROR);
-        } catch (UnauthorizedUserException $e) {
-            ErrorHandler::printErrorJson($this->translator->UNAUTHORIZED_NO_LOGIN);
-        } catch (UnauthorizedAdminException $e) {
-            ErrorHandler::printErrorJson($this->translator->USER_NOT_ADMIN);
-        } catch (PDOWriteException $e) {
-            ErrorHandler::printErrorJson($this->translator->WRITE_QUERY_FAILED);
         } catch (Exception $e) {
-            ErrorHandler::printErrorJson($this->translator->INTERNAL_SERVER_ERROR);
+            ErrorHandler::printErrorJson($this->translator, $e);
         } catch (Throwable $e) {
             /* This meant we had a fatal an error instead of an exception so we don't have anyway to recover from it */
             ErrorHandler::exitWithErrorJson($this->translator->INTERNAL_SERVER_ERROR);
@@ -113,8 +64,7 @@ abstract class AbstractWorker
         header('Access-Control-Allow-Credentials: true');
         header('Access-Control-Allow-Headers: X-Requested-With, X-PINGOTHER, content-type');
         header('Content-Type: application/json; charset=UTF-8'); // most endpoints application will always return JSON
-        // header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS');
-        // header('Access-Control-Max-Age: 86400');    // cache for 1 day
+        header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS');
     }
 
     private static function formatJsonInput() {

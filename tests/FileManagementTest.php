@@ -6,24 +6,19 @@ namespace ImageRepository\Tests;
 use ImageRepository\Controller\{DeleteWorker, FolderImagesWorker, ImageWorker, UploadWorker};
 use ImageRepository\Exception\{DebugPDOException,
     DeleteFailedException,
-    EncryptedFileNotCreatedException,
     EncryptionFailureException,
-    FileAlreadyExistsException,
-    FileLimitExceededException,
-    FileNotSentException,
-    InvalidAccessException,
-    InvalidFileFormatException,
     MissingParameterException,
     NoSuchFileException,
-    PDOWriteException,
-    SqlCommandFailedException,
-    UnknownErrorException};
+    PDOWriteException};
 use ImageRepository\Model\Database;
 use ImageRepository\Model\FileLocationInfo;
 use ImageRepository\Model\FileManagement\FileReader;
 use ImageRepository\Model\User;
 use ImageRepository\Utils\Auth;
+use ImageRepository\Views\Translator;
 use PHPUnit\Framework\TestCase;
+
+use const ImageRepository\Utils\MAX_FILE_SIZE;
 
 require_once __DIR__ . '/dataProviders.php';
 /* The point of this class is to make sure we are able to properly manage the files we own securely
@@ -52,6 +47,7 @@ final class FileManagementTest extends TestCase
     private object $loginInfo;
     private Database $db;
     private Auth $auth;
+    private Translator $translator;
     private DeleteWorker $deleteWorker;
     private FolderImagesWorker $folderImagesWorker;
     private ImageWorker $imageWorker;
@@ -74,6 +70,7 @@ final class FileManagementTest extends TestCase
         $this->folderImagesWorker = new FolderImagesWorker($this->db, false);
         $this->imageWorker = new ImageWorker($this->db, false);
         $this->uploadWorker = new UploadWorker($this->db, false);
+        $this->translator = new Translator($this->db->conn);
         parent::__construct($name, $data, $dataName);
     }
 
@@ -117,20 +114,41 @@ final class FileManagementTest extends TestCase
     }
 
     /**
+     * @testdox Test upload to make sure it deals with large files accordingly
+     * @covers ::UploadWorker
+     * @runInSeparateProcess
+     * @throws MissingParameterException
+     */
+    public function testInvalidSizeUploadFile(): array {
+        $_REQUEST['fileNames'] = self::$fileNames;
+        $fileInfo = [
+            'error' => UPLOAD_ERR_OK,
+            'name' => 'test.js',
+            'size' => MAX_FILE_SIZE + 1,
+            'tmp_name' => self::$imgFile,
+            'type' => 'application/javascript'
+        ];
+        $_FILES = [
+            self::$fileNames => $fileInfo
+        ];
+        $this->uploadWorker->run();
+        $this->assertJsonStringEqualsJsonString(
+            json_encode([
+                $fileInfo['name'] => [
+                    'error' => true,
+                    'message' => $this->translator->FILE_SIZE_LIMIT_EXCEEDED
+                ]
+            ]),
+            $this->getActualOutput()
+        );
+
+        return $fileInfo;
+    }
+
+    /**
      * @testdox Make sure we can upload a single file
      * @covers ::UploadWorker
      * @runInSeparateProcess
-     * @throws FileAlreadyExistsException
-     * @throws EncryptedFileNotCreatedException
-     * @throws SqlCommandFailedException
-     * @throws DebugPDOException
-     * @throws FileNotSentException
-     * @throws InvalidFileFormatException
-     * @throws InvalidAccessException
-     * @throws UnknownErrorException
-     * @throws FileLimitExceededException
-     * @throws EncryptionFailureException
-     * @throws PDOWriteException
      * @throws MissingParameterException
      */
     public function testUploadSingleFile(): array {
@@ -182,17 +200,6 @@ final class FileManagementTest extends TestCase
      * @dataProvider validFileProvider
      * @covers ::UploadWorker
      * @runInSeparateProcess
-     * @throws FileAlreadyExistsException
-     * @throws EncryptedFileNotCreatedException
-     * @throws SqlCommandFailedException
-     * @throws DebugPDOException
-     * @throws FileNotSentException
-     * @throws InvalidFileFormatException
-     * @throws InvalidAccessException
-     * @throws UnknownErrorException
-     * @throws FileLimitExceededException
-     * @throws EncryptionFailureException
-     * @throws PDOWriteException
      * @throws MissingParameterException
      */
     public function testUploadFile(array $inputFiles) {
