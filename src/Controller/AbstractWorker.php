@@ -54,8 +54,9 @@ abstract class AbstractWorker
         } catch (Exception $e) {
             ErrorHandler::printErrorJson($this->translator, $e);
         } catch (Throwable $e) {
-            /* This meant we had a fatal an error instead of an exception so we don't have anyway to recover from it */
-            ErrorHandler::exitWithErrorJson($this->translator->INTERNAL_SERVER_ERROR);
+            if ($this->debug) {
+                ErrorHandler::printErrorJson($this->translator, $e);
+            } else ErrorHandler::exitWithErrorJson($this->translator->INTERNAL_SERVER_ERROR);
         }
     }
 
